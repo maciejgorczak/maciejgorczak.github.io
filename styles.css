@@ -1,0 +1,377 @@
+/* ===================================
+   ECO-BRUTALISM DESIGN SYSTEM
+   =================================== */
+:root {
+    /* Colors */
+    --color-bg: #E8E4D9;           /* Warm neutral beige */
+    --color-text: #1A1A1A;         /* Near black */
+    --color-text-muted: #4A4A4A;   /* Medium gray */
+    --color-olive-dark: #3A4429;   /* Accent color */
+
+    /* Typography */
+    --font-primary: 'Crimson Pro', Georgia, serif;
+    --font-secondary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* Spacing */
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+    --space-2xl: 4rem;
+}
+
+/* ===================================
+   RESET & BASE
+   =================================== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    height: 100%;
+}
+
+body {
+    font-family: var(--font-primary);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* ===================================
+   BACKGROUND PATTERN
+   =================================== */
+.background-pattern {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ===================================
+   CONTAINER
+   =================================== */
+.container {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-lg);
+}
+
+/* ===================================
+   MAIN CONTENT
+   =================================== */
+.main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.hero {
+    text-align: center;
+    max-width: 600px;
+    padding: var(--space-2xl) 0;
+}
+
+/* ===================================
+   NAME/TITLE
+   =================================== */
+.name {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin-bottom: var(--space-md);
+    color: var(--color-text);
+    line-height: 1.2;
+}
+
+/* ===================================
+   SOCIAL LINKS
+   =================================== */
+.social-links {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: var(--color-text);
+    background-color: transparent;
+    border: 1.5px solid var(--color-text);
+    border-radius: 50%;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.social-link:hover {
+    background-color: var(--color-text);
+    color: var(--color-bg);
+    transform: translateY(-2px);
+}
+
+.social-link svg {
+    display: block;
+}
+
+/* ===================================
+   MAIN NAVIGATION
+   =================================== */
+.main-nav {
+    display: flex;
+    gap: var(--space-lg);
+    justify-content: center;
+    padding-top: 0.75rem;
+    border-top: 2px solid var(--color-text);
+}
+
+.main-nav-link {
+    font-family: var(--font-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text);
+    text-decoration: none;
+    position: relative;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s ease;
+}
+
+.main-nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--color-rust);
+    transition: width 0.3s ease;
+}
+
+.main-nav-link:hover {
+    color: var(--color-olive-dark);
+}
+
+.main-nav-link:hover::after {
+    width: 100%;
+}
+
+/* ===================================
+   FOOTER
+   =================================== */
+.footer {
+    padding: var(--space-lg) 0;
+    text-align: center;
+    width: 100%;
+}
+
+.footer p {
+    font-family: var(--font-secondary);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+@media (max-width: 768px) {
+    .container {
+        padding: var(--space-md);
+    }
+
+    .hero {
+        padding: var(--space-lg) 0;
+    }
+
+    .name {
+        margin-bottom: var(--space-md);
+    }
+
+    .social-links {
+        gap: var(--space-sm);
+        margin-bottom: var(--space-lg);
+    }
+
+    .social-link {
+        width: 40px;
+        height: 40px;
+    }
+
+    .main-nav {
+        gap: var(--space-md);
+        padding-top: var(--space-md);
+    }
+
+    .main-nav-link {
+        font-size: 1rem;
+    }
+
+    .background-pattern {
+        opacity: 0.1;
+    }
+}
+
+/* ===================================
+   ANIMATIONS
+   =================================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* ===================================
+   PAGE STYLES (Blog & About)
+   =================================== */
+.page-container {
+    min-height: 100vh;
+    padding: var(--space-lg);
+}
+
+.page-header {
+    padding-bottom: var(--space-lg);
+    border-bottom: 2px solid var(--color-text);
+    margin-bottom: var(--space-xl);
+}
+
+.page-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-lg);
+}
+
+.page-nav-links {
+    display: flex;
+    gap: var(--space-lg);
+}
+
+.page-nav-link {
+    font-family: var(--font-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s ease;
+}
+
+.page-nav-link:hover {
+    color: var(--color-olive-dark);
+}
+
+.page-nav-link.active {
+    color: var(--color-rust);
+}
+
+.page-main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-content {
+    max-width: 1300px;
+    width: 100%;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.page-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin-bottom: var(--space-xl);
+    color: var(--color-text);
+    line-height: 1.2;
+}
+
+.page-text p {
+    font-size: 1rem;
+    line-height: 1.8;
+    margin-bottom: var(--space-lg);
+    color: var(--color-text);
+}
+
+.page-text a {
+    color: var(--color-olive-dark);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-olive-dark);
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.page-text a:hover {
+    color: var(--color-text);
+    border-bottom-color: var(--color-text);
+}
+
+/* Responsive for Pages */
+@media (max-width: 768px) {
+    .page-container {
+        padding: var(--space-md);
+    }
+
+    .page-header {
+        padding-bottom: var(--space-md);
+        margin-bottom: var(--space-lg);
+    }
+
+    .page-nav {
+        flex-direction: column;
+        gap: var(--space-sm);
+        align-items: flex-start;
+    }
+
+    .page-nav-links {
+        gap: var(--space-md);
+    }
+}
+
+/* ===================================
+   PRINT STYLES
+   =================================== */
+@media print {
+    .background-pattern {
+        display: none;
+    }
+
+    .social-link {
+        border-color: #000;
+        color: #000;
+    }
+}
