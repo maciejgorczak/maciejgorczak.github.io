@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blog - Maciej Górczak">
+    <title>Blog - Maciej Górczak</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <div class="page-nav-links">
+                    <a href="/" class="page-nav-link">Home</a>
+                    <a href="/about.html" class="page-nav-link">About</a>
+                    <a href="/blog.html" class="page-nav-link active">Blog</a>
+                </div>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <div class="blog-content">
+                <h1 class="page-title">Blog</h1>
+
+                <div id="blog-posts" class="blog-posts">
+                    <!-- Blog posts will be dynamically loaded here -->
+                    <p class="blog-empty">Loading posts...</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2025</p>
+        </footer>
+    </div>
+
+    <script src="blog-loader.js"></script>
+</body>
+</html>

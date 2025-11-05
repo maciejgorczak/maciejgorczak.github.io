@@ -1,0 +1,16 @@
+[
+  {
+    "slug": "building-data-products",
+    "title": "Building Data Products at Scale",
+    "date": "2025-01-20",
+    "excerpt": "Lessons from building data products for thousands of users at Allegro and Printify.",
+    "file": "2025-01-20-building-data-products.md"
+  },
+  {
+    "slug": "welcome",
+    "title": "Welcome to My Blog",
+    "date": "2025-01-15",
+    "excerpt": "An introduction to this blog and what you can expect to find here.",
+    "file": "2025-01-15-welcome.md"
+  }
+]

@@ -363,6 +363,201 @@ body {
 }
 
 /* ===================================
+   BLOG STYLES
+   =================================== */
+.blog-content {
+    max-width: 800px;
+    width: 100%;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.blog-posts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+.blog-post-item {
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid rgba(26, 26, 26, 0.15);
+}
+
+.blog-post-item:last-child {
+    border-bottom: none;
+}
+
+.blog-post-date {
+    font-family: var(--font-secondary);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.blog-post-title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+}
+
+.blog-post-title a {
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.blog-post-title a:hover {
+    color: var(--color-olive-dark);
+}
+
+.blog-post-excerpt {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+}
+
+.blog-post-link {
+    font-family: var(--font-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-olive-dark);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--color-olive-dark);
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.blog-post-link:hover {
+    color: var(--color-text);
+    border-bottom-color: var(--color-text);
+}
+
+.blog-empty {
+    font-family: var(--font-secondary);
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: var(--space-xl) 0;
+}
+
+/* ===================================
+   BLOG POST SINGLE
+   =================================== */
+.post-content {
+    max-width: 800px;
+    width: 100%;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.post-header {
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid rgba(26, 26, 26, 0.15);
+}
+
+.post-date {
+    font-family: var(--font-secondary);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+.post-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--color-text);
+    line-height: 1.2;
+    margin: 0;
+}
+
+.post-body {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--color-text);
+}
+
+.post-body p {
+    margin-bottom: var(--space-lg);
+}
+
+.post-body h2 {
+    font-size: 1.75rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-md);
+    line-height: 1.3;
+}
+
+.post-body h3 {
+    font-size: 1.35rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-md);
+    line-height: 1.3;
+}
+
+.post-body a {
+    color: var(--color-olive-dark);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-olive-dark);
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.post-body a:hover {
+    color: var(--color-text);
+    border-bottom-color: var(--color-text);
+}
+
+.post-body ul,
+.post-body ol {
+    margin-bottom: var(--space-lg);
+    padding-left: 1.5rem;
+}
+
+.post-body li {
+    margin-bottom: 0.5rem;
+}
+
+.post-body blockquote {
+    margin: var(--space-lg) 0;
+    padding-left: var(--space-lg);
+    border-left: 3px solid var(--color-olive-dark);
+    font-style: italic;
+    color: var(--color-text-muted);
+}
+
+.post-body code {
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 0.9em;
+    background-color: rgba(26, 26, 26, 0.05);
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+}
+
+.post-body pre {
+    background-color: rgba(26, 26, 26, 0.05);
+    padding: var(--space-md);
+    border-radius: 4px;
+    overflow-x: auto;
+    margin-bottom: var(--space-lg);
+}
+
+.post-body pre code {
+    background: none;
+    padding: 0;
+}
+
+/* ===================================
    PRINT STYLES
    =================================== */
 @media print {
