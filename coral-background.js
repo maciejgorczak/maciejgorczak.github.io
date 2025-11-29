@@ -26,8 +26,8 @@ function resizeCanvas() {
     // We want the drawing to occupy about 90% of the smallest screen dimension
     const displaySize = Math.min(window.innerWidth, window.innerHeight) * 0.9;
 
-    // High DPI support (Retina displays)
-    const dpr = window.devicePixelRatio || 1;
+    // High DPI support (Retina displays) - capped at 2x for performance
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     // Set internal resolution
     canvas.width = displaySize * dpr;
@@ -49,9 +49,9 @@ function generatePoints() {
     startingPoints = [];
 
     // 1. Concentric ridges
-    for (let r = 15; r < radius; r += 15) {
+    for (let r = 15; r < radius; r += 12) { // Increased density: 15 -> 12
         const circumference = 2 * Math.PI * r;
-        const density = Math.max(30, radius / 10);
+        const density = Math.max(25, radius / 12); // Increased: 30 -> 25, /10 -> /12
         const numPoints = Math.floor(circumference / density);
 
         for (let i = 0; i < numPoints; i++) {
@@ -70,7 +70,7 @@ function generatePoints() {
     }
 
     // 2. Random fill ridges
-    const fillCount = Math.floor(radius / 3);
+    const fillCount = Math.floor(radius / 2); // Increased: /3 -> /2
     for (let i = 0; i < fillCount; i++) {
         const angle = Math.random() * Math.PI * 2 + ROTATION_OFFSET;
         const r = Math.random() * radius * 0.9;
@@ -133,8 +133,6 @@ function drawRidge(startX, startY, maxSteps, t) {
         ctx.lineTo(x, y);
     }
 
-    ctx.lineWidth = canvas.width * 0.0015;
-    ctx.strokeStyle = 'rgba(26, 26, 26, 0.5)';
     ctx.stroke();
 }
 
@@ -152,6 +150,10 @@ function animate(currentTime) {
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
     ctx.clip();
+
+    // Set stroke style once for all lines (performance optimization)
+    ctx.lineWidth = canvas.width * 0.0015;
+    ctx.strokeStyle = 'rgba(26, 26, 26, 0.5)';
 
     // Draw
     for (let point of startingPoints) {
