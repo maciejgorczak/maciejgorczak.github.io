@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="When the sun last shone in Warsaw for more than an hour">
+    <title>Last sunshine in Warsaw - Maciej Górczak</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="/" class="page-nav-link">Home</a>
+                <a href="/about.html" class="page-nav-link">About</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content sun-tracker">
+                <div class="sun-info">
+                    <h1 class="sun-title">When the sun last shone in Warsaw</h1>
+
+                    <div class="sun-visual-container">
+                        <canvas id="sun-canvas" class="sun-canvas"></canvas>
+                        <div class="sun-time-display" id="sun-time-display">
+                            Loading...
+                        </div>
+                    </div>
+
+                    <div class="sun-description">
+                        <p>This page tracks when the sun was last visible in Warsaw for more than one hour. A sunny hour is defined as having cloud cover below 25% for at least two consecutive hours.</p>
+                        <p>Weather data provided by <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> api.</p>
+                    </div>
+                </div>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <script src="sun-tracker.js"></script>
+</body>
+</html>
