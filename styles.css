@@ -1,16 +1,35 @@
 /* ===================================
-   ECO-BRUTALISM DESIGN SYSTEM
+   CONCRETE & DAYLIGHT
+   Brand system derived from Casa
+   Alférez (Ludwig Godefroy): poured
+   concrete, ink line-work, one warm
+   timber accent. See BRAND.md.
    =================================== */
 :root {
-    /* Colors */
-    --color-bg: #E8E4D9;           /* Warm neutral beige */
-    --color-text: #1A1A1A;         /* Near black */
-    --color-text-muted: #4A4A4A;   /* Medium gray */
-    --color-olive-dark: #3A4429;   /* Accent color */
+    /* Concrete & ink */
+    --color-bg: #e9e7e2;           /* Dominant background, daylight concrete */
+    --color-bg-2: #dfdcd5;         /* Cast panels, secondary surface */
+    --color-bg-3: #cbc7be;         /* Tints, borders on concrete */
+    --color-text: #1c1b18;         /* Body text, warm ink */
+    --color-text-soft: #45433d;    /* Secondary text */
+    --color-text-muted: #6f6c64;   /* Captions, intros, footer */
+
+    /* Ink — structure, headings, line-art */
+    --color-navy: #1c1b18;         /* Headings, titles, structural slabs */
+    --color-navy-mid: #45433d;     /* Links, mono labels */
+    --color-navy-deep: #141310;    /* Dark panels */
+    --color-navy-tint: #b3afa7;    /* Hairlines, de-emphasis */
+
+    /* The single accent — use sparingly */
+    --color-rust: #9a5a20;         /* Timber: the one warm mark per view */
+
+    /* Back-compat alias (was the old accent) */
+    --color-olive-dark: var(--color-navy);
 
     /* Typography */
-    --font-primary: 'Crimson Pro', Georgia, serif;
-    --font-secondary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-primary: 'EB Garamond', Garamond, 'Iowan Old Style', Palatino, Georgia, serif;
+    --font-secondary: 'EB Garamond', Garamond, 'Iowan Old Style', Palatino, Georgia, serif;
+    --font-mono: 'IBM Plex Mono', 'Menlo', 'SF Mono', ui-monospace, Consolas, monospace;
 
     /* Spacing */
     --space-sm: 1rem;
@@ -36,7 +55,7 @@ html {
 
 body {
     font-family: var(--font-primary);
-    font-size: 16px;
+    font-size: 17px; /* EB Garamond runs small; keeps body text readable */
     line-height: 1.6;
     color: var(--color-text);
     background-color: var(--color-bg);
@@ -45,6 +64,17 @@ body {
     -moz-osx-font-smoothing: grayscale;
     position: relative;
     overflow-x: hidden;
+}
+
+/* Cast-concrete grain over everything */
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0.045;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* ===================================
@@ -94,13 +124,31 @@ body {
 /* ===================================
    NAME/TITLE
    =================================== */
+.hero-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-sm);
+}
+
 .name {
-    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    font-size: clamp(2.4rem, 7vw, 3.6rem);
     font-weight: 400;
-    letter-spacing: 0.02em;
-    margin-bottom: var(--space-md);
+    letter-spacing: 0.01em;
+    margin-bottom: var(--space-sm);
     color: var(--color-text);
-    line-height: 1.2;
+    line-height: 1.1;
+}
+
+.hero-tagline {
+    font-size: 1.08rem;
+    line-height: 1.7;
+    color: var(--color-text-soft);
+    max-width: 34rem;
+    margin: 0 auto var(--space-lg);
 }
 
 /* ===================================
@@ -117,67 +165,23 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    color: var(--color-text);
+    width: 34px;
+    height: 34px;
+    color: var(--color-navy);
     background-color: transparent;
-    border: 1.5px solid var(--color-text);
-    border-radius: 50%;
+    border: 1px solid var(--color-navy);
+    border-radius: 0;
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .social-link:hover {
-    background-color: var(--color-text);
+    background-color: var(--color-navy);
     color: var(--color-bg);
-    transform: translateY(-2px);
 }
 
 .social-link svg {
     display: block;
-}
-
-/* ===================================
-   MAIN NAVIGATION
-   =================================== */
-.main-nav {
-    display: flex;
-    gap: var(--space-lg);
-    justify-content: center;
-    padding-top: 0.15rem;
-    border-top: 2px solid var(--color-text);
-    
-}
-
-.main-nav-link {
-    font-family: var(--font-secondary);
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--color-text);
-    text-decoration: none;
-    position: relative;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    transition: color 0.2s ease;
-}
-
-.main-nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background-color: var(--color-rust);
-    transition: width 0.3s ease;
-}
-
-.main-nav-link:hover {
-    color: var(--color-olive-dark);
-}
-
-.main-nav-link:hover::after {
-    width: 100%;
 }
 
 /* ===================================
@@ -190,11 +194,11 @@ body {
 }
 
 .footer p {
-    font-family: var(--font-secondary);
-    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
     color: var(--color-text-muted);
     font-weight: 400;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
 }
 
 /* ===================================
@@ -221,15 +225,6 @@ body {
     .social-link {
         width: 40px;
         height: 40px;
-    }
-
-    .main-nav {
-        gap: var(--space-md);
-        padding-top: var(--space-md);
-    }
-
-    .main-nav-link {
-        font-size: 1rem;
     }
 
     .background-pattern {
@@ -265,13 +260,13 @@ body {
 
 .page-header {
     padding-bottom: var(--space-sm);
-    border-bottom: 2px solid var(--color-text);
+    border-bottom: 3px solid var(--color-navy);
     margin-bottom: var(--space-md);
 }
 
 .page-nav {
     display: flex;
-    
+
     padding-top: 0.1rem;
     justify-content: center;
     align-items: center;
@@ -284,18 +279,18 @@ body {
 }
 
 .page-nav-link {
-    font-family: var(--font-secondary);
-    font-size: 0.875rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
     font-weight: 500;
-    color: var(--color-text);
+    color: var(--color-navy-mid);
     text-decoration: none;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     transition: color 0.2s ease;
 }
 
 .page-nav-link:hover {
-    color: var(--color-olive-dark);
+    color: var(--color-navy);
 }
 
 .page-nav-link.active {
@@ -320,7 +315,7 @@ body {
     font-weight: 400;
     letter-spacing: 0.02em;
     margin-bottom: var(--space-xl);
-    color: var(--color-text);
+    color: var(--color-navy);
     line-height: 1.2;
 }
 
@@ -332,15 +327,15 @@ body {
 }
 
 .page-text a {
-    color: var(--color-olive-dark);
+    color: var(--color-navy-mid);
     text-decoration: none;
-    border-bottom: 1px solid var(--color-olive-dark);
+    border-bottom: 1px solid var(--color-navy-tint);
     transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 .page-text a:hover {
-    color: var(--color-text);
-    border-bottom-color: var(--color-text);
+    color: var(--color-navy);
+    border-bottom-color: var(--color-navy);
 }
 
 /* Responsive for Pages */
@@ -420,12 +415,12 @@ body {
 }
 
 .sun-time-display .time-label {
-    font-family: var(--font-secondary);
-    font-size: 0.875rem;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
     font-weight: 400;
-    color: var(--color-text-muted);
-    letter-spacing: 0.05em;
-    text-transform: none;
+    color: var(--color-navy-mid);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
     display: block;
 }
 
@@ -450,7 +445,7 @@ body {
     font-weight: 400;
     letter-spacing: 0.02em;
     margin-bottom: var(--space-md);
-    color: var(--color-text);
+    color: var(--color-navy);
     line-height: 1.2;
 }
 
@@ -460,9 +455,9 @@ body {
     gap: var(--space-lg);
     margin-bottom: var(--space-xl);
     padding: var(--space-xl);
-    border: 2px solid var(--color-text);
-    border-radius: 8px;
-    background-color: rgba(232, 228, 217, 0.7);
+    border: 1px solid var(--color-navy);
+    border-radius: 0;
+    background-color: rgba(233, 231, 226, 0.7);
     backdrop-filter: blur(10px);
 }
 
@@ -482,29 +477,30 @@ body {
 }
 
 .sun-stat .stat-label {
-    font-family: var(--font-secondary);
-    font-size: 0.875rem;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
     font-weight: 400;
-    color: var(--color-text-muted);
-    letter-spacing: 0.05em;
-    text-transform: none;
+    color: var(--color-navy-mid);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
 }
 
 .sun-stat.error .stat-value {
-    color: #8B4513;
+    color: var(--color-rust);
 }
 
 .time-since {
-    border-bottom: 1px solid var(--color-text);
+    border-bottom: 1px solid var(--color-navy-tint);
     padding-bottom: var(--space-md);
     margin-bottom: var(--space-sm);
 }
 
 .sun-description {
     text-align: left;
-    background-color: rgba(232, 228, 217, 0.85);
+    background-color: rgba(233, 231, 226, 0.85);
     padding: var(--space-sm) var(--space-md);
-    border-radius: 8px;
+    border-radius: 0;
+    border-top: 1px solid var(--color-navy-tint);
     backdrop-filter: blur(10px);
 }
 
@@ -523,15 +519,15 @@ body {
 }
 
 .sun-description a {
-    color: var(--color-olive-dark);
+    color: var(--color-navy-mid);
     text-decoration: none;
-    border-bottom: 1px solid var(--color-olive-dark);
+    border-bottom: 1px solid var(--color-navy-tint);
     transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 .sun-description a:hover {
-    color: var(--color-text);
-    border-bottom-color: var(--color-text);
+    color: var(--color-navy);
+    border-bottom-color: var(--color-navy);
 }
 
 @media (max-width: 768px) {
@@ -551,4 +547,206 @@ body {
     .sun-background-pattern {
         opacity: 0.08;
     }
+}
+
+/* ===================================
+   NOTES & MISC
+   =================================== */
+.page-content.narrow {
+    max-width: 42rem;
+}
+
+.page-lede {
+    font-family: var(--font-primary);
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin-top: calc(var(--space-xl) * -0.5);
+    margin-bottom: var(--space-xl);
+}
+
+/* — List of entries (notes index, misc hub) — */
+.entry-list {
+    list-style: none;
+    border-top: 1px solid var(--color-navy-tint);
+}
+
+.entry-item {
+    border-bottom: 1px solid var(--color-navy-tint);
+}
+
+.entry-loading {
+    list-style: none;
+    font-family: var(--font-secondary);
+    color: var(--color-text-muted);
+    padding: var(--space-md) 0;
+}
+
+.entry-link {
+    display: block;
+    padding: var(--space-md) var(--space-sm);
+    text-decoration: none;
+    border-bottom: none;
+    transition: background-color 0.2s ease, padding-left 0.2s ease;
+}
+
+.entry-link:hover {
+    background-color: rgba(28, 27, 24, 0.05);
+    padding-left: calc(var(--space-sm) + 0.4rem);
+}
+
+.entry-date {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-navy-mid);
+    margin-bottom: 0.35rem;
+}
+
+.entry-title {
+    display: block;
+    font-family: var(--font-primary);
+    font-size: 1.35rem;
+    font-weight: 500;
+    color: var(--color-navy);
+    line-height: 1.3;
+}
+
+.entry-link:hover .entry-title {
+    color: var(--color-rust);
+}
+
+.entry-summary {
+    display: block;
+    font-family: var(--font-secondary);
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin-top: 0.35rem;
+    line-height: 1.5;
+}
+
+/* — Single note — */
+.note-back {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-navy-mid);
+    text-decoration: none;
+    margin-bottom: var(--space-lg);
+    transition: color 0.2s ease;
+}
+
+.note-back:hover {
+    color: var(--color-rust);
+}
+
+.note-head {
+    margin-bottom: var(--space-lg);
+}
+
+.note-head .page-title {
+    margin-bottom: var(--space-sm);
+}
+
+.note-date {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-navy-mid);
+}
+
+/* — Rendered Markdown — */
+.note-content {
+    font-family: var(--font-primary);
+    font-size: 1.08rem;
+    line-height: 1.8;
+    color: var(--color-text);
+}
+
+.note-content h2,
+.note-content h3,
+.note-content h4 {
+    font-family: var(--font-primary);
+    font-weight: 500;
+    color: var(--color-navy);
+    line-height: 1.25;
+    margin: var(--space-xl) 0 var(--space-sm);
+}
+
+.note-content h2 { font-size: 1.6rem; }
+.note-content h3 { font-size: 1.3rem; }
+.note-content h4 { font-size: 1.1rem; }
+
+.note-content p {
+    margin-bottom: var(--space-md);
+}
+
+.note-content a {
+    color: var(--color-navy-mid);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-navy-tint);
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.note-content a:hover {
+    color: var(--color-navy);
+    border-bottom-color: var(--color-navy);
+}
+
+.note-content ul,
+.note-content ol {
+    margin: 0 0 var(--space-md) 1.4rem;
+}
+
+.note-content li {
+    margin-bottom: 0.4rem;
+}
+
+.note-content blockquote {
+    font-style: italic;
+    color: var(--color-navy);
+    border-left: 3px solid var(--color-rust);
+    padding: 0.2rem 0 0.2rem 1.2rem;
+    margin: var(--space-lg) 0;
+}
+
+.note-content code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background-color: var(--color-bg-2);
+    color: var(--color-navy-mid);
+    padding: 0.12em 0.4em;
+    border-radius: 0;
+}
+
+.note-content pre {
+    background-color: var(--color-navy-deep);
+    border-radius: 0;
+    padding: var(--space-md);
+    overflow-x: auto;
+    margin: var(--space-lg) 0;
+}
+
+.note-content pre code {
+    font-size: 0.84rem;
+    background: none;
+    color: #e7ecf4;
+    padding: 0;
+}
+
+.note-content hr {
+    border: none;
+    border-top: 1px solid var(--color-navy-tint);
+    margin: var(--space-xl) 0;
+}
+
+.note-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0;
 }

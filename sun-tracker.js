@@ -213,7 +213,7 @@ function initSunCanvas() {
             ctx.beginPath();
             ctx.moveTo(startX, startY);
             ctx.lineTo(endX, endY);
-            ctx.strokeStyle = 'rgba(26, 26, 26, 0.4)';
+            ctx.strokeStyle = 'rgba(28, 27, 24, 0.4)';
             ctx.lineWidth = canvas.width * 0.003;
             ctx.stroke();
 
@@ -233,7 +233,7 @@ function initSunCanvas() {
                     midX - Math.cos(perpAngle) * hatchLength,
                     midY - Math.sin(perpAngle) * hatchLength
                 );
-                ctx.strokeStyle = 'rgba(26, 26, 26, 0.3)';
+                ctx.strokeStyle = 'rgba(28, 27, 24, 0.3)';
                 ctx.lineWidth = canvas.width * 0.002;
                 ctx.stroke();
             }
@@ -242,7 +242,7 @@ function initSunCanvas() {
             if (i % 4 === 0) {
                 ctx.beginPath();
                 ctx.arc(endX, endY, canvas.width * 0.006, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(26, 26, 26, 0.35)';
+                ctx.fillStyle = 'rgba(28, 27, 24, 0.35)';
                 ctx.fill();
             }
         }
@@ -257,7 +257,7 @@ function initSunCanvas() {
 
             // Dashed pattern
             ctx.setLineDash([canvas.width * 0.015, canvas.width * 0.01]);
-            ctx.strokeStyle = 'rgba(26, 26, 26, 0.25)';
+            ctx.strokeStyle = 'rgba(28, 27, 24, 0.25)';
             ctx.lineWidth = canvas.width * 0.002;
             ctx.stroke();
         }
@@ -267,7 +267,7 @@ function initSunCanvas() {
         // Draw central sun circle with hatching
         ctx.beginPath();
         ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(26, 26, 26, 0.5)';
+        ctx.strokeStyle = 'rgba(28, 27, 24, 0.5)';
         ctx.lineWidth = canvas.width * 0.004;
         ctx.stroke();
 
@@ -282,7 +282,7 @@ function initSunCanvas() {
                     ctx.beginPath();
                     ctx.moveTo(x - 3, y - 3);
                     ctx.lineTo(x + 3, y + 3);
-                    ctx.strokeStyle = 'rgba(26, 26, 26, 0.15)';
+                    ctx.strokeStyle = 'rgba(28, 27, 24, 0.15)';
                     ctx.lineWidth = canvas.width * 0.001;
                     ctx.stroke();
                 }
@@ -292,14 +292,14 @@ function initSunCanvas() {
         // Inner solid circle
         ctx.beginPath();
         ctx.arc(centerX, centerY, innerRadius * 0.4, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(26, 26, 26, 0.4)';
+        ctx.strokeStyle = 'rgba(28, 27, 24, 0.4)';
         ctx.lineWidth = canvas.width * 0.003;
         ctx.stroke();
 
-        // Small center dot
+        // Small center dot — the single rust accent (the "needle")
         ctx.beginPath();
         ctx.arc(centerX, centerY, canvas.width * 0.004, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(26, 26, 26, 0.5)';
+        ctx.fillStyle = 'rgba(154, 90, 32, 0.9)';
         ctx.fill();
     }
 

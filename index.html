@@ -3,20 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Maciej Górczak - Personal Website">
+    <meta name="description" content="Maciej Górczak - data & AI. Data platforms, AI products, and the value of data.">
     <title>Maciej Górczak</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <canvas id="background-coral" class="background-pattern"></canvas>
-
     <div class="container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="/" class="page-nav-link active">Home</a>
+                <a href="/about.html" class="page-nav-link">About</a>
+                <a href="/notes.html" class="page-nav-link">Notes</a>
+                <a href="/misc.html" class="page-nav-link">Misc</a>
+            </nav>
+        </header>
+
         <main class="main">
             <div class="hero">
+                <p class="hero-kicker">Data · AI · Platforms</p>
                 <h1 class="name">Maciej Górczak</h1>
+                <p class="hero-tagline">I build data platforms and AI products, and help companies understand what their data is worth.</p>
 
                 <nav class="social-links">
                     <a href="https://x.com/GorczakMaciej" class="social-link" aria-label="X (Twitter)" target="_blank" rel="noopener noreferrer">
@@ -37,11 +46,6 @@
                         </svg>
                     </a>
                 </nav>
-
-                <nav class="main-nav">
-                    <a href="/about.html" class="main-nav-link">About</a>
-                    <a href="/sun.html" class="main-nav-link">Sun in Warsaw</a>
-                </nav>
             </div>
         </main>
 
@@ -49,7 +53,5 @@
             <p>Temet nosce, 2026</p>
         </footer>
     </div>
-
-    <script src="coral-background.js"></script>
 </body>
 </html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A note by Maciej Górczak">
+    <title>Note - Maciej Górczak</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body data-page="note-post">
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="/" class="page-nav-link">Home</a>
+                <a href="/about.html" class="page-nav-link">About</a>
+                <a href="/notes.html" class="page-nav-link active">Notes</a>
+                <a href="/misc.html" class="page-nav-link">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content narrow">
+                <a class="note-back" href="/notes.html">← All notes</a>
+                <header class="note-head">
+                    <h1 class="page-title" id="note-title">Loading…</h1>
+                    <p class="note-date" id="note-date"></p>
+                </header>
+                <div class="note-content" id="note-content"></div>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <!-- Markdown renderer (pinned) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+    <script src="notes.js"></script>
+</body>
+</html>
