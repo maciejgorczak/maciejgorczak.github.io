@@ -60,13 +60,6 @@ function formatDate(date) {
     return date.toISOString().split('T')[0];
 }
 
-function parseDateTime(dateTimeStr) {
-    // Parse ISO datetime string that's already in Warsaw timezone
-    // The format is like "2026-03-18T19:00" (already in Warsaw time)
-    const date = new Date(dateTimeStr + ':00+01:00'); // Add CET timezone offset
-    return date;
-}
-
 function findLastSunnyPeriod(weatherData) {
     const hourlyData = weatherData.hourly;
     const cloudCover = hourlyData.cloudcover;
@@ -81,7 +74,7 @@ function findLastSunnyPeriod(weatherData) {
             consecutiveSunnyHours++;
             if (consecutiveSunnyHours >= MIN_SUNNY_HOURS) {
                 // Found the start of a sunny period
-                lastSunnyStart = parseDateTime(times[i + MIN_SUNNY_HOURS - 1]);
+                lastSunnyStart = times[i + MIN_SUNNY_HOURS - 1]; // Warsaw-local ISO string
             }
         } else {
             consecutiveSunnyHours = 0;
@@ -95,26 +88,16 @@ function findLastSunnyPeriod(weatherData) {
     return lastSunnyStart;
 }
 
-function formatTimeSince(date) {
-    const now = new Date();
+function formatTimeSince(sunnyTimeStr) {
+    // sunnyTimeStr is already Warsaw-local ("2026-07-15T14:00"). Diff calendar
+    // dates as UTC-midnight ("YYYY-MM-DD") strings so there's no timezone drift.
+    const sunnyDay = sunnyTimeStr.slice(0, 10);
+    const todayDay = new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Warsaw' });
+    const daysDiff = Math.round((Date.parse(todayDay) - Date.parse(sunnyDay)) / 86400000);
 
-    // Reset to midnight for calendar day comparison
-    const sunnyDate = new Date(date);
-    sunnyDate.setHours(0, 0, 0, 0);
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    // Calculate days difference (in calendar days, not 24h periods)
-    const daysDiff = Math.floor((today - sunnyDate) / (1000 * 60 * 60 * 24));
-
-    if (daysDiff === 0) {
-        return 'today';
-    } else if (daysDiff === 1) {
-        return 'yesterday';
-    } else {
-        return `${daysDiff} days ago`;
-    }
+    if (daysDiff <= 0) return 'today';        // clamp any future-edge to today
+    if (daysDiff === 1) return 'yesterday';
+    return `${daysDiff} days ago`;
 }
 
 function formatDateTime(date) {
@@ -189,8 +172,17 @@ function initSunCanvas() {
         drawSun();
     }
 
+    // hex (#rrggbb) -> "r, g, b"; follows the CSS palette in light and dark
+    function rgbOf(varName, fallback) {
+        const hex = (getComputedStyle(document.documentElement)
+            .getPropertyValue(varName).trim() || fallback).replace('#', '');
+        return `${parseInt(hex.slice(0,2),16)}, ${parseInt(hex.slice(2,4),16)}, ${parseInt(hex.slice(4,6),16)}`;
+    }
+
     function drawSun() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const ink = rgbOf('--ink', '14161a');
+        const accent = rgbOf('--accent', 'e4380d');
 
         const innerRadius = radius * 0.3;
         const outerRadius = radius * 0.95;
@@ -213,7 +205,7 @@ function initSunCanvas() {
             ctx.beginPath();
             ctx.moveTo(startX, startY);
             ctx.lineTo(endX, endY);
-            ctx.strokeStyle = 'rgba(26, 26, 26, 0.4)';
+            ctx.strokeStyle = `rgba(${ink}, 0.4)`;
             ctx.lineWidth = canvas.width * 0.003;
             ctx.stroke();
 
@@ -233,7 +225,7 @@ function initSunCanvas() {
                     midX - Math.cos(perpAngle) * hatchLength,
                     midY - Math.sin(perpAngle) * hatchLength
                 );
-                ctx.strokeStyle = 'rgba(26, 26, 26, 0.3)';
+                ctx.strokeStyle = `rgba(${ink}, 0.3)`;
                 ctx.lineWidth = canvas.width * 0.002;
                 ctx.stroke();
             }
@@ -242,7 +234,7 @@ function initSunCanvas() {
             if (i % 4 === 0) {
                 ctx.beginPath();
                 ctx.arc(endX, endY, canvas.width * 0.006, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(26, 26, 26, 0.35)';
+                ctx.fillStyle = `rgba(${ink}, 0.35)`;
                 ctx.fill();
             }
         }
@@ -257,7 +249,7 @@ function initSunCanvas() {
 
             // Dashed pattern
             ctx.setLineDash([canvas.width * 0.015, canvas.width * 0.01]);
-            ctx.strokeStyle = 'rgba(26, 26, 26, 0.25)';
+            ctx.strokeStyle = `rgba(${ink}, 0.25)`;
             ctx.lineWidth = canvas.width * 0.002;
             ctx.stroke();
         }
@@ -267,7 +259,7 @@ function initSunCanvas() {
         // Draw central sun circle with hatching
         ctx.beginPath();
         ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(26, 26, 26, 0.5)';
+        ctx.strokeStyle = `rgba(${ink}, 0.5)`;
         ctx.lineWidth = canvas.width * 0.004;
         ctx.stroke();
 
@@ -282,7 +274,7 @@ function initSunCanvas() {
                     ctx.beginPath();
                     ctx.moveTo(x - 3, y - 3);
                     ctx.lineTo(x + 3, y + 3);
-                    ctx.strokeStyle = 'rgba(26, 26, 26, 0.15)';
+                    ctx.strokeStyle = `rgba(${ink}, 0.15)`;
                     ctx.lineWidth = canvas.width * 0.001;
                     ctx.stroke();
                 }
@@ -292,14 +284,14 @@ function initSunCanvas() {
         // Inner solid circle
         ctx.beginPath();
         ctx.arc(centerX, centerY, innerRadius * 0.4, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(26, 26, 26, 0.4)';
+        ctx.strokeStyle = `rgba(${ink}, 0.4)`;
         ctx.lineWidth = canvas.width * 0.003;
         ctx.stroke();
 
-        // Small center dot
+        // Small center dot — the single rust accent (the "needle")
         ctx.beginPath();
         ctx.arc(centerX, centerY, canvas.width * 0.004, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(26, 26, 26, 0.5)';
+        ctx.fillStyle = `rgba(${accent}, 0.9)`;
         ctx.fill();
     }
 
