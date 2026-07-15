@@ -1,65 +1,68 @@
-# Brand: Concrete & Daylight
+# Brand: Field Station
 
-Reference: Casa Alférez (Ludwig Godefroy) - a board-formed concrete fort in a Mexican
-pine forest. Brutalist outside, quietly luxurious inside: monastic grey concrete,
-warm timber, concentrated pockets of sunlight. Luxury through restraint, not ornament.
+Swiss / International typographic style: structural grid, big grotesque type,
+warm sand base, one olive accent. Precision over ornament, but warm rather than
+cold. Reads like a well-set field notebook or a survey sheet.
 
 ## Who this presents
 
 Maciej Górczak - data & AI professional. Builds data platforms and AI products.
-Advises companies on the value their data carries. The site should read like the
-house: solid, precise, calm, nothing decorative that doesn't work for a living.
+Advises companies on the value their data carries. The site should feel exact,
+structural, and calm: everything on a grid, nothing decorative that isn't
+carrying information.
 
 ## Voice
 
 Plain words, short sentences. No hype, no marketing-speak. Accurate first,
 honest about limits. Latin footer ("Temet nosce") stays - it's the one personal mark.
 
-## Palette - concrete, ink, timber
+## Palette - sand base, one olive
 
-| Token | Hex | Role |
+Defined as CSS variables in `styles.css`, with a warm dark variant under
+`prefers-color-scheme: dark` (deep olive-brown, not cold charcoal).
+
+| Token | Light | Role |
 |---|---|---|
-| Concrete | `#e9e7e2` | Dominant background - poured concrete in daylight |
-| Cast panel | `#dfdcd5` | Secondary surfaces, inline code |
-| Hairline | `#b3afa7` | Thin rules, de-emphasis strokes |
-| Ink | `#1c1b18` | Text, headings, structural slabs, line-art |
-| Ink soft | `#45433d` | Secondary text, links, mono labels |
-| Ink muted | `#6f6c64` | Captions, dates, footer |
-| Shadow | `#141310` | Dark panels (code blocks) |
-| Timber | `#9a5a20` | The single warm accent - one mark per view, like sun on oak |
+| `--bg` | `#e8e2d1` | Dominant background, light sand |
+| `--bg-2` | `#ded7c2` | Panels, inline code, secondary surface |
+| `--line` | `#c9bfa4` | Hairlines |
+| `--line-strong` | `#2b2a1e` | The one heavy structural rule (under the nav) |
+| `--ink` | `#2b2a1e` | Text, headings, olive-ink |
+| `--ink-soft` | `#4a4736` | Secondary text, lede |
+| `--ink-muted` | `#605c48` | Captions, dates, meta, footer |
+| `--accent` | `#5b6a26` | Olive - one mark per view (passes WCAG AA on sand) |
 
-Rule: timber appears at most once per view (active nav item, hover, the needle
-of a diagram). Everything else is concrete and ink.
+Rule: the accent appears at most once per view (active nav item, a link on
+hover, one channel in the signal plate). Everything else is sand and ink.
+No second accent color. Olive stays olive - no brass, oxblood, or ochre.
 
 ## Typography
 
-- **EB Garamond** - display and body. Classic, quiet, highly readable serif;
-  fits the engraving-era graphics. Body base size 17px (Garamond runs small).
-- **IBM Plex Mono** - labels, dates, navigation. Reads like annotations on an
-  architectural drawing. Always uppercase, wide letter-spacing, small.
+- **Space Grotesk** - display and body. Neo-grotesque with a slight technical
+  character; suits a data/AI site. Weights 400 / 500 / 700.
+- **IBM Plex Mono** - labels, dates, navigation, metadata. Always uppercase,
+  wide letter-spacing, small. Reads like annotations on a chart.
 - Two families only.
 
 ## Form
 
-- Sharp corners everywhere. `border-radius: 0` - concrete is not rounded.
-- Structure drawn with rules: one heavy ink slab (3px) per page (under the
-  header / under the name), hairlines for everything else.
-- Generous negative space - the "pockets of light."
-- A faint grain overlay across the page - the texture of cast concrete.
-- Motion: one quiet staggered reveal on load. Nothing moves after that
-  except hover states.
+- Sharp corners everywhere (`border-radius: 0`).
+- Structure drawn with rules: one heavy ink rule (2px) under the nav,
+  hairlines for everything else. Left-aligned, on a grid.
+- Generous negative space. Hero is asymmetric (text left, signal right), not centered.
+- Motion: one quiet rise-in on load; the home signal plate drifts slowly.
+  Everything collapses to static under `prefers-reduced-motion`.
 
 ## Graphics
 
-Line-work only, drawn like old engravings: fine single-weight ink strokes,
-hatching, cross-hatching, dashed construction circles. Monochrome ink on
-concrete; the accent may appear as a single small mark. No fills, no gradients,
-no photographic texture. Generative pieces (flow field, sun plate) follow the
-same stroke discipline.
+Generative line-work only, single-weight strokes on the neutral base, ink with
+at most one accent channel. The home "signal" plate (`signal.js`) is stacked
+sine traces; the sun plate (`sun-tracker.js`) is engraving-style hatching. No
+fills, no gradients, no photographic texture, no drop shadows.
 
 ## Don't
 
-- No rounded cards, no drop shadows, no gradients.
+- No rounded corners, no drop shadows, no gradients.
 - No second accent color.
-- No logos or branding marks - the name set in Fraunces is the identity.
+- No logos or branding marks - the name set in Space Grotesk is the identity.
 - No filler copy. Every sentence has to be something Maciej would say out loud.
