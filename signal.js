@@ -104,17 +104,17 @@
         ctx.lineWidth = 1.6;
         strokeTrace(ACCENT_TRACE, t, left, right, accBaseY, amp, step, 0, 1);
 
-        // Era ticks on the accent channel
-        if (p > 0.01) {
-            for (let i = 0; i < CAREER.length; i++) {
-                const u = BOUNDS[i];
-                const x = left + u * (right - left);
-                const y = traceY(ACCENT_TRACE, u, t, accBaseY, amp);
-                ctx.globalAlpha = p * (i === idx ? 1 : 0.55);
-                ctx.fillStyle = i === idx ? accent : ink;
-                const s = i === idx ? 5 : 3.5;
-                ctx.fillRect(x - s / 2, y - s / 2, s, s);
-            }
+        // Era ticks: a permanent part of the artwork, identical idle and
+        // interactive; the pointer only highlights the active one.
+        for (let i = 0; i < CAREER.length; i++) {
+            const u = BOUNDS[i];
+            const x = left + u * (right - left);
+            const y = traceY(ACCENT_TRACE, u, t, accBaseY, amp);
+            const isActive = p > 0.01 && i === idx;
+            ctx.globalAlpha = isActive ? 0.55 + 0.45 * p : 0.55;
+            ctx.fillStyle = isActive ? accent : ink;
+            const s = isActive ? 3.5 + 1.5 * p : 3.5;
+            ctx.fillRect(x - s / 2, y - s / 2, s, s);
         }
 
         // Crosshair + marker riding the pointer (or drifting when idle)
