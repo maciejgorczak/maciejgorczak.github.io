@@ -1,10 +1,11 @@
 // Grid & Signal — home visual.
-// Idle: stacked signal traces, as before. On hover/touch-scrub the plate
-// becomes an instrument: a crosshair follows the pointer, the olive channel
-// carries the career timeline (earliest on the left, latest on the right),
-// the active era's segment draws heavy, and a mono readout at the foot of
-// the plate names the era. Reads palette from CSS vars, honors
-// prefers-reduced-motion (static traces; interaction still redraws frames).
+// Stacked signal traces; the olive channel carries the career timeline
+// (earliest on the left, latest on the right). The plate artwork is
+// identical idle and interactive — hover/touch-scrub only adds an
+// annotation layer on top: a crosshair, era ticks, and a mono readout at
+// the foot of the plate naming the era. Reads palette from CSS vars,
+// honors prefers-reduced-motion (static traces; interaction still
+// redraws frames).
 (function () {
     const canvas = document.getElementById('signal');
     if (!canvas) return;
@@ -90,25 +91,18 @@
         const idx = eraIndex(pointerU);
         const accBaseY = top + ACCENT_TRACE * gap;
 
-        // Background channels recede while reading the timeline
+        // The plate artwork never changes: same traces idle and interactive.
         for (let i = 0; i < TRACES; i++) {
             if (i === ACCENT_TRACE) continue;
             ctx.strokeStyle = ink;
-            ctx.globalAlpha = 0.36 - 0.24 * p;
+            ctx.globalAlpha = 0.36;
             ctx.lineWidth = 1;
             strokeTrace(i, t, left, right, top + i * gap, amp, step, 0, 1);
         }
-
-        // Accent channel: whole line, then the active era drawn heavy
         ctx.strokeStyle = accent;
-        ctx.globalAlpha = 1 - 0.3 * p;
+        ctx.globalAlpha = 1;
         ctx.lineWidth = 1.6;
         strokeTrace(ACCENT_TRACE, t, left, right, accBaseY, amp, step, 0, 1);
-        if (p > 0.01) {
-            ctx.globalAlpha = p;
-            ctx.lineWidth = 2;
-            strokeTrace(ACCENT_TRACE, t, left, right, accBaseY, amp, step, BOUNDS[idx], BOUNDS[idx + 1]);
-        }
 
         // Era ticks on the accent channel
         if (p > 0.01) {
