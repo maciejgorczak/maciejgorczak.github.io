@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="An almanac of the Polish money year: tax deadlines and small habits, month by month.">
+    <title>The money year - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .my-hero { display: grid; gap: var(--space-xl); align-items: center; margin-bottom: var(--space-2xl); }
+        .my-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.8rem, 8vw, 5.4rem);
+            font-weight: 500; letter-spacing: -0.035em; line-height: 0.95;
+            margin-bottom: var(--space-lg); text-wrap: balance;
+        }
+        .my-lede { font-size: clamp(1.05rem, 2.2vw, 1.25rem); line-height: 1.5; color: var(--ink-soft); max-width: 32rem; margin-bottom: var(--space-md); }
+        .my-come { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-muted); }
+
+        .my-ring { width: 100%; max-width: 440px; justify-self: center; }
+        .my-ring svg { display: block; width: 100%; height: auto; overflow: visible; }
+        .my-ring text { font-family: var(--font-mono); }
+        @media (min-width: 900px) { .my-hero { grid-template-columns: 1.1fr 0.9fr; } }
+
+        .my-now { border-top: 2px solid var(--line-strong); padding-top: var(--space-md); margin-bottom: var(--space-2xl); display: grid; gap: var(--space-md); }
+        .my-now-month { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3rem); font-weight: 500; letter-spacing: -0.02em; line-height: 1; }
+        .my-now .my-entries { max-width: 40rem; }
+        @media (min-width: 900px) { .my-now { grid-template-columns: 1fr 2fr; } }
+
+        .my-grid { display: grid; grid-template-columns: 1fr; border-top: 2px solid var(--line-strong); border-left: 1px solid var(--line); }
+        @media (min-width: 620px) { .my-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 980px) { .my-grid { grid-template-columns: repeat(3, 1fr); } }
+        .my-month { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: var(--space-md); min-width: 0; }
+        .my-month.is-now { box-shadow: inset 0 3px 0 var(--ink); }
+        .my-month-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; margin-bottom: var(--space-sm); }
+        .my-month-name { font-family: var(--font-display); font-size: 1.5rem; font-weight: 500; letter-spacing: -0.015em; line-height: 1.1; }
+        .my-month-num { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em; color: var(--ink-muted); }
+        .my-month.is-now .my-month-num { color: var(--ink); }
+
+        .my-entries { list-style: none; }
+        .my-entry { padding: 0.6rem 0; border-top: 1px solid var(--line); }
+        .my-entry:first-child { border-top: none; padding-top: 0; }
+        .my-tag { display: inline-block; font-family: var(--font-mono); font-size: 0.62rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.2rem; }
+        .my-tag.deadline { color: var(--ink); }
+        .my-tag .my-date { margin-left: 0.5rem; }
+        .my-entry p { font-size: 0.97rem; line-height: 1.55; color: var(--ink-soft); }
+        .my-entry strong { color: var(--ink); font-weight: 500; }
+        .my-now .my-entry p { font-size: 1.05rem; }
+
+        .my-legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1.6rem; margin: var(--space-sm) 0 var(--space-md); font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); }
+        .my-legend b { color: var(--ink); font-weight: 500; }
+        .my-ics { margin-top: var(--space-lg); }
+        .my-ics .m-hint { max-width: 34rem; }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content money wide">
+                <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                <p class="proto-tag">Round 2 &middot; 07 &middot; Almanac</p>
+
+                <section class="my-hero">
+                    <div>
+                        <h1 class="my-title">The money year</h1>
+                        <p class="my-lede">Farmers had almanacs: when to sow, when to harvest, when to fix the roof. This is the same idea for a salary in Poland. A few hard deadlines, a few small habits, one month at a time. None of it takes more than an evening.</p>
+                        <p class="my-come">Come back each month</p>
+                    </div>
+                    <div class="my-ring" id="ring" aria-hidden="true"></div>
+                </section>
+
+                <section class="my-now" id="now">
+                    <div>
+                        <span class="m-label" id="now-label">This month</span>
+                        <div class="my-now-month" id="now-month"></div>
+                    </div>
+                    <ul class="my-entries" id="now-entries"></ul>
+                </section>
+
+                <section class="m-section">
+                    <h2>The whole year</h2>
+                    <div class="my-legend">
+                        <span><b>Deadline</b> &middot; a fixed date</span>
+                        <span><b>Habit</b> &middot; a good time to do it</span>
+                        <span><b>Check</b> &middot; confirm the date for your case</span>
+                    </div>
+                    <div class="my-grid" id="grid"></div>
+
+                    <div class="my-ics">
+                        <button class="m-btn" type="button" id="ics">Add the deadlines to your calendar</button>
+                        <p class="m-hint">Downloads a calendar file with the next date for each fixed deadline above. Works with Google Calendar, Apple Calendar and Outlook.</p>
+                    </div>
+                </section>
+
+                <p class="m-disclaimer">Draft. Placeholder content in my voice, to be replaced with my own notes. General information, not personal financial advice. Check current rules and figures before acting.</p>
+                <nav class="m-proto-nav">
+                    <a href="how-to-go-broke.html">&larr; Prev</a>
+                    <a href="rules.html">Next &rarr;</a>
+                </nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <script>
+    (function () {
+        // t: deadline | habit | check. d: date label for deadlines.
+        var YEAR = [
+            { name: 'January', items: [
+                { t: 'habit', h: 'Look at what renewed.', p: 'Check what renewed over the holidays and at what price. Cancel what you won’t use this year.' },
+                { t: 'habit', h: 'Raise first, spend second.', p: 'Got a raise from January? Raise the standing order to savings before you get used to the new number.' }
+            ]},
+            { name: 'February', items: [
+                { t: 'deadline', d: '15 Feb', h: 'Twój e-PIT opens.', p: 'Your pre-filled tax return for last year appears at podatki.gov.pl.' },
+                { t: 'deadline', d: 'End of Feb', h: 'PIT-11 from your employer.', p: 'Your employer has to send it by the end of February. No PIT-11 by then? Ask HR.' },
+                { t: 'habit', h: 'Compare it with your payslip.', p: 'Check the PIT-11 totals against your December payslip. Mistakes happen.' }
+            ]},
+            { name: 'March', items: [
+                { t: 'habit', h: 'Add your reliefs.', p: 'The pre-filled return may miss some, like IKZE contributions or donations. You add those yourself.' },
+                { t: 'habit', h: 'Spring check on the buffer.', p: 'Does it still cover 3 to 6 months of essential costs? That range is a common rule of thumb, not a law.' },
+                { t: 'check', d: '2027', h: 'PPK sign-back.', p: 'Every four years, employers sign people who opted out of PPK back in. The next round is in 2027. If you still don’t want it, you’ll need to opt out again. Check the exact date with HR.' }
+            ]},
+            { name: 'April', items: [
+                { t: 'deadline', d: '30 Apr', h: 'Annual PIT return.', p: 'Last day to file for last year. If you use Twój e-PIT and do nothing, PIT-37 and PIT-38 are accepted automatically at the end of the day.' },
+                { t: 'deadline', d: '30 Apr', h: 'PIT-38 for investments.', p: 'Sold shares or ETFs last year? That goes on PIT-38, due the same day. A Polish broker sends you a PIT-8C. A foreign one usually doesn’t, so you work it out yourself.' },
+                { t: 'habit', h: 'Decide where the refund goes.', p: 'Before it lands. Otherwise it disappears into the current account.' }
+            ]},
+            { name: 'May', items: [
+                { t: 'habit', h: 'Move the refund.', p: 'Put it where you decided in April: the buffer, a debt, or your IKE.' },
+                { t: 'habit', h: 'Pay for summer with money you have.', p: 'Book the holiday from savings, not from a card you plan to clear in autumn.' }
+            ]},
+            { name: 'June', items: [
+                { t: 'habit', h: 'Set up a holiday pot.', p: 'A fixed amount in a separate account. When it’s gone, the holiday budget is gone.' },
+                { t: 'habit', h: 'Halfway look.', p: 'One evening on the first half: what came in, what you kept, what surprised you.' }
+            ]},
+            { name: 'July', items: [
+                { t: 'habit', h: 'Leave investments alone.', p: 'Summer market headlines are noise for money you won’t touch for years.' },
+                { t: 'habit', h: 'Name the three biggest spends.', p: 'Of the year so far. Were they worth it? No judgement, just a note for next year.' }
+            ]},
+            { name: 'August', items: [
+                { t: 'habit', h: 'September costs come early.', p: 'School, courses, autumn clothes. Put them in the plan now, not on the card later.' },
+                { t: 'habit', h: 'Close the holiday pot.', p: 'Whatever is left goes back to savings, not into the current account.' }
+            ]},
+            { name: 'September', items: [
+                { t: 'habit', h: 'List your insurance renewal dates.', p: 'Car, flat, life. Compare a month before each one renews, not the day after.' },
+                { t: 'habit', h: 'Check the energy tariff.', p: 'Before heating season, when the bills go up.' }
+            ]},
+            { name: 'October', items: [
+                { t: 'habit', h: 'Room left in IKE and IKZE?', p: 'See how much you can still pay in this year. You have until 31 December. Check this year’s limit.' },
+                { t: 'habit', h: 'Write down the December number.', p: 'One fixed amount for gifts and the holidays. Decided now, while you’re calm.' }
+            ]},
+            { name: 'November', items: [
+                { t: 'habit', h: 'Black Friday rule.', p: 'Only buy what was on your list before November started.' },
+                { t: 'habit', h: 'Add up a year of bank fees.', p: 'Account, cards, transfers. If the total surprises you, look at other banks in January.' }
+            ]},
+            { name: 'December', items: [
+                { t: 'deadline', d: '31 Dec', h: 'Last day for IKE and IKZE.', p: 'Payments count for the calendar year. Check this year’s limit, and pay a few days early: transfers over the holidays are slow.' },
+                { t: 'habit', h: 'The whole year in one evening.', p: 'What you earned, what you kept, what you owe. Pick one thing to change next year. Just one.' }
+            ]}
+        ];
+
+        var today = new Date();
+        var m = today.getMonth();
+
+        function entryHTML(it) {
+            var li = document.createElement('li');
+            li.className = 'my-entry';
+            var tag = document.createElement('span');
+            tag.className = 'my-tag ' + it.t;
+            tag.textContent = it.t;
+            if (it.d) {
+                var d = document.createElement('span'); d.className = 'my-date'; d.textContent = it.d; tag.appendChild(d);
+            }
+            var p = document.createElement('p');
+            var s = document.createElement('strong'); s.textContent = it.h + ' ';
+            p.appendChild(s); p.appendChild(document.createTextNode(it.p));
+            li.appendChild(tag); li.appendChild(p);
+            return li;
+        }
+
+        // This month
+        document.getElementById('now-label').textContent = 'This month · ' + today.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+        document.getElementById('now-month').textContent = YEAR[m].name;
+        var ne = document.getElementById('now-entries');
+        YEAR[m].items.forEach(function (it) { ne.appendChild(entryHTML(it)); });
+
+        // Grid
+        var grid = document.getElementById('grid');
+        YEAR.forEach(function (mo, i) {
+            var div = document.createElement('div');
+            div.className = 'my-month' + (i === m ? ' is-now' : '');
+            div.id = mo.name.toLowerCase();
+            var head = document.createElement('div'); head.className = 'my-month-head';
+            var nm = document.createElement('span'); nm.className = 'my-month-name'; nm.textContent = mo.name;
+            var num = document.createElement('span'); num.className = 'my-month-num';
+            num.textContent = (i < 9 ? '0' : '') + (i + 1) + (i === m ? ' · now' : '');
+            head.appendChild(nm); head.appendChild(num); div.appendChild(head);
+            var ul = document.createElement('ul'); ul.className = 'my-entries';
+            mo.items.forEach(function (it) { ul.appendChild(entryHTML(it)); });
+            div.appendChild(ul);
+            grid.appendChild(div);
+        });
+
+        // Year ring (SVG, strokes only)
+        var NS = 'http://www.w3.org/2000/svg';
+        var ringEl = document.getElementById('ring');
+        var S = 400, C = S / 2, R = 150;
+        var svg = document.createElementNS(NS, 'svg');
+        svg.setAttribute('viewBox', '0 0 ' + S + ' ' + S);
+        function el(name, attrs, parent) {
+            var e = document.createElementNS(NS, name);
+            for (var k in attrs) e.setAttribute(k, attrs[k]);
+            (parent || svg).appendChild(e);
+            return e;
+        }
+        function pt(frac, r) {
+            var a = frac * Math.PI * 2 - Math.PI / 2;
+            return [C + Math.cos(a) * r, C + Math.sin(a) * r];
+        }
+        function arc(f0, f1, r) {
+            var a = pt(f0, r), b = pt(f1, r);
+            var large = (f1 - f0) > 0.5 ? 1 : 0;
+            return 'M' + a[0].toFixed(2) + ' ' + a[1].toFixed(2) + ' A' + r + ' ' + r + ' 0 ' + large + ' 1 ' + b[0].toFixed(2) + ' ' + b[1].toFixed(2);
+        }
+
+        var y = today.getFullYear();
+        var leap = (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
+        var days = leap ? 366 : 365;
+        var mlen = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        var starts = []; var acc = 0;
+        mlen.forEach(function (l) { starts.push(acc / days); acc += l; });
+        starts.push(1);
+        function dayFrac(month, day) { return (starts[month] * days + day - 0.5) / days; }
+
+        // Inner engraving: fine radial ticks, one per day
+        for (var d = 0; d < days; d++) {
+            var f = (d + 0.5) / days;
+            var a = pt(f, R - 14), b = pt(f, R - 8);
+            el('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: 'var(--ink)', 'stroke-opacity': 0.18, 'stroke-width': 0.6 });
+        }
+        // Dashed inner circle
+        el('circle', { cx: C, cy: C, r: R - 34, fill: 'none', stroke: 'var(--ink)', 'stroke-opacity': 0.22, 'stroke-width': 0.8, 'stroke-dasharray': '3 4' });
+
+        // Month arcs
+        mlen.forEach(function (l, i) {
+            var gap = 0.004;
+            var isNow = i === m;
+            el('path', {
+                d: arc(starts[i] + gap, starts[i + 1] - gap, R),
+                fill: 'none',
+                stroke: isNow ? 'var(--accent)' : 'var(--ink)',
+                'stroke-width': isNow ? 5 : 1.2,
+                'stroke-opacity': isNow ? 1 : 0.75
+            });
+            var mid = (starts[i] + starts[i + 1]) / 2;
+            var lp = pt(mid, R + 24);
+            var t = el('text', { x: lp[0], y: lp[1], 'text-anchor': 'middle', 'dominant-baseline': 'middle', 'font-size': 11, 'letter-spacing': 1.5, fill: isNow ? 'var(--ink)' : 'var(--ink-muted)', 'font-weight': isNow ? 500 : 400 });
+            t.textContent = YEAR[i].name.slice(0, 3).toUpperCase();
+        });
+
+        // Deadline ticks outside the ring
+        var deadlines = [[1, 15], [1, mlen[1]], [3, 30], [11, 31]];
+        deadlines.forEach(function (dl) {
+            var f = dayFrac(dl[0], dl[1]);
+            var a = pt(f, R + 5), b = pt(f, R + 12);
+            el('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: 'var(--ink)', 'stroke-width': 1.5 });
+        });
+
+        // Today: a needle from the centre ring to the month ring
+        var tf = dayFrac(m, today.getDate());
+        var n0 = pt(tf, 40), n1 = pt(tf, R - 4);
+        el('line', { x1: n0[0], y1: n0[1], x2: n1[0], y2: n1[1], stroke: 'var(--ink)', 'stroke-width': 1 });
+        el('circle', { cx: n1[0], cy: n1[1], r: 3, fill: 'none', stroke: 'var(--ink)', 'stroke-width': 1.2 });
+        el('circle', { cx: C, cy: C, r: 40, fill: 'none', stroke: 'var(--ink)', 'stroke-opacity': 0.5, 'stroke-width': 1 });
+
+        var t1 = el('text', { x: C, y: C - 6, 'text-anchor': 'middle', 'font-size': 10, 'letter-spacing': 1.6, fill: 'var(--ink-muted)' });
+        t1.textContent = 'TODAY';
+        var t2 = el('text', { x: C, y: C + 10, 'text-anchor': 'middle', 'font-size': 12, 'letter-spacing': 0.5, fill: 'var(--ink)', 'font-weight': 500 });
+        t2.textContent = today.getDate() + ' ' + YEAR[m].name.slice(0, 3).toUpperCase();
+
+        ringEl.appendChild(svg);
+
+        // Calendar file with the next date for each fixed deadline
+        function pad2(n) { return (n < 10 ? '0' : '') + n; }
+        function ymd(dt) { return dt.getFullYear() + pad2(dt.getMonth() + 1) + pad2(dt.getDate()); }
+        function nextDate(month, day) {
+            var t0 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            for (var yy = today.getFullYear(); yy <= today.getFullYear() + 1; yy++) {
+                var dd = day === 'last' ? new Date(yy, month + 1, 0) : new Date(yy, month, day);
+                if (dd >= t0) return dd;
+            }
+        }
+        document.getElementById('ics').addEventListener('click', function () {
+            var events = [
+                [1, 15, 'Twój e-PIT opens', 'Pre-filled tax return available at podatki.gov.pl.'],
+                [1, 'last', 'PIT-11 from employer due', 'Your employer has to send PIT-11 by the end of February.'],
+                [3, 30, 'PIT annual return deadline', 'Last day to file PIT-37 / PIT-38 for last year.'],
+                [11, 31, 'Last day for IKE and IKZE payments', 'Payments count for this calendar year. Pay a few days early.']
+            ];
+            var stamp = today.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+            var lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//maciejgorczak.github.io//money-year//EN', 'CALSCALE:GREGORIAN'];
+            events.forEach(function (e, i) {
+                var dt = nextDate(e[0], e[1]);
+                var end = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate() + 1);
+                lines.push('BEGIN:VEVENT', 'UID:money-year-' + i + '-' + ymd(dt) + '@maciejgorczak.github.io', 'DTSTAMP:' + stamp,
+                    'DTSTART;VALUE=DATE:' + ymd(dt), 'DTEND;VALUE=DATE:' + ymd(end),
+                    'SUMMARY:' + e[2], 'DESCRIPTION:' + e[3], 'END:VEVENT');
+            });
+            lines.push('END:VCALENDAR');
+            var blob = new Blob([lines.join('\r\n')], { type: 'text/calendar' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url; a.download = 'money-year.ics';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+        });
+    })();
+    </script>
+</body>
+</html>

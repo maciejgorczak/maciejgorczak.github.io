@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="What happened to 10,000 zł left in cash in Poland from 2004 to 2024, using GUS consumer price data.">
+    <title>10,000 zł since 2004 - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .s4-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.6rem, 8vw, 5.4rem);
+            font-weight: 500;
+            letter-spacing: -0.035em;
+            line-height: 0.95;
+            margin-bottom: var(--space-lg);
+            text-wrap: balance;
+        }
+        .s4-lede { font-size: clamp(1.05rem, 2.2vw, 1.3rem); line-height: 1.5; color: var(--ink-soft); max-width: 36rem; margin-bottom: var(--space-xl); }
+
+        .s4-figures { display: grid; grid-template-columns: 1fr; border-top: 2px solid var(--line-strong); margin-bottom: var(--space-lg); }
+        .s4-fig { padding: var(--space-md) 0; border-bottom: 1px solid var(--line); }
+        .s4-fig-value {
+            display: block;
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 10vw, 5.6rem);
+            font-weight: 500;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 0.5rem;
+        }
+        .s4-fig-text { color: var(--ink-soft); max-width: 26rem; line-height: 1.5; }
+        @media (min-width: 760px) {
+            .s4-figures { grid-template-columns: 1fr 1fr; }
+            .s4-fig + .s4-fig { padding-left: var(--space-lg); border-left: 1px solid var(--line); }
+        }
+
+        .s4-plate-wrap { margin-bottom: var(--space-xl); }
+        .s4-readout {
+            display: flex; flex-wrap: wrap; gap: 0.3rem 1.4rem;
+            font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--ink-muted);
+            padding: 0.7rem 0; border-top: 2px solid var(--line-strong); border-bottom: 1px solid var(--line);
+            min-height: 2.9rem;
+            font-variant-numeric: tabular-nums;
+        }
+        .s4-readout strong { color: var(--ink); font-weight: 500; }
+        .s4-plate { position: relative; border-bottom: 1px solid var(--line); }
+        .s4-plate canvas { display: block; width: 100%; height: auto; touch-action: pan-y; cursor: crosshair; }
+        .s4-key { display: flex; flex-wrap: wrap; gap: 0.4rem 1.6rem; padding-top: 0.7rem; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); }
+        .s4-key span::before { content: ""; display: inline-block; width: 1.6rem; height: 0; vertical-align: middle; margin-right: 0.5rem; border-top: 2px solid var(--ink); }
+        .s4-key .k-buys::before { border-top-color: var(--accent); }
+        .s4-key .k-base::before { border-top: 1px dashed var(--ink-muted); }
+
+        .s4-body { display: grid; gap: var(--space-xl); margin-bottom: var(--space-xl); }
+        .s4-body .m-text p { max-width: 36rem; }
+        .s4-pull {
+            font-family: var(--font-display); font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 500;
+            letter-spacing: -0.015em; line-height: 1.2; text-wrap: balance;
+            border-top: 2px solid var(--line-strong); padding-top: var(--space-sm);
+        }
+        @media (min-width: 900px) { .s4-body { grid-template-columns: 1.4fr 1fr; align-items: start; } }
+
+        .s4-table-wrap { overflow-x: auto; border-top: 2px solid var(--line-strong); margin-bottom: var(--space-sm); }
+        .s4-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; min-width: 34rem; }
+        .s4-table th, .s4-table td { text-align: right; padding: 0.45rem 0.6rem 0.45rem 0; border-bottom: 1px solid var(--line); font-size: 0.92rem; }
+        .s4-table th { font-family: var(--font-mono); font-size: 0.64rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); vertical-align: bottom; }
+        .s4-table th:first-child, .s4-table td:first-child { text-align: left; font-family: var(--font-mono); font-size: 0.8rem; white-space: nowrap; }
+        .s4-table tr.hi td { font-weight: 500; }
+        .s4-table tr.hi td:first-child::after { content: " *"; color: var(--ink-muted); }
+        .s4-note { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.55; max-width: 44rem; margin-bottom: 0.4rem; }
+        .s4-note a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); }
+        .s4-note a:hover { border-bottom-color: var(--ink); }
+        .s4-check { border-left: 2px solid var(--ink); padding-left: 0.9rem; margin: var(--space-md) 0; font-size: 0.92rem; }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content money wide">
+                <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                <p class="proto-tag">Round 2 &middot; 03 &middot; Data plate</p>
+
+                <h1 class="s4-title">10,000 zł<br>since 2004</h1>
+                <p class="s4-lede">Say you put 10,000 zł in a drawer in 2004, or left it in a current account paying nothing. The number never changed. Here’s what happened to what it buys, using Polish consumer price data from GUS.</p>
+
+                <div class="s4-figures">
+                    <div class="s4-fig">
+                        <span class="m-label">What it buys in 2024</span>
+                        <span class="s4-fig-value" id="fig-buys">5,229 zł</span>
+                        <p class="s4-fig-text">The 10,000 zł still says 10,000 zł. In 2004 prices, it buys about half of what it used to.</p>
+                    </div>
+                    <div class="s4-fig">
+                        <span class="m-label">What you’d need in 2024</span>
+                        <span class="s4-fig-value" id="fig-need">19,125 zł</span>
+                        <p class="s4-fig-text">To buy the same basket of things that 10,000 zł bought in 2004.</p>
+                    </div>
+                </div>
+
+                <div class="s4-plate-wrap">
+                    <div class="s4-readout" id="readout" aria-live="polite"></div>
+                    <div class="s4-plate">
+                        <canvas id="plate" role="img" aria-label="Line chart from 2004 to 2024. What 10,000 zł buys falls to 5,229 zł in 2004 prices. The amount needed to match it rises to 19,125 zł. The steepest change is in 2022 and 2023."></canvas>
+                    </div>
+                    <div class="s4-key">
+                        <span class="k-buys">What 10,000 zł buys, in 2004 prices</span>
+                        <span class="k-need">What you’d need to match 2004</span>
+                        <span class="k-base">10,000 zł</span>
+                    </div>
+                </div>
+
+                <div class="s4-body">
+                    <div class="m-text">
+                        <p>People call money in a current account “safe”. It’s safe from one thing: the number on the screen going down. It isn’t safe from prices going up. Between 2004 and 2024, average consumer prices in Poland almost doubled. The balance stayed at 10,000 zł. What it buys roughly halved.</p>
+                        <p>Most years it’s slow. Two or three percent a year doesn’t feel like anything, and in 2014 to 2016 prices even dipped a little. Then 2022 and 2023 came, and prices rose about 27% in two years. That’s the part everyone remembers. But the quiet years before it added up to more: about 45% from 2004 to 2021.</p>
+                        <p>This doesn’t mean everything should go into shares. A buffer for emergencies should sit somewhere boring and easy to reach. It means money you won’t need for years shouldn’t sit at 0%. Where it should sit depends on when you need it back.</p>
+                    </div>
+                    <p class="s4-pull">Cash doesn’t lose value in one go. It loses it a couple of percent at a time, while nobody’s looking.</p>
+                </div>
+
+                <section class="m-section">
+                    <h2>The data</h2>
+                    <div class="s4-table-wrap">
+                        <table class="s4-table">
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>CPI, previous year = 100</th>
+                                    <th>Prices vs 2004</th>
+                                    <th>10,000 zł buys</th>
+                                    <th>You’d need</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body"></tbody>
+                        </table>
+                    </div>
+                    <p class="s4-note">* 2022 and 2023, the two high-inflation years.</p>
+                    <p class="s4-note s4-check"><strong>Figures typed in by hand from GUS tables. Check them against the source before publishing.</strong> The series stops at 2024. I’ll add 2025 once I’ve checked the final annual figure.</p>
+                    <p class="s4-note">Source: GUS (Statistics Poland), annual average consumer price index, previous year = 100. <a href="https://stat.gov.pl/obszary-tematyczne/ceny-handel/wskazniki-cen/wskazniki-cen-towarow-i-uslug-konsumpcyjnych-pot-inflacja-/roczne-wskazniki-cen-towarow-i-uslug-konsumpcyjnych/" target="_blank" rel="noopener noreferrer">Annual consumer price indices on stat.gov.pl</a>.</p>
+                    <p class="s4-note">Method: the base is the 2004 average price level. Each year’s price level is the previous one times that year’s index. “Buys” is 10,000 zł divided by the price level. “You’d need” is 10,000 zł times the price level. Annual averages smooth out what happened within each year. Your own basket may have risen faster or slower than the average.</p>
+                </section>
+
+                <p class="m-disclaimer">Draft. Placeholder content in my voice, to be replaced with my own notes. General information, not personal financial advice. Check current rules and figures before acting.</p>
+                <nav class="m-proto-nav">
+                    <a href="two-people.html">&larr; Prev</a>
+                    <a href="annotated-statement.html">Next &rarr;</a>
+                </nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <script>
+    (function () {
+        // GUS annual average CPI, previous year = 100. Typed in by hand: verify against stat.gov.pl.
+        var CPI = [
+            [2004, 103.5], [2005, 102.1], [2006, 101.0], [2007, 102.5], [2008, 104.2],
+            [2009, 103.5], [2010, 102.6], [2011, 104.3], [2012, 103.7], [2013, 100.9],
+            [2014, 100.0], [2015, 99.1],  [2016, 99.4],  [2017, 102.0], [2018, 101.6],
+            [2019, 102.3], [2020, 103.4], [2021, 105.1], [2022, 114.4], [2023, 111.4],
+            [2024, 103.6]
+        ];
+        var BASE = 10000;
+
+        // Price level relative to the 2004 average (2004 = 1).
+        var rows = [];
+        var level = 1;
+        CPI.forEach(function (r, i) {
+            if (i > 0) level *= r[1] / 100;
+            rows.push({ year: r[0], cpi: r[1], level: level, buys: BASE / level, need: BASE * level });
+        });
+        var last = rows[rows.length - 1];
+
+        var zl = function (n) { return Math.round(n).toLocaleString('en-US') + ' zł'; };
+
+        document.getElementById('fig-buys').textContent = zl(last.buys);
+        document.getElementById('fig-need').textContent = zl(last.need);
+
+        // Table
+        var tb = document.getElementById('table-body');
+        rows.forEach(function (r) {
+            var tr = document.createElement('tr');
+            if (r.year === 2022 || r.year === 2023) tr.className = 'hi';
+            tr.innerHTML = '<td>' + r.year + '</td><td>' + r.cpi.toFixed(1) + '</td><td>' +
+                (r.year === 2004 ? 'base' : '×' + r.level.toFixed(3)) + '</td><td>' +
+                zl(r.buys) + '</td><td>' + zl(r.need) + '</td>';
+            tb.appendChild(tr);
+        });
+
+        // Readout
+        var readout = document.getElementById('readout');
+        function setReadout(r) {
+            readout.innerHTML =
+                '<span><strong>' + r.year + '</strong></span>' +
+                '<span>Prices vs 2004 <strong>' + (r.year === 2004 ? '×1.000' : '×' + r.level.toFixed(3)) + '</strong></span>' +
+                '<span>10,000 zł buys <strong>' + zl(r.buys) + '</strong></span>' +
+                '<span>You’d need <strong>' + zl(r.need) + '</strong></span>';
+        }
+
+        // Plate
+        var canvas = document.getElementById('plate');
+        var ctx = canvas.getContext('2d');
+        var W, H, dpr, pad, active = rows.length - 1, progress = 0;
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function rgbOf(name, fallback) {
+            var v = getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+            var hex = v.replace('#', '');
+            return parseInt(hex.slice(0, 2), 16) + ',' + parseInt(hex.slice(2, 4), 16) + ',' + parseInt(hex.slice(4, 6), 16);
+        }
+
+        var Y_MAX = 20000, Y_MIN = 0;
+        function x(i) { return pad.l + (W - pad.l - pad.r) * (i / (rows.length - 1)); }
+        function y(v) { return pad.t + (H - pad.t - pad.b) * (1 - (v - Y_MIN) / (Y_MAX - Y_MIN)); }
+
+        function resize() {
+            var cssW = canvas.parentElement.clientWidth;
+            var cssH = cssW < 600 ? cssW * 0.9 : cssW * 0.5;
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.width = Math.round(cssW * dpr);
+            canvas.height = Math.round(cssH * dpr);
+            canvas.style.height = cssH + 'px';
+            W = cssW; H = cssH;
+            pad = { l: cssW < 600 ? 44 : 64, r: cssW < 600 ? 12 : 24, t: 46, b: 34 };
+            draw();
+        }
+
+        // Value along a series at fractional index t (for the draw-in).
+        function seriesPoints(key, upto) {
+            var pts = [];
+            var n = Math.floor(upto);
+            for (var i = 0; i <= n && i < rows.length; i++) pts.push([x(i), y(rows[i][key])]);
+            var f = upto - n;
+            if (f > 0 && n + 1 < rows.length) {
+                var a = rows[n][key], b = rows[n + 1][key];
+                pts.push([x(n + f), y(a + (b - a) * f)]);
+            }
+            return pts;
+        }
+
+        function draw() {
+            var ink = rgbOf('--ink', '2b2a1e');
+            var muted = rgbOf('--ink-muted', '605c48');
+            var accent = rgbOf('--accent', '5b6a26');
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.clearRect(0, 0, W, H);
+
+            var small = W < 600;
+            ctx.font = '500 ' + (small ? 10 : 11) + 'px "IBM Plex Mono", ui-monospace, monospace';
+            ctx.textBaseline = 'middle';
+
+            // Horizontal grid every 5,000 zł
+            for (var v = 0; v <= Y_MAX; v += 5000) {
+                ctx.beginPath();
+                ctx.moveTo(pad.l, y(v) + 0.5); ctx.lineTo(W - pad.r, y(v) + 0.5);
+                if (v === BASE) { ctx.setLineDash([5, 4]); ctx.strokeStyle = 'rgba(' + muted + ',0.9)'; }
+                else { ctx.setLineDash([]); ctx.strokeStyle = 'rgba(' + ink + ',0.12)'; }
+                ctx.lineWidth = 1; ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.fillStyle = 'rgba(' + muted + ',1)';
+                ctx.textAlign = 'right';
+                ctx.fillText(v === 0 ? '0' : (v / 1000) + 'k', pad.l - 10, y(v));
+            }
+
+            // Year ticks
+            ctx.textAlign = 'center';
+            rows.forEach(function (r, i) {
+                var every = small ? 5 : 2;
+                if ((r.year - 2004) % every !== 0 && i !== rows.length - 1) return;
+                ctx.beginPath();
+                ctx.moveTo(x(i) + 0.5, H - pad.b); ctx.lineTo(x(i) + 0.5, H - pad.b + 5);
+                ctx.strokeStyle = 'rgba(' + ink + ',0.5)'; ctx.stroke();
+                ctx.fillStyle = 'rgba(' + muted + ',1)';
+                ctx.fillText(small ? "'" + String(r.year).slice(2) : r.year, x(i), H - pad.b + 16);
+            });
+
+            // 2022-23 bracket
+            var i22 = rows.findIndex(function (r) { return r.year === 2022; });
+            var i23 = i22 + 1;
+            var bx1 = x(i22 - 1) + (x(i22) - x(i22 - 1)) * 0.5, bx2 = x(i23) + (x(i23) - x(i22)) * 0.4;
+            ctx.strokeStyle = 'rgba(' + ink + ',0.55)'; ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(bx1, pad.t - 4); ctx.lineTo(bx1, pad.t - 12); ctx.lineTo(bx2, pad.t - 12); ctx.lineTo(bx2, pad.t - 4);
+            ctx.stroke();
+            ctx.setLineDash([2, 4]);
+            ctx.beginPath(); ctx.moveTo(bx1, pad.t - 2); ctx.lineTo(bx1, H - pad.b); ctx.moveTo(bx2, pad.t - 2); ctx.lineTo(bx2, H - pad.b);
+            ctx.strokeStyle = 'rgba(' + ink + ',0.22)'; ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.textAlign = 'right';
+            ctx.fillStyle = 'rgba(' + ink + ',1)';
+            ctx.fillText(small ? '2022-23: +27%' : '2022-23: prices up 27% in two years', bx2, pad.t - 24);
+
+            var upto = progress * (rows.length - 1);
+
+            // Hatching: vertical strokes between the 10,000 line and each series
+            var hatchStep = small ? 4 : 5;
+            var x0 = pad.l, x1 = x(0) + (x(rows.length - 1) - x(0)) * progress;
+            function valueAt(key, px) {
+                var t = (px - pad.l) / (W - pad.l - pad.r) * (rows.length - 1);
+                var n = Math.min(Math.floor(t), rows.length - 2), f = t - n;
+                return rows[n][key] + (rows[n + 1][key] - rows[n][key]) * f;
+            }
+            for (var px = x0 + hatchStep; px <= x1; px += hatchStep) {
+                var yb = y(BASE);
+                // loss of purchasing power: below the line, diagonal
+                var yBuys = y(valueAt('buys', px));
+                if (yBuys - yb > 2) {
+                    ctx.beginPath();
+                    ctx.moveTo(px, yb + 1); ctx.lineTo(px - (yBuys - yb) * 0.0, yBuys - 1);
+                    ctx.strokeStyle = 'rgba(' + accent + ',0.28)'; ctx.lineWidth = 1; ctx.stroke();
+                }
+                // what you'd need: above the line, sparser
+                if (Math.round((px - x0) / hatchStep) % 2 === 0) {
+                    var yNeed = y(valueAt('need', px));
+                    if (yb - yNeed > 2) {
+                        ctx.beginPath();
+                        ctx.moveTo(px, yb - 1); ctx.lineTo(px, yNeed + 1);
+                        ctx.strokeStyle = 'rgba(' + ink + ',0.16)'; ctx.stroke();
+                    }
+                }
+            }
+
+            // Series lines
+            function line(key, color, width) {
+                var pts = seriesPoints(key, upto);
+                if (pts.length < 2) return;
+                ctx.beginPath();
+                pts.forEach(function (p, i) { if (i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); });
+                ctx.strokeStyle = color; ctx.lineWidth = width; ctx.lineJoin = 'round'; ctx.stroke();
+            }
+            line('need', 'rgba(' + ink + ',1)', 1.6);
+            line('buys', 'rgba(' + accent + ',1)', 2);
+
+            // End labels
+            if (progress >= 1 && !small) {
+                ctx.textAlign = 'left';
+                ctx.fillStyle = 'rgba(' + ink + ',1)';
+                var lx = x(rows.length - 1) - 4;
+                ctx.textAlign = 'right';
+                ctx.fillText(zl(last.need), lx, y(last.need) - 14);
+                ctx.fillText(zl(last.buys), lx, y(last.buys) + 16);
+            }
+
+            // Active year marker
+            if (progress >= 1) {
+                var ax = x(active);
+                ctx.beginPath(); ctx.moveTo(ax + 0.5, pad.t); ctx.lineTo(ax + 0.5, H - pad.b);
+                ctx.strokeStyle = 'rgba(' + ink + ',0.45)'; ctx.lineWidth = 1; ctx.stroke();
+                [['need', ink], ['buys', accent]].forEach(function (s) {
+                    ctx.beginPath(); ctx.arc(ax, y(rows[active][s[0]]), 4, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(' + s[1] + ',1)'; ctx.lineWidth = 1.5; ctx.stroke();
+                });
+            }
+        }
+
+        function pick(ev) {
+            var rect = canvas.getBoundingClientRect();
+            var px = ev.clientX - rect.left;
+            var t = (px - pad.l) / (W - pad.l - pad.r) * (rows.length - 1);
+            var i = Math.max(0, Math.min(rows.length - 1, Math.round(t)));
+            if (i !== active) { active = i; setReadout(rows[i]); draw(); }
+        }
+        canvas.addEventListener('pointermove', pick);
+        canvas.addEventListener('pointerdown', pick);
+        canvas.addEventListener('pointerleave', function () {
+            active = rows.length - 1; setReadout(rows[active]); draw();
+        });
+
+        setReadout(last);
+        window.addEventListener('resize', resize);
+        var mq = window.matchMedia('(prefers-color-scheme: dark)');
+        if (mq.addEventListener) mq.addEventListener('change', draw);
+
+        resize();
+        if (reduce) { progress = 1; draw(); }
+        else {
+            var start = null;
+            var step = function (ts) {
+                if (!start) start = ts;
+                progress = Math.min(1, (ts - start) / 1800);
+                progress = 1 - Math.pow(1 - progress, 3);
+                draw();
+                if (progress < 1) requestAnimationFrame(step);
+            };
+            requestAnimationFrame(step);
+        }
+    })();
+    </script>
+</body>
+</html>
