@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Prices of everyday things, counted in hours of your working life instead of złoty.">
+    <title>Your life in working hours - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .wh-sentence {
+            font-family: var(--font-display);
+            font-size: clamp(1.9rem, 5.2vw, 3.6rem);
+            font-weight: 500;
+            letter-spacing: -0.03em;
+            line-height: 1.12;
+            max-width: 22ch;
+            margin-bottom: var(--space-lg);
+        }
+        .wh-num {
+            font: inherit;
+            letter-spacing: inherit;
+            color: var(--ink);
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid var(--ink);
+            border-radius: 0;
+            padding: 0;
+            text-align: center;
+            min-width: 2ch;
+            font-variant-numeric: tabular-nums;
+        }
+        .wh-num:focus { outline: none; border-bottom-color: var(--accent); }
+        .wh-num:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+        .wh-rate { font-size: clamp(1.05rem, 2.3vw, 1.3rem); line-height: 1.5; color: var(--ink-soft); max-width: 38rem; margin-bottom: var(--space-2xl); }
+        .wh-rate b { font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+        .wh-list { list-style: none; border-top: 2px solid var(--line-strong); }
+        .wh-item { border-bottom: 1px solid var(--line); }
+        .wh-row {
+            display: grid;
+            grid-template-columns: minmax(11rem, 16rem) 1fr;
+            column-gap: var(--space-lg);
+            align-items: baseline;
+            padding: var(--space-md) 0;
+            cursor: pointer;
+        }
+        .wh-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .wh-hours {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 8vw, 6.2rem);
+            font-weight: 500;
+            letter-spacing: -0.045em;
+            line-height: 0.9;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+        .wh-hours small { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-left: 0.4rem; vertical-align: 0.35em; }
+        .wh-item.selected .wh-hours { color: var(--accent); }
+        .wh-what { min-width: 0; }
+        .wh-name { font-family: var(--font-display); font-size: clamp(1.15rem, 2.4vw, 1.5rem); font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+        .wh-span { color: var(--ink-soft); margin-top: 0.2rem; }
+        .wh-price { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.05em; color: var(--ink-muted); margin-top: 0.45rem; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.15rem 0.5rem; font-variant-numeric: tabular-nums; }
+        .wh-price input {
+            font: inherit; color: var(--ink);
+            background: transparent; border: none; border-bottom: 1px dotted var(--ink-muted); border-radius: 0;
+            width: 7ch; padding: 0; text-align: right;
+        }
+        .wh-price input:focus { outline: none; border-bottom: 1px solid var(--ink); }
+        .wh-price input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .wh-tag { text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.64rem; }
+
+        .wh-tally { padding: 0 0 var(--space-lg); }
+        .wh-tally canvas { display: block; width: 100%; }
+        .wh-tally p { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; color: var(--ink-muted); margin-top: 0.6rem; }
+
+        .wh-why { max-width: 40rem; margin-top: var(--space-2xl); }
+        .wh-why h2 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 500; letter-spacing: -0.01em; margin-bottom: var(--space-sm); }
+        .wh-why p { font-size: 1.1rem; line-height: 1.75; margin-bottom: var(--space-sm); }
+
+        @media (min-width: 900px) {
+            .wh-tally { padding-left: calc(16rem + var(--space-lg)); }
+        }
+        @media (max-width: 620px) {
+            .wh-row { grid-template-columns: 1fr; row-gap: 0.5rem; }
+            .wh-hours { text-align: left; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content money wide">
+                <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                <p class="proto-tag">Round 2 &middot; 09 &middot; Reframe</p>
+
+                <h1 class="wh-sentence">
+                    I take home
+                    <input class="wh-num" id="pay" type="text" inputmode="numeric" value="8,000" aria-label="Take-home pay per month in złoty"> zł a month for about
+                    <input class="wh-num" id="hrs" type="text" inputmode="numeric" value="168" aria-label="Hours worked per month"> hours of work.
+                </h1>
+                <p class="wh-rate" id="rate"></p>
+
+                <ul class="wh-list" id="list"></ul>
+
+                <section class="wh-why">
+                    <h2>Why I count in hours</h2>
+                    <p>Złoty are abstract. Hours aren&rsquo;t. I know exactly what three weeks of meetings, emails and Monday mornings feel like, so when a phone costs three weeks, I can actually weigh it.</p>
+                    <p>Sometimes the answer is still yes. A week away with people I love is worth a month of work to me, easily. A car loan that eats more than a year is a different conversation. The point isn&rsquo;t guilt. It&rsquo;s choosing on purpose.</p>
+                    <p>It also works the other way. Skipping PPK looks like a small raise. In hours, it&rsquo;s days of pay you hand back every year.</p>
+                </section>
+
+                <p class="m-disclaimer">Draft. Placeholder content in my voice, to be replaced with my own notes. General information, not personal financial advice. Check current rules and figures before acting.</p>
+                <nav class="m-proto-nav">
+                    <a href="rules.html">&larr; Prev</a>
+                    <a href="zine.html">Next &rarr;</a>
+                </nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <script>
+    (function () {
+        var KEY = 'money-working-hours-v1';
+        var LOAN_RATE = 0.09, LOAN_MONTHS = 60, CARD_RATE = 0.15, WORKDAYS = 220, GROSS_RATIO = 0.70, PPK_EMPLOYER = 0.015, PPK_STATE_YEARLY = 240;
+
+        function loanTotal(price) {
+            var r = LOAN_RATE / 12;
+            var pay = price * r / (1 - Math.pow(1 + r, -LOAN_MONTHS));
+            return pay * LOAN_MONTHS;
+        }
+
+        /* Ordered small to large, so the page ends on the car. */
+        var ITEMS = [
+            { id: 'stream', name: 'A year of one streaming subscription', price: 50, unit: 'zł a month', total: function (p) { return p * 12; } },
+            { id: 'card', name: 'A year of interest on a 10,000 zł card balance', price: 10000, unit: 'zł balance at 15% a year', total: function (p) { return p * CARD_RATE; },
+              note: 'Rough: assumes the balance stays put all year.' },
+            { id: 'ppk', name: 'Opting out of PPK for a year', price: null, unit: '', total: function () { return state.pay / GROSS_RATIO * PPK_EMPLOYER * 12 + PPK_STATE_YEARLY; },
+              note: 'From your pay: employer&rsquo;s 1.5% of gross (gross taken as take-home / 0.7), plus the state&rsquo;s 240 zł yearly top-up if you qualify. Simplified.' },
+            { id: 'coffee', name: 'A coffee on the way to work, every workday for a year', price: 15, unit: 'zł a cup, ' + WORKDAYS + ' workdays', total: function (p) { return p * WORKDAYS; } },
+            { id: 'rent', name: 'One month&rsquo;s rent for a one-bedroom flat in Warsaw', price: 4000, unit: 'zł a month', total: function (p) { return p; } },
+            { id: 'phone', name: 'A new flagship phone', price: 5500, unit: 'zł', total: function (p) { return p; } },
+            { id: 'holiday', name: 'A week away for two, somewhere warm', price: 7000, unit: 'zł', total: function (p) { return p; } },
+            { id: 'lunch', name: 'A takeaway lunch every workday for a year', price: 35, unit: 'zł a lunch, ' + WORKDAYS + ' workdays', total: function (p) { return p * WORKDAYS; } },
+            { id: 'car', name: 'A new car on a five-year loan', price: 90000, unit: 'zł car, 9% a year over 5 years', total: loanTotal,
+              note: 'What you pay back in total, interest included.' }
+        ];
+
+        var state = { pay: 8000, hrs: 168, prices: {}, sel: 'phone' };
+        try {
+            var saved = JSON.parse(localStorage.getItem(KEY));
+            if (saved) { state.pay = saved.pay || state.pay; state.hrs = saved.hrs || state.hrs; state.prices = saved.prices || {}; state.sel = saved.sel || state.sel; }
+        } catch (e) {}
+        function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+        var fmt0 = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+        var fmt2 = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        function parse(v) { var n = parseFloat(String(v).replace(/[^\d.]/g, '')); return isFinite(n) ? n : 0; }
+        function priceOf(it) { return state.prices[it.id] != null ? state.prices[it.id] : it.price; }
+        function hourly() { return state.hrs > 0 ? state.pay / state.hrs : 0; }
+
+        function span(h) {
+            var day = 8, week = 40, month = state.hrs || 168;
+            if (h < day) return 'Less than one working day.';
+            if (h < week) { var d = h / day; return 'About ' + (d < 1.5 ? 'one working day' : Math.round(d) + ' working days') + '.'; }
+            if (h < month) { var w = h / week; return 'About ' + (w < 1.25 ? 'one work week' : (Math.round(w * 2) / 2) + ' work weeks') + '.'; }
+            var m = h / month;
+            if (m < 12) return 'About ' + (Math.round(m * 2) / 2) + ' months of full-time work.';
+            return 'About ' + (Math.round(m * 2) / 2) + ' months. More than a year of full-time work.';
+        }
+
+        var payEl = document.getElementById('pay'), hrsEl = document.getElementById('hrs');
+        function sizeInput(el) { el.style.width = Math.max(2, el.value.length + 0.3) + 'ch'; }
+        payEl.value = fmt0.format(state.pay); hrsEl.value = fmt0.format(state.hrs);
+        [payEl, hrsEl].forEach(sizeInput);
+
+        var listEl = document.getElementById('list');
+        var tally = document.createElement('div');
+        tally.className = 'wh-tally';
+        tally.innerHTML = '<canvas aria-hidden="true"></canvas><p></p>';
+        var canvas = tally.querySelector('canvas');
+
+        ITEMS.forEach(function (it) {
+            var li = document.createElement('li');
+            li.className = 'wh-item';
+            li.dataset.id = it.id;
+            var priceHtml = it.price === null
+                ? '<span data-zl></span><span>&middot;</span><span>calculated from your pay</span>'
+                : '<input type="text" inputmode="numeric" aria-label="Example price for ' + it.name.replace(/&rsquo;/g, '’') + '"><span>' + it.unit + '</span><span>&middot;</span><span data-zl></span><span>&middot;</span><span class="wh-tag">example, edit me</span>';
+            li.innerHTML =
+                '<div class="wh-row" tabindex="0" role="button" aria-expanded="false">' +
+                    '<div class="wh-hours"><span data-h>0</span><small>hours</small></div>' +
+                    '<div class="wh-what"><div class="wh-name">' + it.name + '</div><div class="wh-span" data-span></div>' +
+                    '<div class="wh-price">' + priceHtml + '</div>' +
+                    (it.note ? '<div class="wh-price"><span>' + it.note + '</span></div>' : '') +
+                    '</div>' +
+                '</div>';
+            var input = li.querySelector('input');
+            if (input) {
+                input.value = fmt0.format(priceOf(it));
+                input.addEventListener('click', function (e) { e.stopPropagation(); });
+                input.addEventListener('keydown', function (e) { e.stopPropagation(); if (e.key === 'Enter') input.blur(); });
+                input.addEventListener('input', function () { state.prices[it.id] = parse(input.value); save(); update(); });
+                input.addEventListener('blur', function () { input.value = fmt0.format(priceOf(it)); });
+            }
+            var row = li.querySelector('.wh-row');
+            row.addEventListener('click', function () { select(it.id); });
+            row.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(it.id); } });
+            listEl.appendChild(li);
+        });
+
+        function hoursFor(it) { var h = hourly(); return h > 0 ? it.total(priceOf(it)) / h : 0; }
+
+        function select(id) {
+            state.sel = id; save();
+            Array.prototype.forEach.call(listEl.children, function (li) {
+                var on = li.dataset.id === id;
+                li.classList.toggle('selected', on);
+                li.querySelector('.wh-row').setAttribute('aria-expanded', on ? 'true' : 'false');
+                if (on) li.appendChild(tally);
+            });
+            drawTally();
+        }
+
+        function update() {
+            var h = hourly();
+            document.getElementById('rate').innerHTML = 'So every hour of my working life is worth <b>' + fmt2.format(h) + ' zł</b>, after tax. Here&rsquo;s what things cost in that currency. Click any line to see the hours laid out. Prices are examples. Change them to yours.';
+            Array.prototype.forEach.call(listEl.children, function (li) {
+                var it = ITEMS.filter(function (x) { return x.id === li.dataset.id; })[0];
+                var hrs = hoursFor(it);
+                li.querySelector('[data-h]').textContent = fmt0.format(Math.round(hrs));
+                li.querySelector('[data-span]').textContent = span(hrs);
+                li.querySelector('[data-zl]').textContent = '= ' + fmt0.format(Math.round(it.total(priceOf(it)))) + ' zł';
+            });
+            drawTally();
+        }
+
+        function css(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+        /* One stroke per hour. Four uprights and a slash make five. Each row is a 40-hour week. */
+        function drawTally() {
+            var it = ITEMS.filter(function (x) { return x.id === state.sel; })[0];
+            if (!it || !tally.parentNode) return;
+            var hours = Math.max(0, Math.round(hoursFor(it)));
+            var weeks = Math.ceil(hours / 40) || 1;
+            var W = tally.clientWidth || 600;
+            var labelW = W < 480 ? 44 : 64;
+            var groupW = Math.min(W < 480 ? 34 : 56, (W - labelW) / 8);
+            var gap = groupW * 0.22, strokeH = Math.min(24, groupW * 0.5), rowH = strokeH + (W < 480 ? 9 : 12);
+            var H = weeks * rowH + 4;
+            var dpr = window.devicePixelRatio || 1;
+            canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+            canvas.style.height = H + 'px';
+            var ctx = canvas.getContext('2d');
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.clearRect(0, 0, W, H);
+            var ink = css('--ink'), muted = css('--ink-muted');
+            ctx.lineWidth = 1.2; ctx.lineCap = 'square';
+            ctx.font = '500 10px "IBM Plex Mono", monospace';
+            ctx.textBaseline = 'middle';
+            var left = hours;
+            for (var w = 0; w < weeks; w++) {
+                var y0 = w * rowH + 4;
+                if (w === 0 || (w + 1) % 4 === 0 || w === weeks - 1) {
+                    ctx.fillStyle = muted;
+                    ctx.fillText('wk ' + (w + 1), 0, y0 + strokeH / 2);
+                }
+                for (var g = 0; g < 8 && left > 0; g++) {
+                    var n = Math.min(5, left);
+                    var gx = labelW + g * groupW;
+                    var sp = (groupW - gap) / 4;
+                    ctx.strokeStyle = ink;
+                    ctx.beginPath();
+                    for (var s = 0; s < Math.min(4, n); s++) {
+                        var x = gx + s * sp + 0.5;
+                        ctx.moveTo(x, y0); ctx.lineTo(x, y0 + strokeH);
+                    }
+                    if (n === 5) { ctx.moveTo(gx - sp * 0.4, y0 + strokeH * 0.85); ctx.lineTo(gx + 3 * sp + sp * 0.4, y0 + strokeH * 0.15); }
+                    ctx.stroke();
+                    left -= n;
+                }
+            }
+            tally.querySelector('p').textContent = 'Each stroke is one hour at work. Each row is a 40-hour week. ' + fmt0.format(hours) + ' strokes, ' + weeks + (weeks === 1 ? ' row.' : ' rows.');
+        }
+
+        function onNum(el, key) {
+            el.addEventListener('input', function () { sizeInput(el); var v = parse(el.value); if (v > 0) { state[key] = v; save(); update(); } });
+            el.addEventListener('blur', function () { el.value = fmt0.format(state[key]); sizeInput(el); });
+            el.addEventListener('keydown', function (e) { if (e.key === 'Enter') el.blur(); });
+        }
+        onNum(payEl, 'pay'); onNum(hrsEl, 'hrs');
+
+        update();
+        select(state.sel);
+
+        var rt;
+        window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(drawTally, 120); });
+        if (window.matchMedia) {
+            var mq = window.matchMedia('(prefers-color-scheme: dark)');
+            if (mq.addEventListener) mq.addEventListener('change', drawTally); else if (mq.addListener) mq.addListener(drawTally);
+        }
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawTally);
+    })();
+    </script>
+</body>
+</html>

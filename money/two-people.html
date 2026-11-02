@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Two people, same job, same pay, thirty years. One decision apart.">
+    <title>Two people, same job - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .tp-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.6rem, 8.5vw, 6rem);
+            font-weight: 500;
+            letter-spacing: -0.035em;
+            line-height: 0.95;
+            margin-bottom: var(--space-lg);
+            text-wrap: balance;
+        }
+        .tp-lede { font-size: clamp(1.1rem, 2.4vw, 1.35rem); line-height: 1.5; color: var(--ink-soft); max-width: 36rem; margin-bottom: var(--space-md); }
+        .tp-fiction { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: var(--space-2xl); }
+
+        /* Split story: Anna | year rail | Piotr */
+        .tp-story { position: relative; margin-bottom: var(--space-2xl); }
+        .tp-heads, .tp-row { display: grid; grid-template-columns: 1fr 7rem 1fr; column-gap: var(--space-lg); }
+        .tp-heads {
+            position: sticky; top: 0; z-index: 2;
+            background: var(--bg);
+            border-bottom: 2px solid var(--line-strong);
+            padding: 0.9rem 0 0.7rem;
+        }
+        .tp-name { font-family: var(--font-display); font-size: clamp(1.6rem, 3.5vw, 2.4rem); font-weight: 500; letter-spacing: -0.02em; line-height: 1; }
+        .tp-name small { display: block; font-family: var(--font-mono); font-size: 0.66rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-top: 0.45rem; }
+        .tp-heads .tp-mid { align-self: end; text-align: center; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); }
+
+        .tp-row { padding: var(--space-xl) 0; border-bottom: 1px solid var(--line); }
+        .tp-year {
+            text-align: center;
+            font-family: var(--font-display);
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            position: relative;
+        }
+        .tp-year small { display: block; font-family: var(--font-mono); font-size: 0.64rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-top: 0.5rem; }
+        .tp-beat { min-width: 0; }
+        .tp-beat p { font-size: 1.04rem; line-height: 1.65; margin-bottom: 0.7rem; }
+        .tp-beat .tp-who { display: none; }
+        .tp-stat { display: flex; flex-wrap: wrap; gap: 0.2rem 1.2rem; border-top: 1px solid var(--line); padding-top: 0.6rem; margin-top: 0.9rem; }
+        .tp-stat span { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+        .tp-stat b { font-weight: 500; color: var(--ink); }
+        .tp-neg { text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+
+        /* Chart */
+        .tp-chart-wrap { margin-bottom: var(--space-2xl); }
+        .tp-chart-wrap h2, .tp-calc h2 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 500; letter-spacing: -0.01em; margin-bottom: 0.4rem; }
+        .tp-chart-wrap > p { color: var(--ink-soft); margin-bottom: var(--space-md); max-width: 40rem; }
+        .tp-chart { border-top: 2px solid var(--line-strong); border-bottom: 1px solid var(--line); padding: var(--space-md) 0 var(--space-sm); }
+        .tp-chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+        /* Reveal */
+        .tp-reveal { margin-bottom: var(--space-2xl); }
+        .tp-gap {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 11vw, 8rem);
+            font-weight: 500;
+            letter-spacing: -0.045em;
+            line-height: 0.9;
+            font-variant-numeric: tabular-nums;
+            margin: 0.4rem 0 var(--space-md);
+            overflow-wrap: anywhere;
+        }
+        .tp-gap-sub { font-size: clamp(1.1rem, 2.6vw, 1.45rem); line-height: 1.45; color: var(--ink-soft); max-width: 38rem; }
+        .tp-close { max-width: 40rem; margin-top: var(--space-xl); }
+        .tp-close p { font-size: 1.1rem; line-height: 1.75; margin-bottom: var(--space-sm); }
+
+        /* Assumptions */
+        .tp-calc { border-top: 2px solid var(--line-strong); padding-top: var(--space-md); max-width: 46rem; }
+        .tp-calc ul { list-style: none; }
+        .tp-calc li { font-size: 0.94rem; line-height: 1.6; color: var(--ink-soft); padding: 0.45rem 0; border-bottom: 1px solid var(--line); }
+        .tp-calc li b { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); margin-right: 0.5rem; }
+
+        @media (max-width: 760px) {
+            .tp-heads { display: none; }
+            .tp-row { grid-template-columns: 1fr; row-gap: var(--space-md); padding: var(--space-lg) 0; }
+            .tp-year { order: -1; text-align: left; display: flex; align-items: baseline; gap: 0.8rem; border-bottom: 2px solid var(--line-strong); padding-bottom: 0.6rem; }
+            .tp-year small { margin-top: 0; }
+            .tp-beat .tp-who { display: block; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.35rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content money wide">
+                <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                <p class="proto-tag">Round 2 &middot; 02 &middot; Parallel story</p>
+
+                <h1 class="tp-title">Two people,<br>same job.</h1>
+                <p class="tp-lede">Anna and Piotr start at the same company on the same day in 2026. Same desk row, same pay, same raises for thirty years. One of them makes a single boring decision in the first week. The other means to, and never quite does.</p>
+                <p class="tp-fiction">Fictional people &middot; real arithmetic &middot; assumptions at the bottom</p>
+
+                <section class="tp-story" aria-label="Thirty years, side by side">
+                    <div class="tp-heads" aria-hidden="true">
+                        <div class="tp-name">Anna<small>Decided once</small></div>
+                        <div class="tp-mid">Year</div>
+                        <div class="tp-name">Piotr<small>Meant to</small></div>
+                    </div>
+                    <div id="rows"></div>
+                </section>
+
+                <section class="tp-chart-wrap">
+                    <h2>Thirty years, one line each</h2>
+                    <p>What each of them owns in savings and investments, minus card debt. Cars and flats are left out for both. Piotr&rsquo;s line isn&rsquo;t broken. It really is that flat next to hers.</p>
+                    <div class="tp-chart" id="chart" role="img" aria-label="Line chart of Anna's and Piotr's net worth from 2026 to 2056"></div>
+                </section>
+
+                <section class="tp-reveal">
+                    <span class="m-label">The gap in 2056</span>
+                    <div class="tp-gap" id="gap">0 zł</div>
+                    <p class="tp-gap-sub" id="gap-sub"></p>
+
+                    <div class="tp-close">
+                        <p>Piotr isn&rsquo;t the bad guy here. He never did anything stupid. He had a car that broke at the wrong time, a few nice holidays, a newer phone than Anna. Every single month, his choices made sense.</p>
+                        <p>The difference is one standing order, set up in the first week, and a rule about raises. That&rsquo;s it. Anna didn&rsquo;t have more discipline. She just had to be disciplined once, and then the bank did the rest.</p>
+                        <p>If you&rsquo;re reading this as Piotr in 2036, the useful part is this: his best move was also starting. Late beats never.</p>
+                    </div>
+                </section>
+
+                <section class="tp-calc">
+                    <h2>How this is calculated</h2>
+                    <ul id="calc"></ul>
+                </section>
+
+                <p class="m-disclaimer">Draft. Placeholder content in my voice, to be replaced with my own notes. General information, not personal financial advice. Check current rules and figures before acting.</p>
+                <nav class="m-proto-nav">
+                    <a href="year-of-a-salary.html">&larr; Prev</a>
+                    <a href="since-2004.html">Next &rarr;</a>
+                </nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <script>
+    (function () {
+        /* ---------- Model (all assumptions listed on the page) ---------- */
+        var A = {
+            start: 2026, years: 30,
+            net0: 8000,         /* take-home per month in 2026 */
+            raise: 0.04,        /* yearly raise, both */
+            ret: 0.05,          /* index fund and PPK, nominal per year */
+            sav: 0.02,          /* savings account, per year after tax */
+            card: 0.15,         /* card rate per year */
+            cardHit: 10000,     /* goes on the card in January 2029 */
+            cardPay: 250,       /* Piotr's monthly card payment */
+            belka: 0.19,
+            grossRatio: 0.70,   /* take-home is roughly 70% of gross */
+            ppkEmployee: 0.02, ppkEmployer: 0.015,
+            annaSave0: 0.10,    /* standing order, share of 2026 pay */
+            annaRaiseKeep: 0.5, /* half of every raise goes to savings */
+            buffer: 3,          /* months of 2026 pay kept as buffer */
+            piotrStart: 2036, piotrSave: 0.05,
+            inflation: 0.03     /* only used to show today's money */
+        };
+
+        function netPay(y) { return A.net0 * Math.pow(1 + A.raise, y - A.start); }
+        function annaSave(y) { return A.annaSave0 * A.net0 + A.annaRaiseKeep * (netPay(y) - A.net0); }
+
+        function simulate() {
+            var rI = A.ret / 12, rS = A.sav / 12, rC = A.card / 12;
+            var a = { buf: 0, fund: 0, fundIn: 0, ppk: 0, ppkEmp: 0 }, p = { sav: 0, card: 0 };
+            var rows = [], cardOff = null, cross = null;
+            function snap(y) {
+                var fundNet = a.fund - Math.max(0, a.fund - a.fundIn) * A.belka;
+                rows.push({ y: y, net: netPay(Math.min(y, A.start + A.years)),
+                    anna: a.buf + fundNet + a.ppk, buf: a.buf, fund: fundNet, ppk: a.ppk, ppkEmp: a.ppkEmp,
+                    piotr: p.sav - p.card, psav: p.sav, card: p.card });
+            }
+            snap(A.start);
+            for (var y = A.start; y < A.start + A.years; y++) {
+                var N = netPay(y), save = annaSave(y);
+                var ppkIn = (N / A.grossRatio) * (A.ppkEmployee + A.ppkEmployer);
+                var growth = 0, put = 0;
+                for (var m = 0; m < 12; m++) {
+                    var g = a.buf * rS + a.fund * rI + a.ppk * rI;
+                    growth += g;
+                    a.buf *= 1 + rS; a.fund *= 1 + rI; a.ppk *= 1 + rI;
+                    a.ppk += ppkIn; a.ppkEmp += (N / A.grossRatio) * A.ppkEmployer;
+                    var toBuf = Math.min(Math.max(0, A.buffer * A.net0 - a.buf), save);
+                    a.buf += toBuf; a.fund += save - toBuf; a.fundIn += save - toBuf;
+                    put += save + ppkIn;
+
+                    p.sav *= 1 + rS;
+                    if (y === 2029 && m === 0) p.card += A.cardHit;
+                    if (p.card > 0) {
+                        p.card *= 1 + rC;
+                        p.card = Math.max(0, p.card - A.cardPay);
+                        if (p.card === 0 && cardOff === null) cardOff = y;
+                    }
+                    if (y >= A.piotrStart) p.sav += A.piotrSave * N;
+                }
+                if (cross === null && growth > put) cross = y;
+                snap(y + 1);
+            }
+            return { rows: rows, cardOff: cardOff, cross: cross };
+        }
+
+        var sim = simulate();
+        var R = sim.rows;
+        function at(y) { return R[y - A.start]; }
+
+        var fmt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+        function zl(v) { return (v < 0 ? '-' : '') + fmt.format(Math.round(Math.abs(v))).replace(/,/g, ',') + ' zł'; }
+        var piotrExtra = A.net0 / A.grossRatio * A.ppkEmployee;
+        var lastNet = at(A.start + A.years).net;
+
+        /* ---------- Story beats ---------- */
+        var BEATS = [
+            { y: 2026, tag: 'Week one',
+              anna: [
+                'First payslip. Before she spends a złoty, she sets a standing order for the day after payday: ' + zl(A.annaSave0 * A.net0) + ', ten percent.',
+                'She stays in PPK, mostly because leaving needs a form. The first ' + zl(A.buffer * A.net0) + ' goes to a savings account. Three months of pay. That&rsquo;s her buffer.'
+              ],
+              piotr: [
+                'Same payslip, about ' + zl(piotrExtra) + ' more in hand, because he signed out of PPK. More money now felt like the obvious choice.',
+                'He&rsquo;ll save whatever is left at the end of the month. Most months, nothing is. Rent, food, a weekend in Gdańsk. It adds up.'
+              ] },
+            { y: 2030, tag: 'Four years in',
+              anna: [
+                'Four raises. She kept half of each one, so the standing order is now ' + zl(annaSave(2030)) + ' a month. She didn&rsquo;t feel any of it.',
+                'The buffer filled up in 2029. Everything since goes into one broad, low-cost index fund. She looks at it twice a year.'
+              ],
+              piotr: [
+                'January 2029: the gearbox goes. No buffer, so ' + zl(A.cardHit) + ' lands on the credit card.',
+                'At 15% a year and ' + zl(A.cardPay) + ' a month, half of each early payment goes to interest. Each raise went into a nicer car lease, so there&rsquo;s nothing extra to throw at it.'
+              ] },
+            { y: 2036, tag: 'Ten years',
+              anna: [
+                'Her pay is ' + zl(at(2036).net) + ' a month. Her spending went up too. She&rsquo;s not living like a monk.',
+                'This story assumes a smooth 5% a year. Real markets aren&rsquo;t smooth. She&rsquo;d have seen years where the fund fell hard. The plan was to keep the standing order running anyway.'
+              ],
+              piotr: [
+                'The card is finally clear in ' + sim.cardOff + '. Five years of payments for one gearbox.',
+                'A round of layoffs at work scares him. He starts putting 5% of his pay into a savings account. It&rsquo;s a good move. It&rsquo;s also ten years after Anna made hers.'
+              ] },
+            { y: 2046, tag: 'Twenty years',
+              anna: [
+                'She spends about ' + zl(at(2046).net - annaSave(2046)) + ' a month, more than double what she spent in 2026. Half of every raise still went to her.',
+                'The PPK pot she never thinks about is ' + zl(at(2046).ppk) + '. Her employer paid in ' + zl(at(2046).ppkEmp) + ' of that. Piotr turned the same offer down.'
+              ],
+              piotr: [
+                'He has ' + zl(at(2046).psav) + ' saved. By most people&rsquo;s standards, he&rsquo;s doing fine. His car is nicer than Anna&rsquo;s.',
+                'He doesn&rsquo;t compare. Nobody shows their savings at work. He has no idea where Anna is.'
+              ] },
+            { y: 2056, tag: 'Thirty years',
+              anna: [
+                'Since ' + sim.cross + ', her money has earned more each year than she paid in. It works harder than she does now.',
+                'She has options: go part-time, take a year off, keep going. It&rsquo;s her call. That&rsquo;s what the money bought.'
+              ],
+              piotr: [
+                'He earned the same as Anna for thirty years. On paper, a little more.',
+                'He never made a bad decision big enough to remember. He just made the first good one ten years late.'
+              ] }
+        ];
+
+        var rowsEl = document.getElementById('rows');
+        BEATS.forEach(function (b) {
+            var r = at(b.y);
+            var row = document.createElement('div');
+            row.className = 'tp-row';
+            var piotrWorth = '<b class="' + (r.piotr < 0 ? 'tp-neg' : '') + '">' + zl(r.piotr) + '</b>';
+            row.innerHTML =
+                '<div class="tp-beat"><span class="tp-who">Anna</span>' + b.anna.map(function (t) { return '<p>' + t + '</p>'; }).join('') +
+                    '<div class="tp-stat"><span>Take-home <b>' + zl(r.net) + '</b></span><span>Net worth <b>' + zl(r.anna) + '</b></span></div></div>' +
+                '<div class="tp-year">' + b.y + '<small>' + b.tag + '</small></div>' +
+                '<div class="tp-beat"><span class="tp-who">Piotr</span>' + b.piotr.map(function (t) { return '<p>' + t + '</p>'; }).join('') +
+                    '<div class="tp-stat"><span>Take-home <b>' + zl(r.net + (r.net / A.grossRatio) * A.ppkEmployee) + '</b></span><span>Net worth ' + piotrWorth + '</span></div></div>';
+            rowsEl.appendChild(row);
+        });
+
+        /* ---------- Reveal ---------- */
+        var last = at(A.start + A.years);
+        var gap = last.anna - last.piotr;
+        var real = gap / Math.pow(1 + A.inflation, A.years);
+        document.getElementById('gap').textContent = zl(gap);
+        document.getElementById('gap-sub').innerHTML =
+            'Anna: ' + zl(last.anna) + '. Piotr: ' + zl(last.piotr) + '. The gap is ' + (gap / (lastNet * 12)).toFixed(1) +
+            ' years of take-home pay at 2056 salaries. In today&rsquo;s money, at 3% inflation, roughly ' + zl(Math.round(real / 10000) * 10000) + '.';
+
+        /* ---------- Assumptions ---------- */
+        var calc = [
+            ['Pay', 'Both take home ' + zl(A.net0) + ' a month in 2026, with a 4% raise every year. Piotr gets about 2% of gross more in hand because he left PPK. We assume he spends it.'],
+            ['Anna', 'Saves 10% of her 2026 pay from day one, plus half of every raise since. The first ' + zl(A.buffer * A.net0) + ' goes to a savings account, the rest into an index fund.'],
+            ['PPK', 'Simplified: 2% from Anna and 1.5% from her employer, as a share of gross pay. Gross is taken as take-home divided by 0.7. The state&rsquo;s top-ups and the tax on the employer&rsquo;s part are left out. Counted at full value; taking it out before 60 costs part of it.'],
+            ['Piotr', 'Saves nothing until 2036, then 5% of his pay into a savings account. ' + zl(A.cardHit) + ' goes on a card at 15% in January 2029, paid at ' + zl(A.cardPay) + ' a month.'],
+            ['Returns', 'Index fund and PPK grow 5% a year, smooth, compounded monthly. Savings accounts earn 2% after tax. Real markets swing a lot more than this.'],
+            ['Tax', 'Anna&rsquo;s fund is shown as if sold that year, after 19% Belka tax on the gains. Holding it in an IKE until 60 would skip that tax.'],
+            ['Money', 'All figures are nominal złoty. Inflation is only used for the &ldquo;today&rsquo;s money&rdquo; line. Cars, flats and other things they own are left out for both.']
+        ];
+        document.getElementById('calc').innerHTML = calc.map(function (c) { return '<li><b>' + c[0] + '</b>' + c[1] + '</li>'; }).join('');
+
+        /* ---------- Chart ---------- */
+        var chartEl = document.getElementById('chart');
+        function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+        function drawChart() {
+            var W = Math.max(300, chartEl.clientWidth), small = W < 560;
+            var H = small ? 300 : 380;
+            var padL = small ? 46 : 64, padR = small ? 62 : 96, padT = 16, padB = 34;
+            var ink = css('--ink'), muted = css('--ink-muted'), line = css('--line'), accent = css('--accent');
+            var maxV = Math.max.apply(null, R.map(function (r) { return r.anna; }));
+            var step = maxV > 2e6 ? 1e6 : 5e5;
+            var top = Math.ceil(maxV / step) * step;
+            var minV = Math.min(0, Math.min.apply(null, R.map(function (r) { return r.piotr; })));
+            function x(y) { return padL + (y - A.start) / A.years * (W - padL - padR); }
+            function yv(v) { return padT + (top - v) / (top - minV) * (H - padT - padB); }
+
+            var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Mono, monospace" font-size="' + (small ? 10 : 11) + '">';
+            for (var v = 0; v <= top; v += step) {
+                s += '<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + yv(v) + '" y2="' + yv(v) + '" stroke="' + (v === 0 ? ink : line) + '" stroke-width="1" fill="none"/>';
+                s += '<text x="' + (padL - 8) + '" y="' + (yv(v) + 4) + '" text-anchor="end" fill="' + muted + '">' + (v === 0 ? '0' : (v / 1e6).toFixed(v % 1e6 ? 1 : 0) + 'm') + '</text>';
+            }
+            BEATS.forEach(function (b) {
+                s += '<line x1="' + x(b.y) + '" x2="' + x(b.y) + '" y1="' + padT + '" y2="' + (H - padB) + '" stroke="' + line + '" stroke-width="1" stroke-dasharray="2 4" fill="none"/>';
+                s += '<text x="' + x(b.y) + '" y="' + (H - padB + 20) + '" text-anchor="middle" fill="' + muted + '">' + b.y + '</text>';
+            });
+            function path(key) { return R.map(function (r, i) { return (i ? 'L' : 'M') + x(r.y).toFixed(1) + ' ' + yv(r[key]).toFixed(1); }).join(' '); }
+            s += '<path d="' + path('piotr') + '" stroke="' + ink + '" stroke-width="1.5" fill="none"/>';
+            s += '<path d="' + path('anna') + '" stroke="' + accent + '" stroke-width="2" fill="none"/>';
+            var end = R[R.length - 1];
+            s += '<text x="' + (x(end.y) + 8) + '" y="' + (yv(end.anna) + 4) + '" fill="' + ink + '">Anna</text>';
+            s += '<text x="' + (x(end.y) + 8) + '" y="' + (yv(end.piotr) - 4) + '" fill="' + ink + '">Piotr</text>';
+            s += '</svg>';
+            chartEl.innerHTML = s;
+        }
+        drawChart();
+        var rt;
+        window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(drawChart, 120); });
+        if (window.matchMedia) {
+            var mq = window.matchMedia('(prefers-color-scheme: dark)');
+            if (mq.addEventListener) mq.addEventListener('change', drawChart); else if (mq.addListener) mq.addListener(drawChart);
+        }
+    })();
+    </script>
+</body>
+</html>
