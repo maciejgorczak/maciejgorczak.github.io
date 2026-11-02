@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The whole money plan as an 8-page pocket zine. Print it on one sheet of A4, fold it, cut once.">
+    <title>The pocket zine - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Layout: a booklet on a sand table, then the flat sheet and the fold steps.
+           Zine pages size their type in container units, so one page design
+           works in the preview, the small sheet and the printed A4. */
+        .zn-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.6rem, 8vw, 5.4rem);
+            font-weight: 500;
+            letter-spacing: -0.035em;
+            line-height: 0.95;
+            margin-bottom: var(--space-lg);
+        }
+        .zn-lede { font-size: clamp(1.1rem, 2.4vw, 1.35rem); line-height: 1.5; color: var(--ink-soft); max-width: 36rem; margin-bottom: var(--space-xl); }
+
+        /* ---------- A zine page ---------- */
+        .zp {
+            container-type: inline-size;
+            aspect-ratio: 74.25 / 105;
+            background: var(--bg);
+            color: var(--ink);
+            position: relative;
+            overflow: hidden;
+        }
+        .zp-in {
+            position: absolute; inset: 0;
+            padding: 9cqw 9cqw 13cqw;
+            display: flex; flex-direction: column;
+        }
+        .zp-kicker {
+            font-family: var(--font-mono);
+            font-size: 3.6cqw;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            line-height: 1.3;
+        }
+        .zp-h {
+            font-family: var(--font-display);
+            font-weight: 500;
+            font-size: 12.5cqw;
+            letter-spacing: -0.035em;
+            line-height: 0.95;
+            margin-top: 3cqw;
+        }
+        .zp-cover .zp-h { font-size: 15.5cqw; margin-top: 4cqw; }
+        .zp-p {
+            font-family: var(--font-display);
+            font-size: 5.4cqw;
+            line-height: 1.32;
+            margin-top: 5cqw;
+        }
+        .zp-art { margin-top: auto; width: 100%; display: block; overflow: visible; }
+        .zp-art * { vector-effect: none; }
+        .zp-folio {
+            position: absolute; bottom: 4.5cqw;
+            font-family: var(--font-mono); font-size: 3.4cqw; letter-spacing: 0.1em;
+        }
+        .zp.odd .zp-folio { right: 9cqw; }
+        .zp.even .zp-folio { left: 9cqw; }
+        .zp-by { font-family: var(--font-mono); font-size: 3.4cqw; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 4cqw; }
+        .zp-list { list-style: none; margin-top: 5cqw; font-family: var(--font-display); font-size: 6cqw; line-height: 1.25; }
+        .zp-list li { display: flex; gap: 3cqw; padding: 1.6cqw 0; border-bottom: 0.3cqw solid currentColor; }
+        .zp-list li span { font-family: var(--font-mono); font-size: 3.6cqw; padding-top: 1.2cqw; width: 4cqw; flex: none; }
+        .zp-small { font-family: var(--font-mono); font-size: 3.1cqw; line-height: 1.5; letter-spacing: 0.04em; }
+        .zp-back .zp-p { margin-top: 4cqw; }
+        .zp-back .zp-end { margin-top: auto; }
+
+        /* ---------- Preview: the booklet on a table ---------- */
+        .zn-table {
+            background: var(--bg-2);
+            border: 1px solid var(--line);
+            padding: clamp(1.2rem, 4vw, 3rem) clamp(0.8rem, 3vw, 2rem);
+        }
+        .zn-spread {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            width: min(100%, 36rem);
+            margin: 0 auto;
+        }
+        .zn-spread .zp { border: 1px solid var(--line); cursor: pointer; }
+        .zn-spread .zp + .zp { border-left: none; box-shadow: inset 1px 0 0 var(--ink-muted); }
+        .zn-spread .zn-empty { visibility: hidden; }
+        .zn-spread.single { grid-template-columns: minmax(0, 1fr); width: min(100%, 20rem); }
+
+        .zn-controls {
+            display: flex; justify-content: space-between; align-items: center; gap: var(--space-sm);
+            width: min(100%, 36rem); margin: var(--space-md) auto 0;
+        }
+        .zn-count { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); text-align: center; }
+
+        .zn-print-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-md); margin: var(--space-lg) 0 var(--space-2xl); }
+        .zn-print-row p { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); }
+
+        /* ---------- The flat sheet ---------- */
+        .zn-h2 { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 500; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: var(--space-sm); }
+        .zn-sub { color: var(--ink-soft); max-width: 38rem; margin-bottom: var(--space-lg); }
+        .zn-sheet-wrap { max-width: 44rem; }
+        .zn-sheet {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            aspect-ratio: 297 / 210;
+            border: 1px solid var(--ink);
+        }
+        .zn-sheet .zp { aspect-ratio: auto; }
+        .zn-sheet .flip { transform: rotate(180deg); }
+        .zn-guides { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+        .zn-guides .fold { stroke: var(--ink-muted); stroke-width: 1; stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; fill: none; }
+        .zn-guides .cut { stroke: var(--ink); stroke-width: 2.5; vector-effect: non-scaling-stroke; fill: none; }
+        .zn-legend { display: flex; flex-wrap: wrap; gap: var(--space-md); margin-top: 0.8rem; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); }
+        .zn-legend span::before { content: ""; display: inline-block; width: 1.6rem; vertical-align: middle; margin-right: 0.5rem; border-top: 1px dashed var(--ink-muted); }
+        .zn-legend span.k-cut::before { border-top: 2.5px solid var(--ink); }
+        .zn-legend span.k-flip::before { display: none; }
+
+        /* ---------- Fold steps ---------- */
+        .zn-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 2px solid var(--line-strong); margin-top: var(--space-2xl); }
+        .zn-step { padding: var(--space-md) var(--space-sm) var(--space-md) 0; border-bottom: 1px solid var(--line); min-width: 0; }
+        .zn-step svg { width: 100%; height: auto; display: block; margin: 0.6rem 0 0.8rem; color: var(--ink); overflow: visible; }
+        .zn-step svg .ln { stroke: currentColor; stroke-width: 1.2; fill: none; stroke-linejoin: miter; }
+        .zn-step svg .dash { stroke: var(--ink-muted); stroke-width: 1; stroke-dasharray: 3 3; fill: none; }
+        .zn-step svg .bold { stroke: currentColor; stroke-width: 2.6; fill: none; }
+        .zn-step svg text { font-family: var(--font-mono); font-size: 7px; letter-spacing: 0.08em; fill: var(--ink-muted); }
+        .zn-step h3 { font-family: var(--font-display); font-size: 1.1rem; font-weight: 500; line-height: 1.25; }
+        .zn-step p { font-size: 0.92rem; line-height: 1.55; color: var(--ink-soft); margin-top: 0.3rem; }
+
+        @media (max-width: 760px) {
+            .zn-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        /* ---------- Print: only the imposed sheet, ink on white ---------- */
+        #print-sheet { display: none; }
+        @page { size: A4 landscape; margin: 0; }
+        @media print {
+            :root { --bg: #fff; --bg-2: #fff; --ink: #000; --ink-soft: #000; --ink-muted: #000; --line: #000; }
+            html, body { background: #fff !important; margin: 0; padding: 0; }
+            body > .container { display: none !important; }
+            #print-sheet {
+                display: grid;
+                grid-template-columns: repeat(4, 74.25mm);
+                grid-template-rows: repeat(2, 105mm);
+                width: 297mm; height: 210mm;
+                position: relative;
+                overflow: hidden;
+                -webkit-print-color-adjust: exact; print-color-adjust: exact;
+            }
+            #print-sheet .zp { width: 74.25mm; height: 105mm; aspect-ratio: auto; }
+            #print-sheet .flip { transform: rotate(180deg); }
+            #print-sheet .print-cut { position: absolute; left: 74.25mm; width: 148.5mm; top: 105mm; border-top: 0.2mm dashed #000; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content money wide">
+                <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                <p class="proto-tag">Round 2 &middot; 10 &middot; Printable zine</p>
+
+                <h1 class="zn-title">The pocket zine</h1>
+                <p class="zn-lede">The whole plan on one sheet of A4. Print it, fold it, cut once. Give it to the friend who keeps saying they’ll sort their money out next month.</p>
+
+                <section class="zn-table" aria-label="Zine preview">
+                    <div class="zn-spread" id="spread"></div>
+                    <div class="zn-controls">
+                        <button class="m-btn m-btn-quiet" id="prev" type="button">&larr; Back</button>
+                        <span class="zn-count" id="count" aria-live="polite">Cover</span>
+                        <button class="m-btn m-btn-quiet" id="next" type="button">Turn &rarr;</button>
+                    </div>
+                </section>
+
+                <div class="zn-print-row">
+                    <button class="m-btn m-btn-primary" id="print" type="button">Print the zine</button>
+                    <p>A4, landscape. Print at 100%, no scaling.</p>
+                </div>
+
+                <section>
+                    <h2 class="zn-h2">The sheet</h2>
+                    <p class="zn-sub">This is what comes out of the printer. The top row is upside down on purpose. After folding, every page ends up the right way round and in order.</p>
+                    <div class="zn-sheet-wrap">
+                        <div class="zn-sheet" id="sheet">
+                            <svg class="zn-guides" viewBox="0 0 4 2" preserveAspectRatio="none" aria-hidden="true">
+                                <line class="fold" x1="1" y1="0" x2="1" y2="2"/>
+                                <line class="fold" x1="2" y1="0" x2="2" y2="2"/>
+                                <line class="fold" x1="3" y1="0" x2="3" y2="2"/>
+                                <line class="fold" x1="0" y1="1" x2="1" y2="1"/>
+                                <line class="fold" x1="3" y1="1" x2="4" y2="1"/>
+                                <line class="cut" x1="1" y1="1" x2="3" y2="1"/>
+                            </svg>
+                        </div>
+                        <div class="zn-legend"><span>Fold</span><span class="k-cut">Cut</span></div>
+                    </div>
+                </section>
+
+                <section class="zn-steps" aria-label="How to fold it">
+                    <div class="zn-step">
+                        <span class="m-label">Step 1</span>
+                        <svg viewBox="0 0 120 80" aria-hidden="true">
+                            <rect class="ln" x="10" y="10" width="100" height="60"/>
+                            <line class="dash" x1="35" y1="10" x2="35" y2="70"/>
+                            <line class="dash" x1="60" y1="10" x2="60" y2="70"/>
+                            <line class="dash" x1="85" y1="10" x2="85" y2="70"/>
+                            <line class="dash" x1="10" y1="40" x2="110" y2="40"/>
+                        </svg>
+                        <h3>Crease it into eight</h3>
+                        <p>Fold in half each way, then fold the long strip into quarters. Unfold.</p>
+                    </div>
+                    <div class="zn-step">
+                        <span class="m-label">Step 2</span>
+                        <svg viewBox="0 0 120 80" aria-hidden="true">
+                            <rect class="dash" x="10" y="10" width="50" height="60"/>
+                            <rect class="ln" x="60" y="10" width="50" height="60"/>
+                            <line class="dash" x1="85" y1="10" x2="85" y2="70"/>
+                            <line class="bold" x1="60" y1="40" x2="85" y2="40"/>
+                            <path class="ln" d="M 52 25 Q 60 4 68 25"/>
+                            <path class="ln" d="M 65 22 L 68 25 L 70 21"/>
+                            <text x="88" y="38">CUT</text>
+                        </svg>
+                        <h3>Fold in half, cut the middle</h3>
+                        <p>Fold the short way. From the folded edge, cut along the centre crease, one panel deep.</p>
+                    </div>
+                    <div class="zn-step">
+                        <span class="m-label">Step 3</span>
+                        <svg viewBox="0 0 120 80" aria-hidden="true">
+                            <rect class="ln" x="10" y="30" width="25" height="22"/>
+                            <rect class="ln" x="85" y="30" width="25" height="22"/>
+                            <path class="ln" d="M 35 30 L 60 14 L 85 30"/>
+                            <path class="ln" d="M 35 52 L 60 68 L 85 52"/>
+                            <line class="dash" x1="60" y1="14" x2="60" y2="68"/>
+                            <line class="ln" x1="0" y1="41" x2="8" y2="41"/>
+                            <path class="ln" d="M 4 37 L 8 41 L 4 45"/>
+                            <line class="ln" x1="112" y1="41" x2="120" y2="41"/>
+                            <path class="ln" d="M 116 37 L 112 41 L 116 45"/>
+                        </svg>
+                        <h3>Fold long, push the ends in</h3>
+                        <p>Open it, fold along the long middle, hold both ends and push them together. The cut opens into a diamond.</p>
+                    </div>
+                    <div class="zn-step">
+                        <span class="m-label">Step 4</span>
+                        <svg viewBox="0 0 120 80" aria-hidden="true">
+                            <rect class="ln" x="46" y="12" width="40" height="56"/>
+                            <polyline class="ln" points="42,16 42,72 82,72"/>
+                            <polyline class="ln" points="38,20 38,76 78,76"/>
+                            <line class="bold" x1="46" y1="12" x2="46" y2="68"/>
+                            <text x="52" y="26">1</text>
+                        </svg>
+                        <h3>Flatten it into a booklet</h3>
+                        <p>Keep pushing until the pages fold flat around the spine. Cover on top. Done.</p>
+                    </div>
+                </section>
+
+                <p class="m-disclaimer">Draft. Placeholder content in my voice, to be replaced with my own notes. General information, not personal financial advice. Check current rules and figures before acting.</p>
+                <nav class="m-proto-nav">
+                    <a href="working-hours.html">&larr; Prev</a>
+                    <a href="index.html">Next &rarr;</a>
+                </nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <div id="print-sheet" aria-hidden="true"></div>
+
+    <script>
+    (function () {
+        /* ---------- Line-work illustrations (strokes only) ---------- */
+        var SW = 'stroke="currentColor" fill="none" stroke-width="0.9"';
+        var uid = 0;
+
+        function svg(body, h) {
+            return '<svg class="zp-art" viewBox="0 0 100 ' + (h || 62) + '" aria-hidden="true">' + body + '</svg>';
+        }
+        function hatch(x, y, w, h, step, angle) {
+            /* Diagonal or horizontal hatching clipped to a rectangle */
+            var id = 'zc' + (uid++);
+            var out = '<clipPath id="' + id + '"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '"/></clipPath><g clip-path="url(#' + id + ')">';
+            if (!angle) {
+                for (var yy = y + step / 2; yy < y + h; yy += step) out += '<line x1="' + x + '" y1="' + yy.toFixed(2) + '" x2="' + (x + w) + '" y2="' + yy.toFixed(2) + '" ' + SW + ' stroke-width="0.6"/>';
+            } else {
+                for (var d = -h; d < w + h; d += step) out += '<line x1="' + (x + d) + '" y1="' + (y + h) + '" x2="' + (x + d + h * angle) + '" y2="' + y + '" ' + SW + ' stroke-width="0.6"/>';
+            }
+            return out + '</g>';
+        }
+        function txt(x, y, s, anchor) {
+            return '<text x="' + x + '" y="' + y + '" font-family="IBM Plex Mono, monospace" font-size="4" letter-spacing="0.3" fill="currentColor"' + (anchor ? ' text-anchor="' + anchor + '"' : '') + '>' + s + '</text>';
+        }
+
+        function artCover() {
+            /* Stacked traces, the site's signal motif */
+            var s = '';
+            for (var i = 0; i < 11; i++) {
+                var base = 8 + i * 4.6, amp = 0.6 + i * 0.28, d = '';
+                for (var x = 0; x <= 100; x += 2) {
+                    var y = base + Math.sin(x * 0.09 + i * 0.7) * amp + Math.sin(x * 0.031 + i) * amp * 0.8;
+                    d += (x ? ' L ' : 'M ') + x + ' ' + y.toFixed(2);
+                }
+                s += '<path d="' + d + '" ' + SW + (i === 7 ? ' stroke-width="1.8"' : '') + '/>';
+            }
+            return svg(s, 62);
+        }
+        function artTicks() {
+            var s = '<line x1="2" y1="48" x2="98" y2="48" ' + SW + '/>';
+            for (var i = 0; i < 30; i++) {
+                var x = 3 + i * 3.25;
+                s += '<line x1="' + x.toFixed(2) + '" y1="' + (i === 1 ? 14 : 42) + '" x2="' + x.toFixed(2) + '" y2="48" ' + SW + (i === 1 ? ' stroke-width="1.8"' : '') + '/>';
+            }
+            s += txt(9, 12, 'DAY AFTER PAYDAY') + txt(3, 56, '1') + txt(97, 56, '30', 'end');
+            return svg(s, 58);
+        }
+        function artJar() {
+            var x = 30, y = 4, w = 40, h = 54, m = h / 6;
+            var s = '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" ' + SW + '/>';
+            s += hatch(x, y + h - m, w, m, 1.6);
+            [1, 3, 6].forEach(function (k) {
+                var yy = y + h - m * k;
+                s += '<line x1="' + (x + w) + '" y1="' + yy + '" x2="' + (x + w + 5) + '" y2="' + yy + '" ' + SW + '/>';
+                s += txt(x + w + 7, yy + 1.4, k + ' MO');
+            });
+            s += '<line x1="' + x + '" y1="' + (y + h - m * 3) + '" x2="' + (x + w) + '" y2="' + (y + h - m * 3) + '" ' + SW + ' stroke-dasharray="1.5 1.5"/>';
+            return svg(s, 60);
+        }
+        function artStairs() {
+            var d = 'M 4 6', x = 4, y = 6, steps = 7;
+            for (var i = 0; i < steps; i++) { x += 12; d += ' L ' + x + ' ' + y; y += 6.8; d += ' L ' + x + ' ' + y.toFixed(1); }
+            var s = '<path d="' + d + '" ' + SW + ' stroke-width="1.4"/>';
+            s += '<line x1="2" y1="54" x2="98" y2="54" ' + SW + '/>';
+            s += txt(4, 4, 'DEBT') + txt(98, 60, '0 ZŁ', 'end');
+            return svg(s, 62);
+        }
+        function artPPK() {
+            var b = 58, s = '<line x1="4" y1="' + b + '" x2="96" y2="' + b + '" ' + SW + '/>';
+            s += '<rect x="6" y="' + (b - 22) + '" width="20" height="22" ' + SW + '/>' + txt(16, b - 25, 'YOU', 'middle');
+            s += '<rect x="38" y="' + (b - 22) + '" width="20" height="22" ' + SW + '/>';
+            s += '<rect x="38" y="' + (b - 39) + '" width="20" height="17" ' + SW + '/>' + hatch(38, b - 39, 20, 17, 2.2, 1);
+            s += '<rect x="38" y="' + (b - 46) + '" width="20" height="7" ' + SW + '/>' + hatch(38, b - 46, 20, 7, 1.4);
+            s += txt(61, b - 9.5, 'YOU') + txt(61, b - 29, '+ EMPLOYER') + txt(61, b - 41, '+ STATE');
+            return svg(s, 62);
+        }
+        function artLine() {
+            var seed = 7, d = '', y = 52;
+            function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+            for (var i = 0; i <= 50; i++) {
+                var x = 2 + i * 1.92;
+                y += (rnd() - 0.62) * 5.2;
+                if (y > 56) y = 56; if (y < 6) y = 6;
+                d += (i ? ' L ' : 'M ') + x.toFixed(2) + ' ' + y.toFixed(2);
+            }
+            var s = '<line x1="2" y1="58" x2="98" y2="58" ' + SW + '/>';
+            s += '<path d="' + d + '" ' + SW + ' stroke-width="1.1"/>';
+            s += txt(2, 4, 'LOOK ONCE A MONTH') + txt(98, 63.5, '30 YEARS', 'end');
+            return svg(s, 64);
+        }
+        function artDoc() {
+            var s = '<rect x="14" y="4" width="42" height="54" ' + SW + '/>';
+            for (var i = 0; i < 9; i++) {
+                var yy = 11 + i * 5, w = (i % 3 === 2) ? 20 : 32;
+                s += '<line x1="19" y1="' + yy + '" x2="' + (19 + w) + '" y2="' + yy + '" ' + SW + ' stroke-width="0.6"/>';
+            }
+            s += '<circle cx="60" cy="36" r="14" ' + SW + ' stroke-width="1.4"/>';
+            s += '<line x1="70" y1="46" x2="84" y2="60" ' + SW + ' stroke-width="2.4"/>';
+            return svg(s, 62);
+        }
+
+        /* ---------- The eight pages ---------- */
+        var PAGES = [
+            null,
+            { cls: 'zp-cover', html: function () {
+                return '<p class="zp-kicker">A pocket zine<br>No. 1</p>' +
+                       '<h2 class="zp-h">Money for people with a 9-5</h2>' +
+                       artCover() +
+                       '<p class="zp-by">Maciej Górczak</p>';
+            }},
+            { html: function () {
+                return '<p class="zp-kicker">Rule 1</p><h2 class="zp-h">Save first.</h2>' +
+                       '<p class="zp-p">Move money out the day after payday. Spend what’s left, not the other way round.</p>' + artTicks();
+            }},
+            { html: function () {
+                return '<p class="zp-kicker">Rule 2</p><h2 class="zp-h">Then a buffer.</h2>' +
+                       '<p class="zp-p">One month of costs to start. Three to six later. A rule of thumb, not a law.</p>' + artJar();
+            }},
+            { html: function () {
+                return '<p class="zp-kicker">Rule 3</p><h2 class="zp-h">Kill expensive debt.</h2>' +
+                       '<p class="zp-p">Paying off a loan that costs 12% a year is a sure 12%. Investing can’t promise that.</p>' + artStairs();
+            }},
+            { html: function () {
+                return '<p class="zp-kicker">Rule 4</p><h2 class="zp-h">Take the employer money.</h2>' +
+                       '<p class="zp-p">With PPK, your employer and the state add money on top of yours. Opting out turns it down.</p>' + artPPK();
+            }},
+            { html: function () {
+                return '<p class="zp-kicker">Rule 5</p><h2 class="zp-h">Invest boring and cheap.</h2>' +
+                       '<p class="zp-p">Broad index funds, low fees. IKE and IKZE first. Then leave it alone.</p>' + artLine();
+            }},
+            { html: function () {
+                return '<p class="zp-kicker">Rule 6</p><h2 class="zp-h">AI reads. You decide.</h2>' +
+                       '<p class="zp-p">Let it sort your statement and explain the small print. Never give it your login. Check every number.</p>' + artDoc();
+            }},
+            { cls: 'zp-back', html: function () {
+                return '<p class="zp-kicker">The whole plan</p>' +
+                       '<ul class="zp-list">' +
+                       ['Save first', 'Buffer', 'Expensive debt', 'Employer money', 'Invest, cheaply', 'AI reads, you decide']
+                           .map(function (t, i) { return '<li><span>' + (i + 1) + '</span>' + t + '</li>'; }).join('') +
+                       '</ul>' +
+                       '<p class="zp-p">Repeat for 30 years. That’s it.</p>' +
+                       '<div class="zp-end"><p class="zp-small">Made by Maciej Górczak<br>maciejgorczak.github.io</p>' +
+                       '<p class="zp-small" style="margin-top:2cqw">Not financial advice. Rules change, check them.</p></div>';
+            }}
+        ];
+
+        function pageEl(n, extra) {
+            var p = PAGES[n];
+            var el = document.createElement('div');
+            el.className = 'zp ' + (n % 2 ? 'odd' : 'even') + (p.cls ? ' ' + p.cls : '') + (extra ? ' ' + extra : '');
+            var folio = (n > 1 && n < 8) ? '<span class="zp-folio">' + n + '</span>' : '';
+            el.innerHTML = '<div class="zp-in">' + p.html() + '</div>' + folio;
+            el.setAttribute('data-page', n);
+            return el;
+        }
+
+        /* ---------- Imposition ----------
+           Cutting the centre crease turns the sheet into a loop of eight panels:
+           B1 B2 B3 B4 T4 T3 T2 T1. Folded flat, each arm of the loop is one leaf.
+           Cover = B2 gives the reading order B2, B3, B4, T4, T3, T2, T1, B1.
+           So the top row, left to right, carries pages 7 6 5 4 (upside down)
+           and the bottom row carries 8 1 2 3. */
+        var IMPOSE = { top: [7, 6, 5, 4], bottom: [8, 1, 2, 3] };
+
+        function buildSheet(target) {
+            IMPOSE.top.forEach(function (n) { target.appendChild(pageEl(n, 'flip')); });
+            IMPOSE.bottom.forEach(function (n) { target.appendChild(pageEl(n)); });
+        }
+        var sheet = document.getElementById('sheet');
+        var guides = sheet.querySelector('.zn-guides');
+        buildSheet(sheet);
+        sheet.appendChild(guides); /* keep the guides on top */
+
+        var printSheet = document.getElementById('print-sheet');
+        buildSheet(printSheet);
+        var cutMark = document.createElement('div');
+        cutMark.className = 'print-cut';
+        printSheet.appendChild(cutMark);
+
+        /* ---------- Preview ---------- */
+        var SPREADS = [[null, 1], [2, 3], [4, 5], [6, 7], [8, null]];
+        var spreadEl = document.getElementById('spread');
+        var countEl = document.getElementById('count');
+        var narrow = window.matchMedia('(max-width: 560px)');
+        var pos = 0; /* index into spreads, or into pages 1..8 when narrow */
+
+        function render() {
+            spreadEl.innerHTML = '';
+            spreadEl.classList.remove('m-fade'); void spreadEl.offsetWidth; spreadEl.classList.add('m-fade');
+            if (narrow.matches) {
+                spreadEl.classList.add('single');
+                var n = pos + 1;
+                spreadEl.appendChild(pageEl(n));
+                countEl.textContent = n === 1 ? 'Cover' : n === 8 ? 'Back cover' : 'Page ' + n + ' of 8';
+                last = 7;
+            } else {
+                spreadEl.classList.remove('single');
+                SPREADS[pos].forEach(function (n) {
+                    if (n === null) {
+                        var e = document.createElement('div');
+                        e.className = 'zp zn-empty';
+                        spreadEl.appendChild(e);
+                    } else {
+                        spreadEl.appendChild(pageEl(n));
+                    }
+                });
+                countEl.textContent = pos === 0 ? 'Cover' : pos === 4 ? 'Back cover' : 'Pages ' + SPREADS[pos][0] + '-' + SPREADS[pos][1];
+                last = SPREADS.length - 1;
+            }
+            document.getElementById('prev').disabled = pos === 0;
+            document.getElementById('next').disabled = pos === last;
+        }
+        var last = 4;
+        function go(d) {
+            var np = Math.max(0, Math.min(last, pos + d));
+            if (np !== pos) { pos = np; render(); }
+        }
+
+        document.getElementById('prev').addEventListener('click', function () { go(-1); });
+        document.getElementById('next').addEventListener('click', function () { go(1); });
+        spreadEl.addEventListener('click', function (e) {
+            var pg = e.target.closest('.zp');
+            if (!pg || pg.classList.contains('zn-empty')) return;
+            var rect = spreadEl.getBoundingClientRect();
+            go(e.clientX < rect.left + rect.width / 2 && !narrow.matches ? -1 : 1);
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.target.closest('input, textarea, select')) return;
+            if (e.key === 'ArrowRight') go(1);
+            if (e.key === 'ArrowLeft') go(-1);
+        });
+        narrow.addEventListener('change', function () {
+            /* Map between spread and single-page positions */
+            pos = narrow.matches ? Math.max(0, (SPREADS[pos][0] || SPREADS[pos][1]) - 1)
+                                 : Math.floor((pos + 1) / 2);
+            render();
+        });
+        document.getElementById('print').addEventListener('click', function () { window.print(); });
+
+        render();
+    })();
+    </script>
+</body>
+</html>

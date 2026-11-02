@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A staged conversation with a chatbot about money, marked like an exam: where it helps, where it is out of date, and where it is confidently wrong.">
+    <title>Me vs. the chatbot - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Layout: transcript column on the left, marking column on the right.
+           The margin column collapses under each answer on narrow screens. */
+        .mv-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.6rem, 8vw, 5.4rem);
+            font-weight: 500;
+            letter-spacing: -0.035em;
+            line-height: 0.95;
+            margin-bottom: var(--space-lg);
+            text-wrap: balance;
+        }
+        .mv-lede {
+            font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+            line-height: 1.5;
+            color: var(--ink-soft);
+            max-width: 36rem;
+            margin-bottom: var(--space-md);
+        }
+        .mv-staged {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+            border: 1px dashed var(--ink-muted);
+            padding: 0.45rem 0.7rem;
+            margin-bottom: var(--space-xl);
+        }
+
+        /* Tally strip */
+        .mv-tally {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            border-top: 2px solid var(--line-strong);
+            margin-bottom: 0;
+        }
+        .mv-tally-cell {
+            padding: var(--space-sm) var(--space-sm) var(--space-sm) 0;
+            border-bottom: 1px solid var(--line);
+            min-width: 0;
+        }
+        .mv-tally-num {
+            display: block;
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 500;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            margin: 0.6rem 0 0.4rem;
+            font-variant-numeric: tabular-nums;
+        }
+        .mv-marks { display: block; height: 18px; }
+        .mv-marks line { stroke: currentColor; stroke-width: 1.5; }
+
+        /* Stamps: the verdict is encoded in the border, not only the word */
+        .stamp {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.66rem;
+            font-weight: 500;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            line-height: 1.2;
+            color: var(--ink);
+            border: 1.5px solid currentColor;
+            padding: 0.35rem 0.55rem 0.3rem;
+            transform: rotate(-2deg);
+            white-space: nowrap;
+        }
+        .stamp-right   { border-style: solid; }
+        .stamp-half    { border-style: dashed; color: var(--ink-soft); }
+        .stamp-old     { border-style: dotted; color: var(--ink-soft); }
+        .stamp-wrong   { border-style: double; border-width: 4px; color: var(--accent); }
+        .stamp-paste   { border-style: solid; border-width: 3px; }
+        .mv-tally .stamp { font-size: 0.58rem; letter-spacing: 0.1em; white-space: normal; transform: none; display: inline-flex; align-items: center; min-height: 1.8rem; }
+
+        /* Exchanges */
+        .ex {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: var(--space-md);
+            padding: var(--space-xl) 0;
+            border-top: 1px solid var(--line);
+        }
+        .ex:first-of-type { border-top: none; padding-top: var(--space-2xl); }
+        .ex-chat { min-width: 0; }
+        .ex-num {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.16em;
+            color: var(--ink-muted);
+            margin-bottom: var(--space-sm);
+        }
+        .msg {
+            max-width: 36rem;
+            padding: 0.95rem 1.1rem 1rem;
+            border: 1px solid var(--line);
+            font-size: 1.02rem;
+            line-height: 1.6;
+        }
+        .msg + .msg { margin-top: 0.8rem; }
+        .msg-you { margin-left: auto; max-width: min(30rem, 88%); border-color: var(--ink); }
+        .msg-bot { background: var(--bg-2); margin-right: auto; }
+        .msg-who {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 0.64rem;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+            margin-bottom: 0.4rem;
+        }
+        .msg p + p, .msg p + table, .msg table + p, .msg .paste + p, .msg p + .paste { margin-top: 0.6rem; }
+        .msg table { width: 100%; border-collapse: collapse; font-size: 0.94rem; }
+        .msg td { padding: 0.28rem 0; border-bottom: 1px solid var(--line); }
+        .msg td:last-child { text-align: right; font-family: var(--font-mono); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+        .msg tr.total td { border-bottom: none; border-top: 1px solid var(--ink); font-weight: 500; }
+
+        .paste {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            line-height: 1.7;
+            border-left: 1px solid var(--ink);
+            padding-left: 0.8rem;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        .redact {
+            background: var(--ink);
+            color: transparent;
+            user-select: none;
+            padding: 0 0.1em;
+        }
+        .clause { font-style: italic; color: var(--ink-soft); }
+
+        .ex-note { min-width: 0; border-left: 1px solid var(--line); padding-left: var(--space-sm); align-self: start; }
+        .ex-note p { font-size: 0.96rem; line-height: 1.6; color: var(--ink-soft); margin-top: 0.8rem; }
+        .ex-note p strong { color: var(--ink); font-weight: 500; }
+
+        @media (min-width: 900px) {
+            .ex { grid-template-columns: minmax(0, 1fr) 17rem; gap: var(--space-xl); }
+            .ex-note { padding-top: 2.1rem; }
+        }
+
+        /* Rules */
+        .mv-rules { margin-top: var(--space-2xl); }
+        .mv-rules h2 {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            line-height: 1.05;
+            margin-bottom: var(--space-md);
+            text-wrap: balance;
+        }
+        .mv-rules ol { list-style: none; counter-reset: r; border-top: 2px solid var(--line-strong); }
+        .mv-rules li {
+            counter-increment: r;
+            display: grid;
+            grid-template-columns: 2.6rem minmax(0, 1fr);
+            padding: 0.9rem 0;
+            border-bottom: 1px solid var(--line);
+            font-family: var(--font-display);
+            font-size: clamp(1.1rem, 2.6vw, 1.4rem);
+            line-height: 1.3;
+        }
+        .mv-rules li::before {
+            content: counter(r);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--ink-muted);
+            padding-top: 0.35rem;
+        }
+        .mv-close { margin-top: var(--space-lg); font-size: 1.08rem; color: var(--ink-soft); max-width: 36rem; }
+
+        @media (max-width: 640px) {
+            .mv-tally { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .mv-tally-cell:last-child { grid-column: span 2; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content money wide">
+                <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                <p class="proto-tag">Round 2 &middot; 05 &middot; Annotated transcript</p>
+
+                <h1 class="mv-title">Me vs. the chatbot</h1>
+                <p class="mv-lede">I work with AI for a living. These are the money questions people actually type into chatbots, with the kind of answers they get back. I marked each one like an exam.</p>
+                <p class="mv-staged">Staged conversation, written to show typical answers. Not a real transcript.</p>
+
+                <div class="mv-tally" id="tally" aria-label="Verdict tally"></div>
+
+                <!-- 01 -->
+                <section class="ex" data-verdict="half">
+                    <div class="ex-chat">
+                        <p class="ex-num">01</p>
+                        <div class="msg msg-you">
+                            <span class="msg-who">You</span>
+                            <p>I have 20,000 zł sitting in my current account. What should I do with it?</p>
+                        </div>
+                        <div class="msg msg-bot">
+                            <span class="msg-who">Chatbot</span>
+                            <p>Great question! A popular approach is to invest it in a diversified portfolio of ETFs for long-term growth. Historically, stock markets have returned around 7-10% a year, so your 20,000 zł could grow significantly over time.</p>
+                        </div>
+                    </div>
+                    <aside class="ex-note">
+                        <span class="stamp stamp-half">Half right</span>
+                        <p>Index funds aren’t bad advice. But it skipped the questions that matter. <strong>Do you have a buffer? Any expensive debt? Do you need this money in two years?</strong> A flat deposit for next spring doesn’t belong in stocks.</p>
+                        <p>And “7-10% a year” is a long-run average from some markets. It’s not a number you can plan a year around.</p>
+                    </aside>
+                </section>
+
+                <!-- 02 -->
+                <section class="ex" data-verdict="right">
+                    <div class="ex-chat">
+                        <p class="ex-num">02</p>
+                        <div class="msg msg-you">
+                            <span class="msg-who">You</span>
+                            <p>Should I stop paying into PPK? I’d rather have the money now.</p>
+                        </div>
+                        <div class="msg msg-bot">
+                            <span class="msg-who">Chatbot</span>
+                            <p>If you opt out, your take-home pay goes up a little each month. But your employer also pays into PPK on top of your contribution, and the state adds top-ups. Opting out means giving those up.</p>
+                            <p>For most people on an employment contract, staying in is worth it. It depends on your situation, so look at your own numbers first.</p>
+                        </div>
+                    </div>
+                    <aside class="ex-note">
+                        <span class="stamp stamp-right">Right</span>
+                        <p>Fair and balanced. It names the real trade-off: a bit more cash now against money your employer adds for free.</p>
+                        <p>I’d only add: <strong>take your payslip and do the maths</strong> before deciding.</p>
+                    </aside>
+                </section>
+
+                <!-- 03 -->
+                <section class="ex" data-verdict="paste">
+                    <div class="ex-chat">
+                        <p class="ex-num">03</p>
+                        <div class="msg msg-you">
+                            <span class="msg-who">You</span>
+                            <p>Here’s my statement. Where is my money going?</p>
+<div class="paste" aria-label="Pasted bank statement, personal details redacted on this page">Account:  <span class="redact">PL00 0000 0000 0000 0000 0000 0000</span>
+Name:     <span class="redact">Xxxxx Xxxxxxxxx</span>
+PESEL:    <span class="redact">00000000000</span>
+Address:  <span class="redact">ul. Xxxxxxxx 00/00, Warszawa</span>
+02.10  BIEDRONKA 4412        -86.40
+02.10  BOLT*RIDE             -23.00
+03.10  SPOTIFY               -23.99
+...    (58 more rows)</div>
+                        </div>
+                        <div class="msg msg-bot">
+                            <span class="msg-who">Chatbot</span>
+                            <p>Thanks, I can see your account details and last month’s transactions. Let me break down your spending by category&hellip;</p>
+                        </div>
+                    </div>
+                    <aside class="ex-note">
+                        <span class="stamp stamp-paste">Don’t paste this</span>
+                        <p>The answer is fine. The paste isn’t. I blacked it out here, but they sent it in full.</p>
+                        <p><strong>Account number, name, PESEL and address don’t help with categories at all.</strong> Delete them first. Dates, amounts and shop names are all it needs.</p>
+                    </aside>
+                </section>
+
+                <!-- 04 -->
+                <section class="ex" data-verdict="right">
+                    <div class="ex-chat">
+                        <p class="ex-num">04</p>
+                        <div class="msg msg-you">
+                            <span class="msg-who">You</span>
+                            <p>OK, I removed the personal stuff. Sort these 60 transactions into categories and give me totals.</p>
+                        </div>
+                        <div class="msg msg-bot">
+                            <span class="msg-who">Chatbot</span>
+                            <table>
+                                <tr><td>Groceries</td><td>1,840 zł</td></tr>
+                                <tr><td>Bills and rent share</td><td>1,350 zł</td></tr>
+                                <tr><td>Shopping</td><td>1,120 zł</td></tr>
+                                <tr><td>Eating out</td><td>960 zł</td></tr>
+                                <tr><td>Transport</td><td>420 zł</td></tr>
+                                <tr><td>Subscriptions (6)</td><td>187 zł</td></tr>
+                                <tr class="total"><td>Total</td><td>5,877 zł</td></tr>
+                            </table>
+                            <p>Two of your subscriptions look like duplicates: you pay for two music streaming services.</p>
+                        </div>
+                    </div>
+                    <aside class="ex-note">
+                        <span class="stamp stamp-right">Right</span>
+                        <p><strong>This is where it shines.</strong> An evening of spreadsheet work, done in a minute. And it spotted the double subscription.</p>
+                        <p>Still, check the total against your bank once. If it doesn’t match, it dropped or doubled a row.</p>
+                    </aside>
+                </section>
+
+                <!-- 05 -->
+                <section class="ex" data-verdict="old">
+                    <div class="ex-chat">
+                        <p class="ex-num">05</p>
+                        <div class="msg msg-you">
+                            <span class="msg-who">You</span>
+                            <p>What’s the IKE contribution limit this year?</p>
+                        </div>
+                        <div class="msg msg-bot">
+                            <span class="msg-who">Chatbot</span>
+                            <p>The IKE contribution limit for this year is 23,472 zł.</p>
+                        </div>
+                    </div>
+                    <aside class="ex-note">
+                        <span class="stamp stamp-old">Out of date</span>
+                        <p>One exact number, total confidence, no source. <strong>The limit changes every year</strong>, and a chatbot’s knowledge stops at some date. This could easily be an old year’s figure.</p>
+                        <p>Check the current limit with your provider or an official source. Never with a chatbot alone.</p>
+                    </aside>
+                </section>
+
+                <!-- 06 -->
+                <section class="ex" data-verdict="wrong">
+                    <div class="ex-chat">
+                        <p class="ex-num">06</p>
+                        <div class="msg msg-you">
+                            <span class="msg-who">You</span>
+                            <p>Which stocks will go up next year?</p>
+                        </div>
+                        <div class="msg msg-bot">
+                            <span class="msg-who">Chatbot</span>
+                            <p>Based on current trends, AI and semiconductor companies are well positioned for strong growth next year. Firms leading in AI infrastructure are likely to keep outperforming the market.</p>
+                        </div>
+                    </div>
+                    <aside class="ex-note">
+                        <span class="stamp stamp-wrong">Confidently wrong</span>
+                        <p>Nobody knows this. Not me, not a fund manager, not a chatbot. <strong>“Well positioned” and “likely to” sound like analysis. It’s a guess written like a fact.</strong></p>
+                        <p>Prices already include what everyone expects. The only good answer here is “I can’t know that.”</p>
+                    </aside>
+                </section>
+
+                <!-- 07 -->
+                <section class="ex" data-verdict="right">
+                    <div class="ex-chat">
+                        <p class="ex-num">07</p>
+                        <div class="msg msg-you">
+                            <span class="msg-who">You</span>
+                            <p>What does this clause in my loan offer mean?</p>
+                            <p class="clause" lang="pl">“Prowizja za udzielenie kredytu wynosi 8% kwoty kredytu i jest doliczana do kwoty kredytu.”</p>
+                        </div>
+                        <div class="msg msg-bot">
+                            <span class="msg-who">Chatbot</span>
+                            <p>The bank charges a fee of 8% of the loan for granting it, and adds that fee to the amount you borrow. So on 20,000 zł the fee is 1,600 zł, and you’ll owe 21,600 zł.</p>
+                            <p>You’ll also pay interest on the fee itself. That’s why the RRSO (total yearly cost) will be noticeably higher than the interest rate in the ad.</p>
+                        </div>
+                    </div>
+                    <aside class="ex-note">
+                        <span class="stamp stamp-right">Right</span>
+                        <p>Good use. Legal Polish turned into plain words, with the trap spelled out: <strong>you pay interest on the fee too.</strong></p>
+                        <p>Next step: compare offers by RRSO, not by the headline rate.</p>
+                    </aside>
+                </section>
+
+                <!-- 08 -->
+                <section class="ex" data-verdict="paste">
+                    <div class="ex-chat">
+                        <p class="ex-num">08</p>
+                        <div class="msg msg-you">
+                            <span class="msg-who">You</span>
+                            <p>Can you log into my bank and move 2,000 zł to savings every month?</p>
+                        </div>
+                        <div class="msg msg-bot">
+                            <span class="msg-who">Chatbot</span>
+                            <p>Sure! Connect your bank account or share your login details, and I’ll set up the monthly transfer for you.</p>
+                        </div>
+                    </div>
+                    <aside class="ex-note">
+                        <span class="stamp stamp-paste">Don’t paste this</span>
+                        <p><strong>Never. Not to a chatbot, not to an “agent”, not to anyone.</strong> Your bank will never ask for your password either.</p>
+                        <p>And you don’t need it. Your bank already does this for free. It’s called a standing order, and it takes two minutes in the app.</p>
+                    </aside>
+                </section>
+
+                <!-- 09 -->
+                <section class="ex" data-verdict="half">
+                    <div class="ex-chat">
+                        <p class="ex-num">09</p>
+                        <div class="msg msg-you">
+                            <span class="msg-who">You</span>
+                            <p>My colleague says this new crypto token will 10x. Good idea?</p>
+                        </div>
+                        <div class="msg msg-bot">
+                            <span class="msg-who">Chatbot</span>
+                            <p>Some investors have seen significant returns from early-stage tokens. If you believe in the project, putting a portion of your portfolio into it could give you exposure to high growth potential. Just make sure to do your own research!</p>
+                        </div>
+                    </div>
+                    <aside class="ex-note">
+                        <span class="stamp stamp-half">Half right</span>
+                        <p>Nothing it said is false, and that’s the problem. <strong>“A portion of your portfolio” makes a tip from a colleague sound like a strategy.</strong></p>
+                        <p>What I’d say: only money you can lose completely, and only after the buffer, the debt and the boring long-term money are sorted. “Will 10x” is a sales line, not a fact.</p>
+                    </aside>
+                </section>
+
+                <section class="mv-rules">
+                    <h2>My rules for using AI with money</h2>
+                    <ol>
+                        <li>Let it read and sort. Make the decisions yourself.</li>
+                        <li>Delete names, account numbers and PESEL before you paste anything.</li>
+                        <li>Check any number it gives you against the source.</li>
+                        <li>If it predicts prices, stop reading.</li>
+                        <li>No logins, no access, no “agent” moving your money.</li>
+                    </ol>
+                    <p class="mv-close">It’s a very good assistant and a bad advisor. Use it like the first one.</p>
+                </section>
+
+                <p class="m-disclaimer">Draft. Placeholder content in my voice, to be replaced with my own notes. General information, not personal financial advice. Check current rules and figures before acting.</p>
+                <nav class="m-proto-nav">
+                    <a href="annotated-statement.html">&larr; Prev</a>
+                    <a href="how-to-go-broke.html">Next &rarr;</a>
+                </nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <script>
+    (function () {
+        var VERDICTS = [
+            { key: 'right', label: 'Right' },
+            { key: 'half',  label: 'Half right' },
+            { key: 'old',   label: 'Out of date' },
+            { key: 'wrong', label: 'Confidently wrong' },
+            { key: 'paste', label: 'Don’t paste this' }
+        ];
+        var counts = {};
+        document.querySelectorAll('.ex[data-verdict]').forEach(function (ex) {
+            var v = ex.getAttribute('data-verdict');
+            counts[v] = (counts[v] || 0) + 1;
+        });
+
+        /* Tally marks: groups of five, the fifth stroke crossing the four */
+        function marks(n) {
+            var parts = [], x = 2;
+            for (var i = 0; i < n; i++) {
+                if (i > 0 && i % 5 === 0) x += 8;
+                if (i % 5 === 4) {
+                    parts.push('<line x1="' + (x - 26) + '" y1="13" x2="' + (x + 1) + '" y2="5"/>');
+                } else {
+                    parts.push('<line x1="' + x + '" y1="2" x2="' + x + '" y2="16"/>');
+                    x += 7;
+                }
+            }
+            var w = Math.max(x + 4, 10);
+            return '<svg class="mv-marks" width="' + w + '" height="18" viewBox="0 0 ' + w + ' 18" aria-hidden="true">' + parts.join('') + '</svg>';
+        }
+
+        var tally = document.getElementById('tally');
+        VERDICTS.forEach(function (v) {
+            var n = counts[v.key] || 0;
+            var cell = document.createElement('div');
+            cell.className = 'mv-tally-cell';
+            cell.innerHTML = '<span class="stamp stamp-' + v.key + '"></span>' +
+                             '<span class="mv-tally-num">' + n + '</span>' + marks(n);
+            cell.querySelector('.stamp').textContent = v.label;
+            tally.appendChild(cell);
+        });
+    })();
+    </script>
+</body>
+</html>
