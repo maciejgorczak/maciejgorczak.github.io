@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Split your net salary into buckets and see where it goes, drawn as line-work">
+    <title>Where your salary goes - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Sliders stay ink here: the accent belongs to one bundle in the diagram */
+        .m-range { accent-color: var(--ink); }
+        .pf-layout { display: grid; gap: var(--space-xl); grid-template-columns: 1fr; align-items: start; }
+        @media (min-width: 900px) { .pf-layout { grid-template-columns: 0.9fr 1.1fr; } }
+        .pf-pay { margin-bottom: var(--space-lg); }
+        .pf-pay .m-input { font-size: 1.6rem; font-weight: 500; letter-spacing: -0.01em; }
+        .pf-pay-row { display: flex; align-items: baseline; gap: 0.5rem; }
+        .pf-pay-row .unit { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-muted); }
+        .pf-bucket { padding: 0.8rem 0; border-bottom: 1px solid var(--line); }
+        .pf-bucket:first-child { border-top: 2px solid var(--line-strong); }
+        .pf-bucket-head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.8rem; margin-bottom: 0.25rem; }
+        .pf-bucket-name { font-weight: 500; }
+        .pf-bucket-val { font-family: var(--font-mono); font-size: 0.8rem; white-space: nowrap; }
+        .pf-bucket-val b { font-weight: 500; }
+        .pf-bucket-hint { font-size: 0.86rem; color: var(--ink-muted); line-height: 1.45; margin-top: 0.15rem; }
+        .pf-status { margin-top: var(--space-md); padding: 0.8rem 1rem; border: 1px solid var(--line); font-size: 0.96rem; line-height: 1.5; }
+        .pf-status.warn { border-color: var(--ink); border-width: 1px 1px 1px 3px; }
+        .pf-preset-note { font-size: 0.84rem; color: var(--ink-muted); margin-top: 0.4rem; }
+        .pf-diagram { border: 1px solid var(--line); background: var(--bg-2); padding: var(--space-sm); }
+        .pf-diagram svg { display: block; width: 100%; height: auto; overflow: visible; }
+        .pf-diagram .lbl { font-family: var(--font-body); font-size: 13px; font-weight: 500; fill: var(--ink); }
+        .pf-diagram .sub { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; fill: var(--ink-muted); }
+        .pf-diagram .head { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; fill: var(--ink-muted); }
+        .pf-text { max-width: 42rem; }
+        @media (min-width: 900px) { .pf-sticky { position: sticky; top: var(--space-lg); } }
+        .pf-caption { font-size: 0.86rem; color: var(--ink-muted); margin-top: 0.6rem; }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content money wide">
+                <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                <p class="proto-tag">Prototype 03 &middot; Interactive diagram</p>
+                <h1 class="page-title">Where your salary goes</h1>
+                <p class="page-lede">Put in your monthly take-home pay and give every złoty a job. The drawing shows the split: one line in, a bundle out for each bucket.</p>
+
+                <div class="pf-layout">
+                    <div>
+                        <div class="m-field pf-pay">
+                            <label class="m-label" for="pay">Net monthly pay</label>
+                            <div class="pf-pay-row">
+                                <input class="m-input" id="pay" type="number" inputmode="numeric" min="0" step="100" value="8000">
+                                <span class="unit">zł</span>
+                            </div>
+                            <p class="m-hint">What actually lands in your account, after tax and contributions.</p>
+                        </div>
+
+                        <div id="buckets"></div>
+
+                        <div class="pf-status" id="status" role="status"></div>
+
+                        <div class="m-actions">
+                            <button class="m-btn" type="button" id="preset">Try 50/30/20</button>
+                            <button class="m-btn m-btn-quiet" type="button" id="reset">Reset</button>
+                        </div>
+                        <p class="pf-preset-note">50/30/20 is one common starting template: half on needs, 30% on wants, 20% on saving. It's a starting point, not a rule. Here the 20% is split across the three saving buckets.</p>
+                    </div>
+
+                    <div class="pf-sticky">
+                        <span class="m-label">The flow</span>
+                        <div class="pf-diagram" id="diagram" aria-hidden="true"></div>
+                        <p class="pf-caption">Each line is roughly the same slice of your pay. Thicker bundle, more money.</p>
+                    </div>
+                </div>
+
+                <hr class="m-hair">
+
+                <section class="m-section m-text pf-text">
+                    <h2 style="font-family: var(--font-display); font-size: 1.45rem; font-weight: 500; letter-spacing: -0.01em; margin-bottom: var(--space-sm);">Pay yourself first</h2>
+                    <p>Set up standing orders that move the buffer, goals and investing money out on payday, the day your salary lands. What's left in the main account is what you can spend.</p>
+                    <p>If you wait until the end of the month to save what's left, there usually isn't anything left. Not because you're bad with money. Spending just expands to fill the account.</p>
+                    <p class="m-soft">One more thing: PPK comes out before your net pay, so it's not in this picture. If you're in it, you're already saving a bit on top.</p>
+                </section>
+
+                <p class="m-disclaimer">Draft. General information to help you think, not personal financial advice. Rules and limits change, so check current figures before acting.</p>
+                <nav class="m-proto-nav"><a href="check-up.html">&larr; Prev</a><a href="first-30-days.html">Next &rarr;</a></nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <script>
+    (function () {
+        var BUCKETS = [
+            { id: 'fixed', name: 'Fixed costs', hint: 'Rent or mortgage, bills, transport, loan payments.', pct: 50 },
+            { id: 'daily', name: 'Day-to-day and fun', hint: 'Food, going out, hobbies, gifts.', pct: 25 },
+            { id: 'buffer', name: 'Safety buffer', hint: 'Until you have 3-6 months of essential costs. That range is a common rule of thumb.', pct: 10 },
+            { id: 'goals', name: 'Goals', hint: 'Things within about 3 years: a holiday, a car, a flat deposit.', pct: 5 },
+            { id: 'invest', name: 'Long-term investing', hint: 'IKE, IKZE, broad index funds. Money you won’t touch for 10+ years.', pct: 10, accent: true }
+        ];
+        var DEFAULTS = BUCKETS.map(function (b) { return b.pct; });
+        var PRESET = { fixed: 50, daily: 30, buffer: 5, goals: 5, invest: 10 };
+
+        var payInput = document.getElementById('pay');
+        var list = document.getElementById('buckets');
+        var statusEl = document.getElementById('status');
+        var diagram = document.getElementById('diagram');
+        var SVGNS = 'http://www.w3.org/2000/svg';
+
+        function zl(n) { return Math.round(n).toLocaleString('en-US') + ' zł'; }
+        function pay() { var v = parseFloat(payInput.value); return isFinite(v) && v > 0 ? v : 0; }
+
+        // Build the slider rows
+        BUCKETS.forEach(function (b) {
+            var row = document.createElement('div');
+            row.className = 'pf-bucket';
+            row.innerHTML =
+                '<div class="pf-bucket-head">' +
+                    '<label class="pf-bucket-name" for="r-' + b.id + '">' + b.name + '</label>' +
+                    '<span class="pf-bucket-val"><b id="v-' + b.id + '"></b> <span class="m-muted" id="p-' + b.id + '"></span></span>' +
+                '</div>' +
+                '<input class="m-range" type="range" min="0" max="100" step="1" id="r-' + b.id + '">' +
+                '<p class="pf-bucket-hint">' + b.hint + '</p>';
+            list.appendChild(row);
+            var r = row.querySelector('input');
+            r.value = b.pct;
+            r.addEventListener('input', function () { b.pct = parseInt(r.value, 10) || 0; update(); });
+            b.range = r;
+        });
+
+        function setAll(pcts) {
+            BUCKETS.forEach(function (b, i) {
+                b.pct = Array.isArray(pcts) ? pcts[i] : pcts[b.id];
+                b.range.value = b.pct;
+            });
+            update();
+        }
+
+        document.getElementById('preset').addEventListener('click', function () { setAll(PRESET); });
+        document.getElementById('reset').addEventListener('click', function () { setAll(DEFAULTS); });
+        payInput.addEventListener('input', update);
+
+        function update() {
+            var p = pay();
+            var total = 0;
+            BUCKETS.forEach(function (b) {
+                total += b.pct;
+                document.getElementById('v-' + b.id).textContent = zl(p * b.pct / 100);
+                document.getElementById('p-' + b.id).textContent = '· ' + b.pct + '%';
+                b.range.setAttribute('aria-valuetext', zl(p * b.pct / 100) + ', ' + b.pct + ' percent');
+            });
+            var diff = 100 - total;
+            statusEl.classList.toggle('warn', diff !== 0);
+            if (p === 0) {
+                statusEl.textContent = 'Enter your monthly take-home pay to see the amounts.';
+            } else if (diff === 0) {
+                statusEl.textContent = 'Every złoty has a job. ' + zl(p * (PCT('buffer') + PCT('goals') + PCT('invest')) / 100) + ' a month goes to future you.';
+            } else if (diff > 0) {
+                statusEl.textContent = zl(p * diff / 100) + ' (' + diff + '%) has no job yet. Money without a job tends to get spent. Give it one.';
+            } else {
+                statusEl.textContent = 'You’ve planned ' + zl(p * -diff / 100) + ' (' + (-diff) + '%) more than you earn. Pull something back.';
+            }
+            draw(diff);
+        }
+
+        function PCT(id) { for (var i = 0; i < BUCKETS.length; i++) if (BUCKETS[i].id === id) return BUCKETS[i].pct; return 0; }
+
+        function svg(tag, attrs, text) {
+            var n = document.createElementNS(SVGNS, tag);
+            for (var k in attrs) n.setAttribute(k, attrs[k]);
+            if (text != null) n.textContent = text;
+            return n;
+        }
+
+        // Line-work flow. Colors come from CSS variables, so dark mode just works.
+        function draw(diff) {
+            var W = Math.max(300, Math.round(diagram.clientWidth - 32));
+            var narrow = W < 520;
+            var LINES_PER_100 = narrow ? 40 : 56;
+            var p = pay();
+
+            var rows = BUCKETS.map(function (b) {
+                return { name: b.name, pct: b.pct, amount: p * b.pct / 100, accent: !!b.accent, dashed: false };
+            });
+            if (diff > 0) rows.push({ name: 'No job yet', pct: diff, amount: p * diff / 100, accent: false, dashed: true });
+
+            rows.forEach(function (r) { r.n = r.pct > 0 ? Math.max(1, Math.round(r.pct / 100 * LINES_PER_100)) : 0; });
+            var totalLines = rows.reduce(function (s, r) { return s + r.n; }, 0);
+
+            var gap = 3;
+            var slotMin = 32;
+            var slotGap = narrow ? 10 : 16;
+            var top = 34;
+            // Shrink line spacing if the stack would get too tall
+            var maxStack = narrow ? 300 : 380;
+            if (totalLines * gap > maxStack) gap = maxStack / totalLines;
+
+            // Right side slot positions
+            var y = top;
+            rows.forEach(function (r) {
+                r.h = Math.max(0, (r.n - 1) * gap);
+                var slot = Math.max(r.h, slotMin);
+                r.y0 = y + (slot - r.h) / 2;
+                r.labelY = y + slot / 2;
+                y += slot + slotGap;
+            });
+            var H = Math.max(y - slotGap + 10, 160);
+
+            // Left income bundle, centred vertically
+            var inH = Math.max(0, (totalLines - 1) * gap);
+            var inY0 = top + (H - top - inH) / 2;
+
+            var labelW = narrow ? 128 : 170;
+            var x0 = 0, x1 = W * (narrow ? 0.1 : 0.12);
+            var x3 = W - labelW - 12, x2 = x3 - W * (narrow ? 0.06 : 0.08);
+
+            var root = svg('svg', { viewBox: '0 0 ' + W + ' ' + H, width: W, height: H, role: 'img' });
+            root.appendChild(svg('text', { x: 0, y: 14, class: 'head' }, 'In'));
+            root.appendChild(svg('text', { x: 0, y: 28, class: 'lbl' }, p ? zl(p) : '-'));
+            root.appendChild(svg('text', { x: x3 + 12, y: 14, class: 'head' }, 'Out'));
+
+            var k = 0;
+            rows.forEach(function (r) {
+                if (!r.n) return;
+                var g = svg('g', {
+                    fill: 'none',
+                    'stroke-width': 1,
+                    style: 'stroke: var(' + (r.accent ? '--accent' : (r.dashed ? '--ink-muted' : '--ink')) + ')'
+                });
+                if (r.dashed) g.setAttribute('stroke-dasharray', '3 3');
+                for (var i = 0; i < r.n; i++, k++) {
+                    var ya = inY0 + k * gap;
+                    var yb = r.y0 + i * gap;
+                    var mx = (x1 + x2) / 2;
+                    var d = 'M' + x0 + ' ' + ya.toFixed(2) +
+                        ' H' + x1.toFixed(2) +
+                        ' C' + mx.toFixed(2) + ' ' + ya.toFixed(2) + ', ' + mx.toFixed(2) + ' ' + yb.toFixed(2) + ', ' + x2.toFixed(2) + ' ' + yb.toFixed(2) +
+                        ' H' + x3.toFixed(2);
+                    g.appendChild(svg('path', { d: d }));
+                }
+                root.appendChild(g);
+                // End tick
+                root.appendChild(svg('line', {
+                    x1: x3 + 4, x2: x3 + 4, y1: r.y0 - 2, y2: r.y0 + r.h + 2,
+                    'stroke-width': 1,
+                    style: 'stroke: var(--ink)'
+                }));
+                root.appendChild(svg('text', { x: x3 + 12, y: r.labelY - 2, class: 'lbl' }, r.name));
+                root.appendChild(svg('text', { x: x3 + 12, y: r.labelY + 12, class: 'sub' }, zl(r.amount) + ' · ' + r.pct + '%'));
+            });
+            if (diff < 0) {
+                root.appendChild(svg('text', { x: 0, y: H - 4, class: 'sub' }, 'Over by ' + (-diff) + '%'));
+            }
+
+            diagram.innerHTML = '';
+            diagram.appendChild(root);
+        }
+
+        var t;
+        window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(update, 120); });
+        try {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', update);
+        } catch (e) { /* older browsers: CSS variables still switch */ }
+
+        update();
+    })();
+    </script>
+</body>
+</html>

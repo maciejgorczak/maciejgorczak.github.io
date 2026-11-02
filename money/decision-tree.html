@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A short decision tree: where your next 1,000 zł should go">
+    <title>Where does my next 1,000 zł go? - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .dt-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 0.6rem; }
+        .dt-q {
+            font-family: var(--font-display);
+            font-size: clamp(1.4rem, 3.6vw, 1.9rem);
+            font-weight: 500;
+            letter-spacing: -0.015em;
+            line-height: 1.2;
+            margin-bottom: 0.6rem;
+        }
+        .dt-help { color: var(--ink-soft); margin-bottom: var(--space-md); max-width: 40rem; }
+        .dt-trail-wrap { margin-top: var(--space-xl); }
+        .dt-trail { list-style: none; border-top: 1px solid var(--line); }
+        .dt-trail li {
+            display: grid;
+            grid-template-columns: 1.6rem 1fr auto;
+            gap: 0.6rem;
+            align-items: baseline;
+            padding: 0.55rem 0;
+            border-bottom: 1px solid var(--line);
+            font-size: 0.94rem;
+            color: var(--ink-soft);
+        }
+        .dt-trail .n, .dt-trail .a {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+        }
+        .dt-trail .a { color: var(--ink); text-align: right; }
+        .dt-end h2 {
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 4vw, 2.1rem);
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            margin-bottom: var(--space-sm);
+        }
+        .dt-end p { line-height: 1.65; }
+        .dt-end p + .m-label { margin-top: var(--space-md); }
+        .dt-why { color: var(--ink-soft); }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content money">
+                <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                <p class="proto-tag">Prototype 01 &middot; Decision tree</p>
+                <h1 class="page-title">Where does my next 1,000 zł go?</h1>
+                <p class="page-lede">A few quick questions, in the order that usually matters. You get one clear next step at the end, not a list of twenty.</p>
+
+                <section id="tree" aria-live="polite"></section>
+
+                <p class="m-disclaimer">Draft. General information to help you think, not personal financial advice. Rules and limits change, so check current figures before acting.</p>
+                <nav class="m-proto-nav"><a href="index.html">&larr; Prev</a><a href="check-up.html">Next &rarr;</a></nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <script>
+    (function () {
+        // Questions. Each option points to another question or to an end.
+        var Q = {
+            overdue: {
+                short: 'Overdue bills',
+                text: 'Any bills overdue, or debt collectors calling?',
+                help: 'Rent, utilities, phone, a loan instalment you missed.',
+                options: [
+                    { label: 'Yes', to: 'end_overdue' },
+                    { label: 'No', to: 'buffer' }
+                ]
+            },
+            buffer: {
+                short: 'One-month buffer',
+                text: 'Do you have about one month of essential costs set aside?',
+                help: 'Essential costs means rent, bills, food, transport, loan payments. Not the fun stuff.',
+                options: [
+                    { label: 'No', to: 'end_buffer' },
+                    { label: 'Yes', to: 'debt' }
+                ]
+            },
+            debt: {
+                short: 'High-interest debt',
+                text: 'Do you have any high-interest debt?',
+                help: 'Credit cards, an overdraft you live in, payday loans, consumer loans for a phone or a TV.',
+                options: [
+                    { label: 'Yes', to: 'end_debt' },
+                    { label: 'No', to: 'ppk' }
+                ]
+            },
+            ppk: {
+                short: 'PPK',
+                text: 'Does your employer offer PPK, and are you in?',
+                help: 'PPK is the workplace pension scheme. Your employer adds money on top of yours.',
+                options: [
+                    { label: 'Yes, and I’m in', to: 'emergency' },
+                    { label: 'Yes, but I opted out', to: 'end_ppk' },
+                    { label: 'No PPK, or not sure', small: 'Ask HR or check your payslip.', to: 'emergency' }
+                ]
+            },
+            emergency: {
+                short: 'Emergency fund',
+                text: 'Do you have 3-6 months of essential costs saved?',
+                help: 'That range is a common rule of thumb. Closer to 6 if your income is less stable or you support others.',
+                options: [
+                    { label: 'No', to: 'end_emergency' },
+                    { label: 'Yes', to: 'goal' }
+                ]
+            },
+            goal: {
+                short: 'Goal within 3 years',
+                text: 'Is there something you need money for within about 3 years?',
+                help: 'A flat deposit, a car, a wedding, a course.',
+                options: [
+                    { label: 'Yes', to: 'end_goal' },
+                    { label: 'No', to: 'wrappers' }
+                ]
+            },
+            wrappers: {
+                short: 'IKE / IKZE',
+                text: 'Have you used this year’s IKE or IKZE limit?',
+                help: 'These are retirement accounts with tax breaks. Each has a yearly cap on how much you can put in.',
+                options: [
+                    { label: 'No, or I don’t have one', to: 'end_ike' },
+                    { label: 'Not sure what those are', to: 'end_ike' },
+                    { label: 'Yes, both are full', to: 'end_broker' }
+                ]
+            }
+        };
+
+        var END = {
+            end_overdue: {
+                title: 'Put the 1,000 zł toward the overdue bill.',
+                why: 'Late bills grow. Interest and collection costs pile up, and unpaid debts can land you in a debtor register, which makes renting or borrowing harder later. Nothing else on this list beats that.',
+                next: 'If you can’t pay it all, call the company before they call you. Most will agree to a payment plan.'
+            },
+            end_buffer: {
+                title: 'Park the 1,000 zł in a separate savings account.',
+                why: 'Without a small buffer, the next surprise (a broken washing machine, a dentist bill) goes on a card. A month of costs breaks that cycle.',
+                next: 'Use an account that isn’t linked to your card. Out of sight helps. Keep going until you have about one month of essential costs.'
+            },
+            end_debt: {
+                title: 'Put the 1,000 zł toward the debt with the highest rate.',
+                why: 'Every złoty you pay off saves you that debt\u2019s interest rate, guaranteed and tax-free. Few investments reliably beat that, and payday loans often cost far more than their headline rate suggests.',
+                next: 'Keep paying the minimum on everything else. Once the top one is gone, roll that payment into the next one.'
+            },
+            end_ppk: {
+                title: 'Rejoin PPK, and add the 1,000 zł to your emergency fund.',
+                why: 'In PPK your employer adds money on top of yours, plus there are state top-ups. Opting out means giving that up. It’s rare to get extra money just for saving.',
+                next: 'Ask HR how to opt back in. Then keep building toward 3-6 months of essential costs.'
+            },
+            end_emergency: {
+                title: 'Add the 1,000 zł to your emergency fund.',
+                why: 'An emergency fund turns a job loss or a big repair into a bad month, not a debt problem. It also means you won’t have to sell investments at a bad time.',
+                next: 'Keep it somewhere safe and easy to reach: a savings account or a short deposit. Not in stocks.'
+            },
+            end_goal: {
+                title: 'Save the 1,000 zł for that goal, somewhere safe.',
+                why: 'Within 3 years, stocks can drop and not recover in time. For money you need soon, safety matters more than return.',
+                next: 'Deposits or Polish treasury bonds are the usual choices. Pick an end date that matches when you need the money.'
+            },
+            end_ike: {
+                title: 'Put the 1,000 zł into an IKE or IKZE.',
+                why: 'IKE: no 19% capital gains tax (Belka) if you withdraw after 60, or 55 with pension rights. IKZE: you deduct what you put in from your taxable income, and pay a 10% flat tax when you withdraw after 65. Same investments, less tax.',
+                next: 'Inside it, a broad, low-cost index fund is a sensible default. Check this year’s limit before you top up.'
+            },
+            end_broker: {
+                title: 'Invest the 1,000 zł in a regular brokerage account.',
+                why: 'Your tax-friendly accounts are full, so this is the next step. Gains here are taxed at 19%, but it’s still how long-term money grows.',
+                next: 'Broad, low-cost index funds. Buy on a schedule, every month, and don’t check the price every day.'
+            }
+        };
+
+        var MAX_DEPTH = 7;
+        var root = document.getElementById('tree');
+        var path = []; // [{ q: 'overdue', answer: 'No' }]
+        var current = 'overdue';
+
+        function el(tag, cls, text) {
+            var n = document.createElement(tag);
+            if (cls) n.className = cls;
+            if (text != null) n.textContent = text;
+            return n;
+        }
+
+        function trail() {
+            if (!path.length) return null;
+            var wrap = el('div', 'dt-trail-wrap');
+            wrap.appendChild(el('span', 'm-label', 'Your answers so far'));
+            var ol = el('ol', 'dt-trail');
+            path.forEach(function (step, i) {
+                var li = el('li');
+                li.appendChild(el('span', 'n', String(i + 1).padStart(2, '0')));
+                li.appendChild(el('span', null, Q[step.q].short));
+                li.appendChild(el('span', 'a', step.answer));
+                ol.appendChild(li);
+            });
+            wrap.appendChild(ol);
+            return wrap;
+        }
+
+        function progress(frac) {
+            var p = el('div', 'm-progress');
+            var s = el('span');
+            s.style.width = Math.round(frac * 100) + '%';
+            p.appendChild(s);
+            return p;
+        }
+
+        function backBtn() {
+            var b = el('button', 'm-btn m-btn-quiet', '← Back');
+            b.type = 'button';
+            b.addEventListener('click', function () {
+                var last = path.pop();
+                current = last.q;
+                render(true);
+            });
+            return b;
+        }
+
+        function render(focus) {
+            root.innerHTML = '';
+            var box = el('div', 'm-fade');
+
+            if (current.indexOf('end_') === 0) {
+                var e = END[current];
+                box.className += ' dt-end';
+                box.appendChild(progress(1));
+                var panel = el('div', 'm-panel');
+                panel.appendChild(el('span', 'm-label', 'Your next step'));
+                var h = el('h2', null, e.title);
+                h.tabIndex = -1;
+                panel.appendChild(h);
+                panel.appendChild(el('span', 'm-label', 'Why'));
+                panel.appendChild(el('p', 'dt-why', e.why));
+                panel.appendChild(el('span', 'm-label', 'After that'));
+                panel.appendChild(el('p', null, e.next));
+                box.appendChild(panel);
+
+                var acts = el('div', 'm-actions');
+                acts.appendChild(backBtn());
+                var again = el('button', 'm-btn m-btn-primary', 'Start over');
+                again.type = 'button';
+                again.addEventListener('click', function () {
+                    path = [];
+                    current = 'overdue';
+                    render(true);
+                });
+                acts.appendChild(again);
+                box.appendChild(acts);
+                var t = trail();
+                if (t) box.appendChild(t);
+                root.appendChild(box);
+                if (focus) h.focus({ preventScroll: true });
+                return;
+            }
+
+            var q = Q[current];
+            box.appendChild(progress(path.length / MAX_DEPTH));
+            var head = el('div', 'dt-head');
+            head.appendChild(el('span', 'm-step-count', 'Question ' + (path.length + 1)));
+            box.appendChild(head);
+            var qh = el('h2', 'dt-q', q.text);
+            qh.tabIndex = -1;
+            box.appendChild(qh);
+            if (q.help) box.appendChild(el('p', 'dt-help', q.help));
+
+            var list = el('div', 'm-choices');
+            q.options.forEach(function (opt) {
+                var b = el('button', 'm-choice', opt.label);
+                b.type = 'button';
+                if (opt.small) b.appendChild(el('small', null, opt.small));
+                b.addEventListener('click', function () {
+                    path.push({ q: current, answer: opt.label });
+                    current = opt.to;
+                    render(true);
+                });
+                list.appendChild(b);
+            });
+            box.appendChild(list);
+
+            if (path.length) {
+                var acts2 = el('div', 'm-actions');
+                acts2.appendChild(backBtn());
+                box.appendChild(acts2);
+            }
+            var t2 = trail();
+            if (t2) box.appendChild(t2);
+            root.appendChild(box);
+            if (focus) qh.focus({ preventScroll: true });
+        }
+
+        render(false);
+    })();
+    </script>
+</body>
+</html>

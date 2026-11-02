@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="What a monthly amount turns into over time, with the assumptions in plain sight">
+    <title>Time vs. money - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .tvm-layout { display: grid; gap: var(--space-xl); grid-template-columns: 1fr; }
+        @media (min-width: 860px) { .tvm-layout { grid-template-columns: 17rem 1fr; } }
+        .tvm-inputs .m-field { margin-bottom: var(--space-md); }
+        .tvm-range-head { display: flex; justify-content: space-between; align-items: baseline; }
+        .tvm-range-value { font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink); }
+        .tvm-toggle { display: grid; gap: 0.4rem; }
+        .tvm-toggle .m-choice { padding: 0.65rem 0.8rem; font-size: 0.95rem; }
+        .tvm-chart-wrap { border: 1px solid var(--line); background: var(--bg-2); padding: var(--space-sm); margin: var(--space-md) 0 0.6rem; }
+        .tvm-chart { display: block; width: 100%; height: auto; }
+        .tvm-legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); }
+        .tvm-legend span { display: inline-flex; align-items: center; gap: 0.45rem; }
+        .tvm-legend svg { flex: none; }
+        .tvm-stats .m-stat-value { font-size: 1.6rem; }
+        .tvm-fees { margin-top: var(--space-lg); }
+        .tvm-fee-row { display: flex; justify-content: space-between; gap: var(--space-md); padding: 0.55rem 0; border-bottom: 1px solid var(--line); font-size: 0.98rem; }
+        .tvm-fee-row b { font-weight: 500; font-variant-numeric: tabular-nums; }
+        .tvm-note { font-size: 0.95rem; color: var(--ink-soft); margin-top: var(--space-sm); }
+        /* Accent stays on the projected-value line only */
+        .tvm-inputs .m-range { accent-color: var(--ink); }
+        .tvm-toggle .m-choice.selected { box-shadow: inset 3px 0 0 var(--ink); }
+        .tvm-results .m-callout { border-left-color: var(--ink); }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content money wide">
+                <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                <p class="proto-tag">Prototype 05 &middot; Calculator</p>
+                <h1 class="page-title">Time vs. money</h1>
+                <p class="page-lede">What a fixed monthly amount turns into over the years. Change the numbers and watch what moves. Every assumption is on the page, so nothing is hidden.</p>
+
+                <div class="tvm-layout">
+                    <form class="tvm-inputs" id="tvm-form" onsubmit="return false">
+                        <div class="m-field">
+                            <label class="m-label" for="amount">Monthly amount (zł)</label>
+                            <input class="m-input" id="amount" type="number" inputmode="numeric" min="0" step="50" value="500">
+                        </div>
+                        <div class="m-field">
+                            <div class="tvm-range-head">
+                                <label class="m-label" for="years">Years</label>
+                                <span class="tvm-range-value" id="years-out">25</span>
+                            </div>
+                            <input class="m-range" id="years" type="range" min="1" max="40" step="1" value="25">
+                        </div>
+                        <div class="m-field">
+                            <label class="m-label" for="ret">Assumed yearly return (%)</label>
+                            <input class="m-input" id="ret" type="number" inputmode="decimal" step="0.5" value="5">
+                            <p class="m-hint">An assumption, not a promise. Before fees and tax.</p>
+                        </div>
+                        <div class="m-field">
+                            <label class="m-label" for="infl">Inflation (%)</label>
+                            <input class="m-input" id="infl" type="number" inputmode="decimal" step="0.5" value="3">
+                        </div>
+                        <div class="m-field">
+                            <span class="m-label" id="tax-label">Account type</span>
+                            <div class="tvm-toggle" role="radiogroup" aria-labelledby="tax-label">
+                                <button type="button" class="m-choice selected" role="radio" aria-checked="true" data-tax="belka">Taxed account<small>19% Belka tax on gains when you sell</small></button>
+                                <button type="button" class="m-choice" role="radio" aria-checked="false" data-tax="ike">Tax wrapper (IKE)<small>No Belka tax if held until 60. Check this year's limit.</small></button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="tvm-results">
+                        <div class="m-stats tvm-stats">
+                            <div class="m-stat"><span class="m-label">You put in</span><div class="m-stat-value" id="s-in">-</div></div>
+                            <div class="m-stat"><span class="m-label">Value at the end</span><div class="m-stat-value" id="s-end">-</div></div>
+                            <div class="m-stat"><span class="m-label">In today's money</span><div class="m-stat-value" id="s-real">-</div></div>
+                            <div class="m-stat"><span class="m-label">Gains after tax</span><div class="m-stat-value" id="s-gain">-</div></div>
+                        </div>
+
+                        <div class="tvm-chart-wrap">
+                            <svg class="tvm-chart" id="chart" viewBox="0 0 640 340" role="img" aria-labelledby="chart-title">
+                                <title id="chart-title">Value over time compared with what you put in</title>
+                            </svg>
+                        </div>
+                        <div class="tvm-legend" id="legend"></div>
+
+                        <p class="tvm-note" id="wait-note"></p>
+                        <p class="m-callout">This is arithmetic, not a forecast. Real returns go up and down, sometimes a lot.</p>
+
+                        <div class="tvm-fees">
+                            <span class="m-label">What fees do to the end value</span>
+                            <div class="tvm-fee-row"><span>Low-cost fund, 0.2% a year</span><b id="f-low">-</b></div>
+                            <div class="tvm-fee-row"><span>Higher-fee fund, 1.5% a year</span><b id="f-high">-</b></div>
+                            <p class="tvm-note" id="fee-note"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="m-hair">
+                <div class="m-text m-soft">
+                    <p><strong>How it's worked out.</strong> The money goes in at the end of each month and grows at the yearly return divided by 12. Fees are taken off the return. Belka tax is 19% of the gains, taken once at the end when you sell. "In today's money" divides the end value by inflation over the same years.</p>
+                </div>
+
+                <p class="m-disclaimer">Draft. General information to help you think, not personal financial advice. Rules and limits change, so check current figures before acting.</p>
+                <nav class="m-proto-nav"><a href="first-30-days.html">&larr; Prev</a><a href="ai-toolkit.html">Next &rarr;</a></nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <script>
+    (function () {
+        var BELKA = 0.19;
+        var DELAY = 10;
+        var state = { tax: 'belka' };
+
+        var el = function (id) { return document.getElementById(id); };
+        var fmt = new Intl.NumberFormat('pl-PL', { maximumFractionDigits: 0 });
+        var zl = function (n) { return fmt.format(Math.round(n)) + ' zł'; };
+        var num = function (id, fallback) {
+            var v = parseFloat(el(id).value);
+            return isFinite(v) ? v : fallback;
+        };
+
+        // Future value of a monthly contribution after m months at monthly rate r.
+        function fv(monthly, r, m) {
+            if (m <= 0) return 0;
+            if (Math.abs(r) < 1e-12) return monthly * m;
+            return monthly * (Math.pow(1 + r, m) - 1) / r;
+        }
+        // Value if you cashed out: Belka on gains only (no tax on losses).
+        function afterTax(value, paidIn) {
+            if (state.tax === 'ike') return value;
+            var gain = value - paidIn;
+            return gain > 0 ? paidIn + gain * (1 - BELKA) : value;
+        }
+
+        function series(monthly, yearlyReturn, years, startYear) {
+            var r = yearlyReturn / 12;
+            var pts = [];
+            for (var y = 0; y <= years; y++) {
+                var m = Math.max(0, (y - startYear) * 12);
+                var paid = monthly * m;
+                pts.push({ y: y, paid: paid, value: afterTax(fv(monthly, r, m), paid) });
+            }
+            return pts;
+        }
+
+        function colors() {
+            var cs = getComputedStyle(document.documentElement);
+            return {
+                ink: cs.getPropertyValue('--ink').trim(),
+                muted: cs.getPropertyValue('--ink-muted').trim(),
+                line: cs.getPropertyValue('--line').trim(),
+                accent: cs.getPropertyValue('--accent').trim(),
+                mono: cs.getPropertyValue('--font-mono').trim()
+            };
+        }
+
+        function niceStep(max) {
+            var raw = max / 4;
+            var p = Math.pow(10, Math.floor(Math.log10(raw || 1)));
+            var n = raw / p;
+            var s = n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10;
+            return s * p;
+        }
+        function shortZl(n) {
+            if (n >= 1e6) return (n / 1e6).toFixed(n % 1e6 === 0 ? 0 : 1).replace('.', ',') + ' mln';
+            if (n >= 1e3) return Math.round(n / 1e3) + ' tys.';
+            return String(Math.round(n));
+        }
+
+        function draw(main, delayed, years) {
+            var svg = el('chart');
+            var c = colors();
+            var W = Math.max(280, Math.round(svg.clientWidth || 640));
+            var H = W < 520 ? Math.round(W * 0.7) : Math.round(W * 0.53);
+            var L = W < 520 ? 62 : 68, R = 12, T = 14, B = 34;
+            svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+            var max = 0;
+            main.forEach(function (p) { max = Math.max(max, p.value, p.paid); });
+            if (max <= 0) max = 1;
+            var step = niceStep(max);
+            var top = Math.ceil(max / step) * step;
+            var x = function (y) { return L + (W - L - R) * (y / years); };
+            var yv = function (v) { return T + (H - T - B) * (1 - v / top); };
+            var ns = 'http://www.w3.org/2000/svg';
+
+            while (svg.childNodes.length > 1) svg.removeChild(svg.lastChild);
+            function add(tag, attrs, text) {
+                var n = document.createElementNS(ns, tag);
+                for (var k in attrs) n.setAttribute(k, attrs[k]);
+                if (text != null) n.textContent = text;
+                svg.appendChild(n);
+                return n;
+            }
+            var textStyle = { 'font-family': c.mono, 'font-size': '11', 'letter-spacing': '0.06em', fill: c.muted };
+
+            // Grid + y labels
+            for (var v = 0; v <= top + 1e-6; v += step) {
+                add('line', { x1: L, x2: W - R, y1: yv(v), y2: yv(v), stroke: c.line, 'stroke-width': 1 });
+                add('text', Object.assign({ x: L - 6, y: yv(v) + 4, 'text-anchor': 'end' }, textStyle), shortZl(v));
+            }
+            // X labels
+            var xStep = years <= 10 ? 1 : years <= 20 ? 5 : 10;
+            if (years <= 10 && years > 6) xStep = 2;
+            for (var yr = 0; yr <= years; yr += xStep) {
+                add('text', Object.assign({ x: x(yr), y: H - B + 20, 'text-anchor': 'middle' }, textStyle), yr === 0 ? 'YEAR 0' : String(yr));
+            }
+            add('line', { x1: L, x2: W - R, y1: yv(0), y2: yv(0), stroke: c.ink, 'stroke-width': 1 });
+
+            function path(pts, key) {
+                return pts.map(function (p, i) { return (i ? 'L' : 'M') + x(p.y).toFixed(1) + ' ' + yv(p[key]).toFixed(1); }).join(' ');
+            }
+            add('path', { d: path(main, 'paid'), fill: 'none', stroke: c.muted, 'stroke-width': 1.25, 'stroke-dasharray': '4 4' });
+            if (delayed) add('path', { d: path(delayed, 'value'), fill: 'none', stroke: c.ink, 'stroke-width': 1.25 });
+            add('path', { d: path(main, 'value'), fill: 'none', stroke: c.accent, 'stroke-width': 2 });
+
+            // Legend uses the same strokes
+            var item = function (stroke, w, dash, label) {
+                return '<span><svg width="22" height="8" aria-hidden="true"><line x1="0" y1="4" x2="22" y2="4" stroke="' + stroke + '" stroke-width="' + w + '"' + (dash ? ' stroke-dasharray="4 3"' : '') + '/></svg>' + label + '</span>';
+            };
+            el('legend').innerHTML =
+                item(c.accent, 2, false, 'Projected value') +
+                (delayed ? item(c.ink, 1.25, false, 'Starting ' + DELAY + ' years later') : '') +
+                item(c.muted, 1.25, true, 'What you put in');
+        }
+
+        function update() {
+            var monthly = Math.max(0, num('amount', 0));
+            var years = Math.round(num('years', 25));
+            var ret = num('ret', 5) / 100;
+            var infl = num('infl', 3) / 100;
+            el('years-out').textContent = years + (years === 1 ? ' year' : ' years');
+
+            var main = series(monthly, ret, years, 0);
+            var last = main[main.length - 1];
+            var real = last.value / Math.pow(1 + infl, years);
+
+            el('s-in').textContent = zl(last.paid);
+            el('s-end').textContent = zl(last.value);
+            el('s-real').textContent = zl(real);
+            el('s-gain').textContent = zl(last.value - last.paid);
+
+            var delayed = years > DELAY ? series(monthly, ret, years, DELAY) : null;
+            if (delayed) {
+                var d = delayed[delayed.length - 1];
+                el('wait-note').textContent = 'Wait ' + DELAY + ' years and put in the same ' + zl(monthly) + ' a month: you end with ' + zl(d.value) + ' instead of ' + zl(last.value) + '. That gap is the cost of starting later.';
+            } else {
+                el('wait-note').textContent = 'Pick more than ' + DELAY + ' years to see the cost of starting ' + DELAY + ' years later.';
+            }
+            draw(main, delayed, years);
+
+            var low = series(monthly, ret - 0.002, years, 0).pop().value;
+            var high = series(monthly, ret - 0.015, years, 0).pop().value;
+            el('f-low').textContent = zl(low);
+            el('f-high').textContent = zl(high);
+            el('fee-note').textContent = low > high
+                ? 'Same money in, same market. The higher fee costs you ' + zl(low - high) + ' over ' + years + (years === 1 ? ' year.' : ' years.')
+                : '';
+        }
+
+        document.querySelectorAll('[data-tax]').forEach(function (b) {
+            b.addEventListener('click', function () {
+                state.tax = b.getAttribute('data-tax');
+                document.querySelectorAll('[data-tax]').forEach(function (o) {
+                    var on = o === b;
+                    o.classList.toggle('selected', on);
+                    o.setAttribute('aria-checked', on ? 'true' : 'false');
+                });
+                update();
+            });
+        });
+        ['amount', 'years', 'ret', 'infl'].forEach(function (id) { el(id).addEventListener('input', update); });
+        if (window.matchMedia) {
+            var mq = window.matchMedia('(prefers-color-scheme: dark)');
+            (mq.addEventListener ? mq.addEventListener.bind(mq, 'change') : mq.addListener.bind(mq))(update);
+        }
+        var rt;
+        window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(update, 120); });
+        update();
+    })();
+    </script>
+</body>
+</html>

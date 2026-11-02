@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="What to hand to AI with your money, what to keep to yourself, and prompts you can copy">
+    <title>AI money toolkit - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .ai-col-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; margin-bottom: 0.4rem; }
+        .ai-col-head h3 { margin-bottom: 0; }
+        .ai-count { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.14em; color: var(--ink-muted); }
+        .ai-list { list-style: none; }
+        .ai-list li { padding: 0.6rem 0; border-top: 1px solid var(--line); font-size: 0.96rem; line-height: 1.5; color: var(--ink-soft); }
+        .ai-list li:first-child { border-top: none; }
+        .ai-list b { display: block; font-weight: 500; color: var(--ink); }
+        .ai-steps { counter-reset: step; list-style: none; border-top: 2px solid var(--line-strong); }
+        .ai-steps li { counter-increment: step; display: grid; grid-template-columns: 2.4rem 1fr; padding: 0.75rem 0; border-bottom: 1px solid var(--line); font-size: 1rem; line-height: 1.55; }
+        .ai-steps li::before { content: counter(step, decimal-leading-zero); font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; color: var(--ink-muted); padding-top: 0.2rem; }
+        .ai-prompt { border: 1px solid var(--line); margin-bottom: var(--space-sm); }
+        .ai-prompt-head { display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--line); }
+        .ai-prompt-title { font-weight: 500; font-size: 1rem; line-height: 1.3; }
+        .ai-prompt pre { margin: 0; padding: 0.9rem 0.8rem; background: var(--bg-2); font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.6; color: var(--ink); white-space: pre-wrap; word-break: break-word; }
+        .ai-copy { padding: 0.45rem 0.75rem; font-size: 0.66rem; flex: none; }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content money wide">
+                <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                <p class="proto-tag">Prototype 06 &middot; Toolkit</p>
+                <h1 class="page-title">AI money toolkit</h1>
+                <p class="page-lede">AI chat tools are good at the boring parts of money: sorting, explaining, drafting. They're bad at knowing your full situation, and they don't carry the risk. Here's where the line sits.</p>
+
+                <section class="m-section">
+                    <div class="m-grid">
+                        <div class="m-card">
+                            <div class="ai-col-head"><h3>Good uses</h3><span class="ai-count">05</span></div>
+                            <ul class="ai-list">
+                                <li><b>Sort a bank export</b>Paste a CSV of last month's transactions (cleaned up first) and ask for categories and totals.</li>
+                                <li><b>Explain a contract or fee table</b>Loan terms, a fund's fee table, an insurance policy. Ask for it in plain words and what to watch out for.</li>
+                                <li><b>Build a budget from your numbers</b>Give it your income and fixed costs. Get a first draft you then adjust yourself.</li>
+                                <li><b>Turn a vague goal into steps</b>"I want a safety cushion" becomes an amount, a monthly transfer and a date.</li>
+                                <li><b>Stress-test your plan</b>Ask it to argue against you. What would make this plan fail?</li>
+                            </ul>
+                        </div>
+                        <div class="m-card">
+                            <div class="ai-col-head"><h3>Use with care</h3><span class="ai-count">02</span></div>
+                            <ul class="ai-list">
+                                <li><b>Comparing products</b>It can be out of date or plain wrong about fees and terms. Check the official KID document or fee table from the provider.</li>
+                                <li><b>Tax questions</b>Rules and limits change every year. Use the answer to know what to look up, then check the official source or ask an accountant.</li>
+                            </ul>
+                        </div>
+                        <div class="m-card">
+                            <div class="ai-col-head"><h3>Keep away from AI</h3><span class="ai-count">05</span></div>
+                            <ul class="ai-list">
+                                <li><b>Logins and passwords</b>Never, for any tool, for any reason.</li>
+                                <li><b>Full account numbers</b>Cut them down or remove them before you paste anything.</li>
+                                <li><b>PESEL and ID scans</b>No tool needs these to help you plan.</li>
+                                <li><b>Letting a tool move money</b>Don't connect anything that can make transfers or trades on your behalf.</li>
+                                <li><b>Final investment decisions</b>It can help you think. The decision and the risk stay with you.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="m-section">
+                    <h2>Before you paste</h2>
+                    <ol class="ai-steps">
+                        <li>Delete names, yours and other people's.</li>
+                        <li>Delete or shorten account and card numbers. The last four digits are enough to tell accounts apart.</li>
+                        <li>Delete addresses, phone numbers, PESEL and anything else that points to you.</li>
+                        <li>Check the tool's settings. Turn off training on your chats if you can.</li>
+                    </ol>
+                    <p class="m-callout">AI can sound sure and still be wrong. Check every number it gives you against your own statements.</p>
+                </section>
+
+                <section class="m-section">
+                    <h2>Prompts you can copy</h2>
+                    <p class="m-text m-soft" style="margin-bottom: var(--space-md);">Replace the parts in [brackets] with your own details.</p>
+                    <div id="prompts"></div>
+                </section>
+
+                <p class="m-disclaimer">Draft. General information to help you think, not personal financial advice. Rules and limits change, so check current figures before acting.</p>
+                <nav class="m-proto-nav"><a href="time-vs-money.html">&larr; Prev</a><a href="field-guide.html">Next &rarr;</a></nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <script>
+    (function () {
+        var prompts = [
+            {
+                title: 'Sort last month\'s spending',
+                text: 'Below is my bank export for [month], with names and account numbers removed.\nGroup every transaction into these categories: housing, food, transport, subscriptions, eating out, shopping, other.\nGive me a table with the total per category and the share of my net income of [amount] zł.\nThen list the 5 biggest single expenses and any subscriptions I might have forgotten.\n\n[paste transactions]'
+            },
+            {
+                title: 'Explain a fee table in plain words',
+                text: 'Explain this fee table like you would to a friend who doesn\'t work in finance.\nTell me: what I pay every year, what I pay when I buy or sell, and what these fees would cost on [amount] zł over [number] years.\nPoint out anything unusual or easy to miss. If something is unclear in the text, say so instead of guessing.\n\n[paste fee table]'
+            },
+            {
+                title: 'Draft a first budget',
+                text: 'My net monthly pay is [amount] zł. Fixed costs: rent [amount], bills [amount], transport [amount], loan payments [amount].\nI want to save for [goal] by [date].\nDraft a simple monthly budget with a fixed amount for saving that moves out on payday.\nKeep it to 6 lines or fewer. Show the maths so I can check it.'
+            },
+            {
+                title: 'Turn a goal into steps',
+                text: 'My goal: [for example, an emergency fund that covers 3 months of costs].\nMy monthly costs are about [amount] zł and I can put aside [amount] zł a month.\nTurn this into: a target amount, a monthly transfer, a realistic finish date, and 3 things that could get in the way with a fix for each.'
+            },
+            {
+                title: 'Argue against my plan',
+                text: 'Here is my money plan: [describe it in a few lines].\nPlay a sceptical friend. Give me the 5 strongest reasons this plan could fail or be a bad idea for someone like me: [age], [job type], [family situation].\nDon\'t soften it. Then tell me which one I should fix first.'
+            },
+            {
+                title: 'Prepare questions for an advisor',
+                text: 'I\'m meeting a financial advisor about [topic, for example, my first investments].\nMy situation: [short summary, no personal identifiers].\nGive me 8 questions I should ask, including questions about fees, conflicts of interest and how they get paid.'
+            }
+        ];
+
+        var host = document.getElementById('prompts');
+        prompts.forEach(function (p, i) {
+            var box = document.createElement('div');
+            box.className = 'ai-prompt';
+            var head = document.createElement('div');
+            head.className = 'ai-prompt-head';
+            var title = document.createElement('span');
+            title.className = 'ai-prompt-title';
+            title.textContent = p.title;
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'm-btn ai-copy';
+            btn.textContent = 'Copy';
+            btn.setAttribute('aria-label', 'Copy prompt: ' + p.title);
+            var pre = document.createElement('pre');
+            pre.textContent = p.text;
+            head.appendChild(title);
+            head.appendChild(btn);
+            box.appendChild(head);
+            box.appendChild(pre);
+            host.appendChild(box);
+
+            btn.addEventListener('click', function () {
+                copy(p.text).then(function () { flash(btn, 'Copied'); }, function () { flash(btn, 'Select and copy'); });
+            });
+        });
+
+        function fallback(text) {
+            return new Promise(function (resolve, reject) {
+                var ta = document.createElement('textarea');
+                ta.value = text;
+                ta.setAttribute('readonly', '');
+                ta.style.position = 'fixed';
+                ta.style.top = '-1000px';
+                document.body.appendChild(ta);
+                ta.select();
+                var ok = false;
+                try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+                document.body.removeChild(ta);
+                ok ? resolve() : reject();
+            });
+        }
+        function copy(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                return navigator.clipboard.writeText(text).catch(function () { return fallback(text); });
+            }
+            return fallback(text);
+        }
+        function flash(btn, label) {
+            btn.textContent = label;
+            clearTimeout(btn._t);
+            btn._t = setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
+        }
+    })();
+    </script>
+</body>
+</html>
