@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A made-up bank statement for one month of a 9-5 job in Warsaw, marked up line by line.">
+    <title>One month, marked up - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .page-content.st-page { max-width: 74rem; }
+        .st-intro { max-width: 44rem; }
+        .st-intro .page-title { font-size: clamp(2.4rem, 7vw, 4.6rem); line-height: 0.98; letter-spacing: -0.03em; }
+
+        .st-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-sm); margin: var(--space-lg) 0 var(--space-md); }
+        .st-bar .m-step-count { max-width: 34rem; line-height: 1.5; }
+
+        /* The sheet */
+        .st-wrap { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; }
+        .st-sheet { border: 1px solid var(--line); background: var(--bg); min-width: 0; }
+        .st-head { display: grid; grid-template-columns: 1fr auto; gap: var(--space-sm) var(--space-md); padding: var(--space-md); border-bottom: 2px solid var(--line-strong); }
+        .st-head-title { font-family: var(--font-mono); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; }
+        .st-head-warn { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); border: 1px solid var(--line); padding: 0.25rem 0.5rem; align-self: start; justify-self: end; white-space: nowrap; }
+        .st-meta { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 0.6rem var(--space-md); }
+        .st-meta div { font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.4; overflow-wrap: anywhere; }
+        .st-meta .m-label { margin-bottom: 0.15rem; }
+
+        .st-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 0.78rem; font-variant-numeric: tabular-nums; }
+        .st-table th { text-align: left; font-weight: 500; font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); padding: 0.6rem 0.5rem; border-bottom: 1px solid var(--line); }
+        .st-table td { padding: 0.42rem 0.5rem; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.35; }
+        .st-table th:first-child, .st-table td:first-child { padding-left: var(--space-md); white-space: nowrap; color: var(--ink-muted); }
+        .st-table th:last-child, .st-table td:last-child { padding-right: var(--space-md); }
+        .st-table .num { text-align: right; white-space: nowrap; }
+        .st-table .bal { color: var(--ink-muted); }
+        .st-table .in { font-weight: 500; }
+        .st-desc { color: var(--ink); }
+        .st-cat { display: block; color: var(--ink-muted); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.1rem; }
+        .st-mk { display: inline-block; min-width: 1.1rem; margin-left: 0.4rem; padding: 0 0.2rem; border: 1px solid var(--ink-muted); font-size: 0.6rem; line-height: 1rem; text-align: center; color: var(--ink-soft); vertical-align: 1px; }
+        .st-mk + .st-mk { margin-left: 0.2rem; }
+        .st-mk.key { border-color: var(--accent); color: var(--accent); }
+        .st-table tr.st-edge td { color: var(--ink-muted); font-style: normal; background: var(--bg-2); }
+        .st-table tfoot td { font-weight: 500; border-bottom: none; border-top: 2px solid var(--line-strong); padding-top: 0.7rem; padding-bottom: 0.7rem; }
+
+        /* Inline notes (narrow screens) */
+        .st-inline td { padding: 0.5rem var(--space-md) 0.8rem 2.2rem !important; border-bottom: 1px solid var(--line); white-space: normal !important; }
+        .st-inline .st-note-text { font-family: var(--font-display); font-size: 1rem; line-height: 1.4; color: var(--ink); border-left: 2px solid var(--ink); padding-left: 0.8rem; display: block; }
+        .st-inline.key .st-note-text { border-left-color: var(--accent); }
+        .st-inline .st-note-n { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; color: var(--ink-muted); display: block; margin-bottom: 0.2rem; text-transform: uppercase; }
+
+        /* Margin notes (wide screens) */
+        .st-notes { display: none; position: relative; }
+        .st-note { position: absolute; left: 0; right: 0; }
+        .st-note-num { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); display: block; margin-bottom: 0.2rem; }
+        .st-note p { font-family: var(--font-display); font-size: 1.04rem; line-height: 1.32; letter-spacing: -0.005em; color: var(--ink); }
+        .st-note.key p { font-size: 1.22rem; font-weight: 500; }
+        .st-note.key .st-note-num { color: var(--accent); }
+        .st-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; display: none; }
+
+        .st-ai-mobile { font-size: 1rem; line-height: 1.45; border-left: 2px solid var(--ink); padding-left: 0.8rem; margin-bottom: var(--space-md); max-width: 34rem; }
+        .st-ai-mobile .m-label { margin-bottom: 0.15rem; }
+        .st-page.notes-hidden .st-ai-mobile { display: none; }
+
+        @media (min-width: 1000px) {
+            .st-ai-mobile { display: none; }
+            .st-wrap { grid-template-columns: minmax(0, 1fr) 17rem; column-gap: 5.5rem; }
+            .st-notes { display: block; }
+            .st-svg { display: block; }
+            .st-inline { display: none; }
+        }
+
+        .st-wrap.notes-off { grid-template-columns: minmax(0, 1fr); }
+        .st-wrap.notes-off .st-notes, .st-wrap.notes-off .st-svg, .st-wrap.notes-off .st-inline, .st-wrap.notes-off .st-mk { display: none !important; }
+
+        /* Summary */
+        .st-summary { display: grid; gap: var(--space-xl); margin-top: var(--space-2xl); }
+        .st-summary h2 { font-family: var(--font-display); font-size: 1.6rem; font-weight: 500; letter-spacing: -0.015em; line-height: 1.15; margin-bottom: var(--space-sm); }
+        .st-cats { list-style: none; border-top: 2px solid var(--line-strong); }
+        .st-cats li { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr) auto; gap: 0.8rem; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--line); font-family: var(--font-mono); font-size: 0.76rem; font-variant-numeric: tabular-nums; }
+        .st-cats .cat-name { text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); font-size: 0.68rem; }
+        .st-cats .cat-track { position: relative; height: 10px; }
+        .st-cats .cat-line { position: absolute; left: 0; top: 4px; height: 0; border-top: 2px solid var(--ink); }
+        .st-cats .cat-line::after { content: ""; position: absolute; right: -1px; top: -6px; height: 10px; border-right: 1px solid var(--ink); }
+        .st-changes { list-style: none; counter-reset: ch; border-top: 2px solid var(--line-strong); }
+        .st-changes li { counter-increment: ch; display: grid; grid-template-columns: 2rem minmax(0, 1fr) auto; gap: 0.6rem; padding: 0.8rem 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+        .st-changes li::before { content: counter(ch, decimal-leading-zero); font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-muted); }
+        .st-changes .ch-text { line-height: 1.45; }
+        .st-changes .ch-text small { display: block; color: var(--ink-muted); font-size: 0.86rem; margin-top: 0.1rem; }
+        .st-changes .ch-amt { font-family: var(--font-mono); font-size: 0.8rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .st-total { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-sm); padding-top: var(--space-sm); }
+        .st-total-value { font-family: var(--font-display); font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 500; letter-spacing: -0.03em; line-height: 1; }
+        .st-closing { margin-top: var(--space-md); font-size: 1.1rem; line-height: 1.55; color: var(--ink-soft); max-width: 38rem; }
+
+        @media (min-width: 860px) {
+            .st-summary { grid-template-columns: 1fr 1fr; column-gap: var(--space-2xl); }
+        }
+        @media (max-width: 560px) {
+            .st-table .bal { display: none; }
+            .st-head { grid-template-columns: 1fr; }
+            .st-head-warn { justify-self: start; white-space: normal; }
+            .st-cats li { grid-template-columns: 6.2rem minmax(0, 1fr) auto; gap: 0.5rem; }
+            .st-table td, .st-table th { padding-left: 0.35rem; padding-right: 0.35rem; }
+        }
+        @media print {
+            .st-bar { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content st-page">
+                <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                <p class="proto-tag">Round 2 &middot; 04 &middot; Annotated document</p>
+
+                <div class="st-intro">
+                    <h1 class="page-title">One month, marked&nbsp;up</h1>
+                    <p class="page-lede">A made-up bank statement for someone like most people I know. Good job in Warsaw, 8,400&nbsp;zł a month after tax, nothing obviously wrong. I went through it with a pen. There&rsquo;s no disaster here. It just adds up.</p>
+                </div>
+
+                <div class="st-bar">
+                    <span class="m-step-count" id="st-summary-line"></span>
+                    <button class="m-btn" id="st-toggle" type="button" aria-pressed="true">Hide notes</button>
+                </div>
+
+                <p class="st-ai-mobile"><span class="m-label">Before you start</span>AI can sort this whole page into categories in two minutes. Delete the account number and names first.</p>
+
+                <div class="st-wrap" id="st-wrap">
+                    <div class="st-sheet">
+                        <div class="st-head">
+                            <span class="st-head-title">Statement of account</span>
+                            <span class="st-head-warn">Example statement. Not a real account.</span>
+                            <div class="st-meta">
+                                <div><span class="m-label">Holder</span>A. Example</div>
+                                <div><span class="m-label">Account</span>PL00 0000 0000 0000 0000 0000 0000</div>
+                                <div><span class="m-label">Period</span>01.03.2026 - 31.03.2026</div>
+                                <div><span class="m-label">Currency</span>PLN</div>
+                            </div>
+                        </div>
+                        <table class="st-table" id="st-table">
+                            <thead>
+                                <tr><th>Date</th><th>Description</th><th class="num">Amount</th><th class="num bal">Balance</th></tr>
+                            </thead>
+                            <tbody id="st-body"></tbody>
+                            <tfoot id="st-foot"></tfoot>
+                        </table>
+                    </div>
+                    <div class="st-notes" id="st-notes" aria-hidden="true"></div>
+                    <svg class="st-svg" id="st-svg" aria-hidden="true"></svg>
+                </div>
+
+                <section class="st-summary">
+                    <div>
+                        <h2>Where it went</h2>
+                        <ul class="st-cats" id="st-cats"></ul>
+                    </div>
+                    <div>
+                        <h2>What I&rsquo;d change</h2>
+                        <ol class="st-changes" id="st-changes"></ol>
+                        <div class="st-total">
+                            <span class="m-label">Freed up, every month</span>
+                            <span class="st-total-value" id="st-freed"></span>
+                        </div>
+                        <p class="st-closing" id="st-closing"></p>
+                    </div>
+                </section>
+
+                <p class="m-disclaimer">Draft. Placeholder content in my voice, to be replaced with my own notes. General information, not personal financial advice. Check current rules and figures before acting.</p>
+                <nav class="m-proto-nav">
+                    <a href="since-2004.html">&larr; Prev</a>
+                    <a href="me-vs-ai.html">Next &rarr;</a>
+                </nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <script>
+    (function () {
+        var OPENING = 412.60;
+        var NET_PAY = 8400;
+        var HOURS_A_MONTH = 168;
+
+        /* [day, description, category, amount, tag]  Amounts in zł. Negative = out. */
+        var ROWS = [
+            [1,  'Salary - Employer Sp. z o.o.',          'Income',        8400.00, 'salary'],
+            [1,  'Rent - standing order',                 'Housing',      -3100.00, 'rent'],
+            [2,  'Streaming service A',                   'Subscriptions',  -60.00, 'stream'],
+            [2,  'Corner shop',                           'Groceries',      -23.48],
+            [3,  'Credit card repayment - minimum',       'Debt',          -250.00, 'card'],
+            [3,  'Food delivery',                         'Delivery',       -68.90, 'food'],
+            [4,  'Grocery store',                         'Groceries',     -187.32],
+            [5,  'Gym membership',                        'Subscriptions', -169.00, 'gym'],
+            [5,  'Electricity',                           'Bills',         -214.60],
+            [6,  'Food delivery',                         'Delivery',       -94.50, 'food'],
+            [7,  'BLIK to Kasia - dinner split',          'Going out',     -120.00],
+            [7,  'Streaming service B',                   'Subscriptions',  -49.00, 'stream'],
+            [8,  'Corner shop',                           'Groceries',      -31.97],
+            [8,  'Bar',                                   'Going out',     -142.00],
+            [9,  'Phone and internet',                    'Bills',         -110.00],
+            [10, 'Pay later - phone, instalment 2 of 4',  'Debt',          -324.75, 'bnpl'],
+            [11, 'Food delivery',                         'Delivery',      -112.40, 'food'],
+            [12, 'Grocery store',                         'Groceries',     -212.85],
+            [13, 'Streaming service C',                   'Subscriptions',  -43.99, 'stream'],
+            [13, 'Public transport - monthly ticket',     'Transport',     -110.00],
+            [14, 'Online shop - headphones',              'Shopping',      -449.00],
+            [15, 'Food delivery',                         'Delivery',       -87.30, 'food'],
+            [16, 'Cloud storage',                         'Subscriptions',   -9.99],
+            [17, 'Corner shop',                           'Groceries',      -27.15],
+            [18, 'ATM withdrawal',                        'Cash',          -300.00, 'atm'],
+            [18, 'Food delivery',                         'Delivery',      -126.40, 'food'],
+            [19, 'Grocery store',                         'Groceries',     -176.40],
+            [20, 'Food delivery',                         'Delivery',      -131.80, 'food'],
+            [21, 'Streaming service D',                   'Subscriptions',  -37.99, 'stream'],
+            [21, 'Taxi app',                              'Transport',      -48.20],
+            [22, 'BLIK from Tomek - concert ticket',      'Transfers in',   180.00],
+            [23, 'Concert tickets x2',                    'Going out',     -360.00],
+            [24, 'Food delivery',                         'Delivery',      -104.60, 'food'],
+            [25, 'Grocery store',                         'Groceries',     -198.73],
+            [26, 'Pharmacy',                              'Health',         -64.30],
+            [26, 'Food delivery',                         'Delivery',       -91.30, 'food'],
+            [27, 'Food delivery',                         'Delivery',      -118.20, 'food'],
+            [28, 'Corner shop',                           'Groceries',      -36.80],
+            [29, 'Clothing store',                        'Shopping',      -289.99],
+            [30, 'Food delivery - friends over',          'Delivery',      -204.60, 'food'],
+            [31, 'Transfer to savings',                   'Savings',       -500.00, 'save']
+        ];
+
+        /* ---------- helpers ---------- */
+        function fmt(n, sign) {
+            var s = Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            if (sign) s = (n < 0 ? '-' : '+') + s;
+            return s;
+        }
+        function zl(n) { return Math.round(n).toLocaleString('en-US') + ' zł'; }
+        function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+        function pad(d) { return (d < 10 ? '0' : '') + d + '.03'; }
+
+        /* ---------- numbers from the data ---------- */
+        var totalIn = 0, totalOut = 0, cats = {}, byTag = {};
+        ROWS.forEach(function (r, i) {
+            if (r[3] > 0) totalIn += r[3]; else totalOut += -r[3];
+            if (r[3] < 0) cats[r[2]] = (cats[r[2]] || 0) - r[3];
+            if (r[4]) (byTag[r[4]] = byTag[r[4]] || []).push(i);
+        });
+        var closing = OPENING + totalIn - totalOut;
+        var sumTag = function (t) { return (byTag[t] || []).reduce(function (s, i) { return s - ROWS[i][3]; }, 0); };
+        var hourly = NET_PAY / HOURS_A_MONTH;
+        var food = sumTag('food'), foodN = byTag.food.length;
+        var stream = sumTag('stream');
+        var streamMax = Math.max.apply(null, byTag.stream.map(function (i) { return -ROWS[i][3]; }));
+        var saved = sumTag('save');
+
+        /* ---------- notes ---------- */
+        var NOTES = [
+            { rows: [0], kind: 'edge-open', text: 'Started the month with ' + zl(OPENING) + ' in the account. One broken laptop away from the credit card.' },
+            { rows: byTag.rent, text: 'Big, fixed, known. That’s how a cost should look. I have no notes.' },
+            { rows: byTag.card, text: 'The minimum. The bank suggests it on purpose. At this pace the balance barely moves.' },
+            { rows: byTag.gym, text: '169 zł. You know how many times you went in March.' },
+            { rows: byTag.stream, text: byTag.stream.length + ' streaming services, ' + zl(stream) + '. Be honest: you watched one.' },
+            { rows: byTag.bnpl, text: 'Still paying for February. Pay later feels free. It’s a loan with nicer fonts.' },
+            { rows: byTag.atm, text: zl(300) + ' in cash. Nobody knows where it went, including you.' },
+            { rows: byTag.food, text: 'Delivery, ' + foodN + ' times: ' + zl(food) + '. About ' + Math.round(food / hourly) + ' hours of your work. Three working days, for dinners.' },
+            { rows: byTag.save, key: true, text: 'Savings: whatever was left, decided on the 31st. ' + Math.round(saved / NET_PAY * 100) + '% of pay. This should be line two of the month, not the last.' }
+        ];
+        var AI_NOTE = 'AI can sort this whole page into categories in two minutes. Delete the account number and names first.';
+
+        /* row index -> notes */
+        var rowNotes = {};
+        NOTES.forEach(function (n, ni) {
+            n.num = ni + 1;
+            n.rows.forEach(function (ri) { (rowNotes[ri] = rowNotes[ri] || []).push(n); });
+        });
+
+        /* ---------- table ---------- */
+        var body = document.getElementById('st-body');
+        var trs = [];
+
+        var open = el('tr', 'st-edge');
+        open.innerHTML = '<td>01.03</td><td class="st-desc">Opening balance</td><td class="num"></td><td class="num bal"></td>';
+        open.children[3].textContent = fmt(OPENING);
+        body.appendChild(open);
+
+        var bal = OPENING;
+        var placedInline = {};
+        ROWS.forEach(function (r, i) {
+            bal += r[3];
+            var tr = el('tr');
+            tr.appendChild(el('td', null, pad(r[0])));
+            var d = el('td', 'st-desc');
+            d.appendChild(document.createTextNode(r[1]));
+            (rowNotes[i] || []).forEach(function (n) {
+                if (n.kind === 'edge-open') return;
+                d.appendChild(el('span', 'st-mk' + (n.key ? ' key' : ''), String(n.num)));
+            });
+            d.appendChild(el('span', 'st-cat', r[2]));
+            tr.appendChild(d);
+            tr.appendChild(el('td', 'num' + (r[3] > 0 ? ' in' : ''), fmt(r[3], true)));
+            tr.appendChild(el('td', 'num bal', fmt(bal)));
+            body.appendChild(tr);
+            trs[i] = tr;
+
+            /* inline note after the LAST row it points to, so the reader has seen the whole group */
+            (rowNotes[i] || []).forEach(function (n) {
+                if (n.kind === 'edge-open') return;
+                if (n.rows[n.rows.length - 1] !== i || placedInline[n.num]) return;
+                placedInline[n.num] = true;
+                body.appendChild(inlineNote(n));
+            });
+        });
+
+        function inlineNote(n) {
+            var tr = el('tr', 'st-inline' + (n.key ? ' key' : ''));
+            var td = el('td'); td.colSpan = 4;
+            var label = n.rows.length > 1 ? 'Note ' + n.num + ' · rows marked ' + n.num : 'Note ' + n.num;
+            td.appendChild(el('span', 'st-note-n', label));
+            td.appendChild(el('span', 'st-note-text', n.text));
+            tr.appendChild(td);
+            return tr;
+        }
+        /* opening-balance note goes right under the opening row on narrow screens */
+        var openNote = NOTES[0];
+        open.querySelector('.st-desc').appendChild(el('span', 'st-mk', '1'));
+        body.insertBefore(inlineNote(openNote), open.nextSibling);
+
+        var foot = document.getElementById('st-foot');
+        foot.innerHTML = '<tr><td></td><td>Closing balance</td><td class="num"></td><td class="num bal"></td></tr>';
+        foot.querySelector('.num').textContent = fmt(closing);
+        foot.querySelector('.bal').textContent = '';
+
+        document.getElementById('st-summary-line').textContent =
+            'In ' + fmt(totalIn) + ' · Out ' + fmt(totalOut) + ' · Closing ' + fmt(closing) + ' zł';
+
+        /* ---------- margin notes + leader lines ---------- */
+        var wrap = document.getElementById('st-wrap');
+        var notesCol = document.getElementById('st-notes');
+        var svg = document.getElementById('st-svg');
+        var NS = 'http://www.w3.org/2000/svg';
+
+        var aiNote = el('div', 'st-note');
+        aiNote.appendChild(el('span', 'st-note-num', 'Before you start'));
+        aiNote.appendChild(el('p', null, AI_NOTE));
+        notesCol.appendChild(aiNote);
+
+        var noteEls = NOTES.map(function (n) {
+            var d = el('div', 'st-note' + (n.key ? ' key' : ''));
+            d.appendChild(el('span', 'st-note-num', 'Note ' + n.num));
+            d.appendChild(el('p', null, n.text));
+            notesCol.appendChild(d);
+            return d;
+        });
+
+        function rowEl(n, ri) { return n.kind === 'edge-open' ? open : trs[ri]; }
+
+        function layout() {
+            while (svg.firstChild) svg.removeChild(svg.firstChild);
+            if (wrap.classList.contains('notes-off') || getComputedStyle(notesCol).display === 'none') return;
+
+            var css = getComputedStyle(document.documentElement);
+            var ink = css.getPropertyValue('--ink-muted').trim();
+            var accent = css.getPropertyValue('--accent').trim();
+            var w = wrap.getBoundingClientRect();
+            var colBox = notesCol.getBoundingClientRect();
+            var colTop = colBox.top - w.top;
+
+            /* AI note sits level with the statement header */
+            aiNote.style.top = '0px';
+            var floor = aiNote.offsetHeight + 28;
+
+            NOTES.forEach(function (n, ni) {
+                var first = rowEl(n, n.rows[0]).getBoundingClientRect();
+                var last = rowEl(n, n.rows[n.rows.length - 1]).getBoundingClientRect();
+                var anchor = n.rows.length > 1 ? (first.top + last.bottom) / 2 : (first.top + first.bottom) / 2;
+                var want = anchor - w.top - colTop - 14;
+                var top = Math.max(want, floor);
+                noteEls[ni].style.top = top + 'px';
+                floor = top + noteEls[ni].offsetHeight + 22;
+            });
+            notesCol.style.minHeight = floor + 'px';
+
+            NOTES.forEach(function (n, ni) {
+                var color = n.key ? accent : ink;
+                var nb = noteEls[ni].getBoundingClientRect();
+                var nx = nb.left - w.left - 12;
+                var ny = nb.top - w.top + 8;
+
+                /* small tick at the note */
+                line(nx, ny, nx + 6, ny, color, n.key ? 1.5 : 1);
+
+                n.rows.forEach(function (ri) {
+                    var rb = rowEl(n, ri).getBoundingClientRect();
+                    var x2 = rb.right - w.left + 6;
+                    var t = rb.top - w.top + 4, b = rb.bottom - w.top - 4, mid = (t + b) / 2;
+                    /* bracket hugging the row's right edge */
+                    path('M' + x2 + ' ' + t + ' h5 V' + b + ' h-5', color, n.key ? 1.5 : 1);
+                    var bx = x2 + 5, mx = bx + (nx - bx) * 0.5;
+                    var curve = path('M' + bx + ' ' + mid + ' C' + mx + ' ' + mid + ' ' + mx + ' ' + ny + ' ' + nx + ' ' + ny, color, n.key ? 1.5 : 0.8);
+                    if (n.rows.length > 2) curve.setAttribute('stroke-opacity', '0.55');
+
+                    if (n.key) {
+                        var amt = rowEl(n, ri).children[2].getBoundingClientRect();
+                        var cx = (amt.left + amt.right) / 2 - w.left, cy = (amt.top + amt.bottom) / 2 - w.top;
+                        var e = document.createElementNS(NS, 'ellipse');
+                        e.setAttribute('cx', cx); e.setAttribute('cy', cy);
+                        e.setAttribute('rx', (amt.width / 2) + 4); e.setAttribute('ry', (amt.height / 2) + 1);
+                        e.setAttribute('fill', 'none'); e.setAttribute('stroke', color); e.setAttribute('stroke-width', '1.5');
+                        e.setAttribute('transform', 'rotate(-3 ' + cx + ' ' + cy + ')');
+                        svg.appendChild(e);
+                    }
+                });
+            });
+        }
+        function path(d, color, sw) {
+            var p = document.createElementNS(NS, 'path');
+            p.setAttribute('d', d); p.setAttribute('fill', 'none');
+            p.setAttribute('stroke', color); p.setAttribute('stroke-width', sw);
+            svg.appendChild(p);
+            return p;
+        }
+        function line(x1, y1, x2, y2, color, sw) { path('M' + x1 + ' ' + y1 + ' L' + x2 + ' ' + y2, color, sw); }
+
+        /* ---------- summary ---------- */
+        var catList = Object.keys(cats).map(function (k) { return [k, cats[k]]; }).sort(function (a, b) { return b[1] - a[1]; });
+        var maxCat = catList[0][1];
+        var ul = document.getElementById('st-cats');
+        catList.forEach(function (c) {
+            var li = el('li');
+            li.appendChild(el('span', 'cat-name', c[0]));
+            var track = el('span', 'cat-track');
+            var ln = el('span', 'cat-line'); ln.style.width = (c[1] / maxCat * 100) + '%';
+            track.appendChild(ln); li.appendChild(track);
+            li.appendChild(el('span', null, fmt(c[1])));
+            ul.appendChild(li);
+        });
+
+        var gym = sumTag('gym'), bnpl = sumTag('bnpl');
+        var foodCut = food - food / foodN * 4;
+        var streamCut = stream - streamMax;
+        var CHANGES = [
+            ['Delivery from ' + foodN + ' times a month to 4', 'Same dinners, cooked twice as often.', foodCut],
+            ['No new pay-later purchases', 'Frees this in two months, when the phone is paid off.', bnpl],
+            ['Go to the gym, or cancel it', 'Either is fine. Paying and not going isn’t.', gym],
+            ['Keep one streaming service', 'Rotate if you want. One at a time.', streamCut]
+        ];
+        var ol = document.getElementById('st-changes');
+        var freed = 0;
+        CHANGES.forEach(function (c) {
+            freed += c[2];
+            var li = el('li');
+            var t = el('span', 'ch-text', c[0]); t.appendChild(el('small', null, c[1]));
+            li.appendChild(t);
+            li.appendChild(el('span', 'ch-amt', '+' + zl(c[2])));
+            ol.appendChild(li);
+        });
+        document.getElementById('st-freed').textContent = zl(freed);
+        document.getElementById('st-closing').textContent =
+            'Add that to the ' + zl(saved) + ' already saved and it’s ' + zl(freed + saved) + ' a month, about ' +
+            Math.round((freed + saved) / NET_PAY * 100) + '% of pay. Moved on the 2nd by standing order, not on the 31st by luck. Same salary, same life, minus the stuff nobody would miss.';
+
+        /* ---------- toggle ---------- */
+        var btn = document.getElementById('st-toggle');
+        btn.addEventListener('click', function () {
+            var off = wrap.classList.toggle('notes-off');
+            document.querySelector('.st-page').classList.toggle('notes-hidden', off);
+            btn.textContent = off ? 'Show notes' : 'Hide notes';
+            btn.setAttribute('aria-pressed', String(!off));
+            layout();
+        });
+
+        var raf;
+        function relayout() { cancelAnimationFrame(raf); raf = requestAnimationFrame(layout); }
+        window.addEventListener('resize', relayout);
+        if (window.matchMedia) {
+            var mq = window.matchMedia('(prefers-color-scheme: dark)');
+            if (mq.addEventListener) mq.addEventListener('change', relayout);
+        }
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
+        layout();
+    })();
+    </script>
+</body>
+</html>

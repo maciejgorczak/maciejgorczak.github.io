@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A ten-step method for going broke on a good salary. Flip each step for the version I'd actually recommend.">
+    <title>How to go broke on a good salary - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .gb-page { max-width: 58rem; }
+        .gb-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.6rem, 8.5vw, 5.6rem);
+            font-weight: 500;
+            letter-spacing: -0.035em;
+            line-height: 0.95;
+            margin-bottom: var(--space-lg);
+            text-wrap: balance;
+        }
+        .gb-lede { font-size: clamp(1.1rem, 2.4vw, 1.35rem); line-height: 1.5; color: var(--ink-soft); max-width: 34rem; margin-bottom: var(--space-lg); }
+
+        /* Manual spec strip */
+        .gb-spec { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 2px solid var(--line-strong); border-bottom: 1px solid var(--line); margin-bottom: var(--space-md); }
+        .gb-spec div { padding: 0.7rem 0.8rem 0.7rem 0; font-family: var(--font-mono); font-size: 0.74rem; line-height: 1.4; }
+        .gb-spec div + div { padding-left: 0.8rem; border-left: 1px solid var(--line); }
+        .gb-spec .m-label { margin-bottom: 0.15rem; }
+
+        .gb-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-sm); margin-bottom: var(--space-xl); }
+        .gb-controls p { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); }
+
+        /* Steps */
+        .gb-steps { list-style: none; display: grid; gap: var(--space-lg); }
+        .gb-step { perspective: 1600px; }
+        .gb-card { display: grid; transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); transform-style: preserve-3d; }
+        .gb-step.flipped .gb-card { transform: rotateX(180deg); }
+        .gb-face {
+            grid-area: 1 / 1;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border: 1px solid var(--ink);
+            background: var(--bg);
+            display: grid;
+            grid-template-columns: 10rem minmax(0, 1fr);
+            min-height: 15rem;
+        }
+        .gb-back { transform: rotateX(180deg); background: var(--bg-2); border-color: var(--line); }
+
+        .gb-side { border-right: 1px solid var(--line); padding: var(--space-md); display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-sm); }
+        .gb-n { font-family: var(--font-mono); font-size: 3rem; font-weight: 400; line-height: 0.9; letter-spacing: -0.04em; color: var(--ink); font-variant-numeric: tabular-nums; }
+        .gb-fig { font-family: var(--font-display); font-size: 2.2rem; font-weight: 500; letter-spacing: -0.03em; line-height: 1; white-space: nowrap; flex: none; }
+        .gb-fig-cap { min-width: 0; font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); line-height: 1.35; }
+
+        .gb-main { padding: var(--space-md) var(--space-md) var(--space-sm); display: flex; flex-direction: column; gap: var(--space-sm); min-width: 0; }
+        .gb-kind { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-muted); }
+        .gb-advice { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.5rem); font-weight: 500; letter-spacing: -0.025em; line-height: 1.05; text-wrap: balance; }
+        .gb-aside { color: var(--ink-soft); font-size: 1.02rem; line-height: 1.5; }
+        .gb-fix { font-size: 1.08rem; line-height: 1.6; color: var(--ink); max-width: 36rem; }
+        .gb-fix-head { font-family: var(--font-display); font-size: 1.35rem; font-weight: 500; letter-spacing: -0.015em; line-height: 1.2; }
+
+        .gb-flip {
+            margin-top: auto;
+            align-self: flex-end;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--ink);
+            background: none;
+            border: none;
+            border-bottom: 1px solid var(--ink);
+            border-radius: 0;
+            padding: 0.3rem 0;
+            cursor: pointer;
+        }
+        .gb-flip:hover { color: var(--accent); border-bottom-color: var(--accent); }
+        .gb-flip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+        /* Hatching on the front side panel: the "warning label" texture */
+        .gb-front .gb-side {
+            background-image: repeating-linear-gradient(135deg, transparent 0 9px, var(--line) 9px 10px);
+        }
+        .gb-front .gb-n { background: var(--bg); align-self: flex-start; padding: 0.15rem 0.3rem 0.25rem 0; }
+
+        .gb-kicker { margin-top: var(--space-2xl); border-top: 2px solid var(--line-strong); padding-top: var(--space-lg); }
+        .gb-kicker p { font-family: var(--font-display); font-size: clamp(1.6rem, 4.4vw, 2.6rem); font-weight: 500; letter-spacing: -0.025em; line-height: 1.1; max-width: 40rem; text-wrap: balance; }
+        .gb-kicker p span { color: var(--accent); }
+
+        @media (max-width: 640px) {
+            .gb-face { grid-template-columns: 1fr; min-height: 0; }
+            .gb-side { border-right: none; border-bottom: 1px solid var(--line); flex-direction: row; align-items: flex-end; padding: var(--space-sm) var(--space-sm); }
+            .gb-back .gb-side { align-items: baseline; justify-content: flex-start; gap: 0.8rem; }
+            .gb-n { font-size: 2.2rem; }
+            .gb-fig { font-size: 1.7rem; }
+            .gb-main { padding: var(--space-sm); }
+            .gb-spec { grid-template-columns: 1fr 1fr; }
+            .gb-spec div:nth-child(3) { padding-left: 0; border-left: none; border-top: 1px solid var(--line); }
+            .gb-spec div:nth-child(4) { border-top: 1px solid var(--line); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .gb-card { transition: none; }
+        }
+        @media print {
+            .gb-step .gb-card { transform: none !important; display: block; }
+            .gb-face { backface-visibility: visible; transform: none !important; margin-bottom: 0.5rem; }
+            .gb-flip, .gb-controls { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content gb-page">
+                <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                <p class="proto-tag">Round 2 &middot; 06 &middot; Inverted guide</p>
+
+                <h1 class="gb-title">How to go broke on a good salary</h1>
+                <p class="gb-lede">A ten-step method. Used by millions. No finance knowledge required, and none acquired along the way.</p>
+
+                <div class="gb-spec">
+                    <div><span class="m-label">Steps</span>10</div>
+                    <div><span class="m-label">Time needed</span>10 to 30 years</div>
+                    <div><span class="m-label">Difficulty</span>None</div>
+                    <div><span class="m-label">Works on</span>Any salary</div>
+                </div>
+
+                <div class="gb-controls">
+                    <p>Flip any step for what I&rsquo;d actually do</p>
+                    <button class="m-btn" id="gb-all" type="button" aria-pressed="false">Flip all</button>
+                </div>
+
+                <ol class="gb-steps" id="gb-steps"></ol>
+
+                <div class="gb-kicker">
+                    <p>Do the opposite of all ten and you&rsquo;re fine. It&rsquo;s boring. <span>That&rsquo;s the whole trick.</span></p>
+                </div>
+
+                <p class="m-disclaimer">Draft. Placeholder content in my voice, to be replaced with my own notes. General information, not personal financial advice. Check current rules and figures before acting.</p>
+                <nav class="m-proto-nav">
+                    <a href="me-vs-ai.html">&larr; Prev</a>
+                    <a href="money-year.html">Next &rarr;</a>
+                </nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <script>
+    (function () {
+        /* advice, deadpan aside, fix headline, fix text, figure, figure caption */
+        var STEPS = [
+            ['Save whatever’s left at the end of the month.',
+             'There’s always something left. Eventually.',
+             'Save first, spend the rest.',
+             'Move savings the day after payday by standing order, so it’s gone before you can spend it. Start small and raise it later.',
+             '400 zł', '5% of 8,000 zł net. A fine first standing order.'],
+            ['Keep everything in your current account. It’s safe there.',
+             'Banks are very safe. That’s the whole point.',
+             'Safe from thieves. Not from prices.',
+             'In 2022 prices in Poland rose by about 14% in a single year. Money sitting at 0% bought noticeably less twelve months later. Keep a buffer in a separate savings account and put long-term money to work.',
+             '14%', 'Price rise in Poland in 2022 (GUS, yearly average)'],
+            ['Opt out of PPK. It’s your money, after all.',
+             'Why let anyone else touch it?',
+             'Opting out means turning down part of your pay.',
+             'Your employer and the state add money on top of what you put in. Leave, and you give that up. Read your employer’s terms and decide with the numbers in front of you.',
+             '150 zł', 'Basic employer part on 10,000 zł gross, every month'],
+            ['Pay the card minimum. The bank is fine with it.',
+             'They even suggest it on the statement.',
+             'Of course they’re fine with it.',
+             'At the minimum, a balance can take years to clear. Pay the minimum on everything else and put every spare złoty on the most expensive debt first.',
+             '60 zł', 'Monthly interest on 5,000 zł at around 15% a year'],
+            ['Upgrade the car with every raise.',
+             'You’ve earned it. So has the car.',
+             'Raise the standing order first.',
+             'Before you get used to the new number, move part of it to savings. Half of every raise is a good default. You still feel richer, and future you gets the other half.',
+             '500 zł', 'From a 1,000 zł raise, to savings. The rest is yours.'],
+            ['Buy what the ad showed you today.',
+             'It knew what you wanted before you did.',
+             'Wait two days.',
+             'For anything unplanned over a couple of hundred złoty, wait 48 hours. Most of the urge is gone by then. Remove saved cards from the shops you impulse-buy in. The extra minute at checkout does the rest.',
+             '48 h', 'Cooling-off time before any unplanned purchase'],
+            ['Check your investments every day. Sell when it’s red.',
+             'Red means danger. Everyone knows that.',
+             'The plan was made for the red years too.',
+             'Global stock markets have fallen by a third or more at least three times since 2000. People who sold near the bottom turned a dip into a loss. Check a few times a year, not a few times a day.',
+             '4×', 'A year is plenty of checking'],
+            ['Pick stocks a friend mentioned at a barbecue.',
+             'He seemed very sure.',
+             'Buy the haystack, not the needle.',
+             'Most professional fund managers don’t beat a simple index over long periods once fees are counted. I don’t think I’d do better, and I’m fairly sure the barbecue wouldn’t. One broad, low-cost index fund holds thousands of companies.',
+             '0.2%', 'Roughly what a broad index ETF charges a year'],
+            ['Give an app your bank login and let it decide.',
+             'It’s AI. It’s smarter than you.',
+             'Let AI read. You decide.',
+             'I build AI products for a living. Use it to sort a statement, explain a contract or compare a fee table. Don’t give anything your login or permission to move money, and check every number it gives you.',
+             '0', 'Apps that should hold your bank password'],
+            ['Never look at the total.',
+             'What you don’t know can’t hurt you.',
+             'One number, once a month.',
+             'What you own minus what you owe. Write it down on the same day each month. Watching that one number move is most of the motivation you’ll need.',
+             '30 min', 'A month. Calendar it like a meeting.']
+        ];
+
+        var list = document.getElementById('gb-steps');
+        var steps = [];
+
+        function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+        STEPS.forEach(function (s, i) {
+            var n = (i < 9 ? '0' : '') + (i + 1);
+            var li = el('li', 'gb-step');
+            var card = el('div', 'gb-card');
+
+            var front = el('div', 'gb-face gb-front');
+            var fs = el('div', 'gb-side');
+            fs.appendChild(el('span', 'gb-n', n));
+            front.appendChild(fs);
+            var fm = el('div', 'gb-main');
+            fm.appendChild(el('span', 'gb-kind', 'Step ' + n));
+            fm.appendChild(el('h2', 'gb-advice', s[0]));
+            fm.appendChild(el('p', 'gb-aside', s[1]));
+            var fb = el('button', 'gb-flip', 'Flip →'); fb.type = 'button';
+            fm.appendChild(fb);
+            front.appendChild(fm);
+
+            var back = el('div', 'gb-face gb-back');
+            var bs = el('div', 'gb-side');
+            bs.appendChild(el('span', 'gb-fig', s[4]));
+            bs.appendChild(el('span', 'gb-fig-cap', s[5]));
+            back.appendChild(bs);
+            var bm = el('div', 'gb-main');
+            bm.appendChild(el('span', 'gb-kind', 'Step ' + n + ' · What I’d do instead'));
+            bm.appendChild(el('h3', 'gb-fix-head', s[2]));
+            bm.appendChild(el('p', 'gb-fix', s[3]));
+            var bb = el('button', 'gb-flip', '← Back'); bb.type = 'button';
+            bm.appendChild(bb);
+            back.appendChild(bm);
+
+            card.appendChild(front); card.appendChild(back);
+            li.appendChild(card);
+            list.appendChild(li);
+
+            function set(on) {
+                li.classList.toggle('flipped', on);
+                front.setAttribute('aria-hidden', String(on));
+                back.setAttribute('aria-hidden', String(!on));
+                fb.tabIndex = on ? -1 : 0;
+                bb.tabIndex = on ? 0 : -1;
+            }
+            fb.addEventListener('click', function () { set(true); bb.focus({ preventScroll: true }); syncAll(); });
+            bb.addEventListener('click', function () { set(false); fb.focus({ preventScroll: true }); syncAll(); });
+            set(false);
+            steps.push(set);
+            steps[i].li = li;
+        });
+
+        var allBtn = document.getElementById('gb-all');
+        function allFlipped() { return steps.every(function (s) { return s.li.classList.contains('flipped'); }); }
+        function syncAll() {
+            var on = allFlipped();
+            allBtn.textContent = on ? 'Back to the bad advice' : 'Flip all';
+            allBtn.setAttribute('aria-pressed', String(on));
+        }
+        allBtn.addEventListener('click', function () {
+            var target = !allFlipped();
+            steps.forEach(function (s) { s(target); });
+            syncAll();
+        });
+    })();
+    </script>
+</body>
+</html>
