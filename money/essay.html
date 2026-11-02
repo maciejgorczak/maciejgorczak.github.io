@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A plain essay on getting your money in order while working a regular job">
+    <title>Money for people with a 9-5 - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .es-head-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm) var(--space-md); margin-bottom: var(--space-lg); }
+        .es-placeholder {
+            font-size: 0.95rem;
+            line-height: 1.55;
+            color: var(--ink-soft);
+            background: var(--bg-2);
+            border: 1px solid var(--line);
+            padding: 0.8rem 1rem;
+            margin-bottom: var(--space-xl);
+            max-width: 40rem;
+        }
+        .es-body h2 {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+            margin: var(--space-xl) 0 var(--space-sm);
+            max-width: 40rem;
+        }
+        .es-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.4rem; margin-bottom: var(--space-md); }
+        .es-row > p, .es-row > ol { font-size: 1.08rem; line-height: 1.8; color: var(--ink); max-width: 40rem; }
+        .es-row > ol { margin-left: 1.3rem; }
+        .es-row > ol li { margin-bottom: 0.55rem; }
+        .es-row > ol li strong { font-weight: 500; }
+        .es-note {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            line-height: 1.55;
+            letter-spacing: 0.02em;
+            color: var(--ink-muted);
+            border-left: 1px solid var(--line);
+            padding-left: 0.8rem;
+        }
+        .es-figure { margin: var(--space-lg) 0 var(--space-xl); max-width: 40rem; }
+        .es-figure svg { display: block; width: 100%; height: auto; color: var(--ink); }
+        .es-figure .acc { color: var(--accent); }
+        .es-figure text { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; fill: var(--ink-soft); }
+        .es-figure figcaption { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-top: 0.6rem; }
+        .es-close { font-size: 1.2rem; line-height: 1.6; color: var(--ink); max-width: 40rem; border-top: 2px solid var(--line-strong); padding-top: var(--space-md); margin-top: var(--space-xl); }
+
+        @media (min-width: 900px) {
+            .es-row { grid-template-columns: minmax(0, 40rem) 14rem; gap: var(--space-lg); align-items: start; }
+            .es-note { margin-top: 0.4rem; }
+        }
+
+        @media print {
+            .footer, .es-head-meta .m-btn { display: none !important; }
+            .es-placeholder { background: none; }
+            .es-row { grid-template-columns: 1fr; }
+            .es-row > p, .es-row > ol { font-size: 11pt; line-height: 1.55; }
+            .es-figure svg, .es-figure text { color: #000; fill: #000; }
+            .page-content { animation: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content money wide">
+                <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                <p class="proto-tag">Prototype 08 &middot; Long-read</p>
+                <h1 class="page-title">Money for people with a 9-5</h1>
+                <p class="page-lede">A simple order of things for getting your finances in shape, without making money your hobby.</p>
+
+                <div class="es-head-meta">
+                    <span class="m-step-count" id="es-time">About 6 min read</span>
+                    <button class="m-btn" type="button" id="es-print">Print / save as PDF</button>
+                </div>
+
+                <p class="es-placeholder">Placeholder text. It's written in my voice to show the format. The real content will come from my own notes and replace this.</p>
+
+                <div class="es-body" id="es-body">
+                    <div class="es-row">
+                        <p>Most people I know with a regular job don't have a money problem. They have a money attention problem. Salary comes in, bills go out, and whatever is left sits in a current account slowly losing value. Nobody taught us a simple order of things, so we either ignore it or read too much and freeze.</p>
+                    </div>
+                    <div class="es-row">
+                        <p>I work in data and AI. I'm not a licensed financial advisor and I don't know your situation. What follows is the setup I'd suggest to a friend who asked. It's boring on purpose.</p>
+                        <aside class="es-note">Boring is a feature. Exciting money decisions are usually expensive ones.</aside>
+                    </div>
+
+                    <h2>You don't need a finance hobby</h2>
+                    <div class="es-row">
+                        <p>The finance internet makes it look like you need to follow markets, read charts and have opinions about interest rates. You don't. If you work a 9-5, your job is the main engine. For the first ten years or so, how much you save matters far more than which fund you pick.</p>
+                        <aside class="es-note">Savings rate = what you keep / what you earn. Track this one number before anything else.</aside>
+                    </div>
+                    <div class="es-row">
+                        <p>A good setup takes a few evenings to build and then about an hour a month to look after. If yours takes more than that, something in it is too complicated.</p>
+                    </div>
+                    <div class="es-row">
+                        <p>You also don't need a perfect budget. Most budgets fail because they try to track every coffee. You only need two numbers: what your essentials cost each month, and how much you move to savings. Everything else is detail.</p>
+                    </div>
+
+                    <h2>Order matters</h2>
+                    <div class="es-row">
+                        <p>The most useful thing I can give you is an order. Do these roughly in sequence. Don't skip ahead because investing sounds more fun.</p>
+                    </div>
+                    <div class="es-row">
+                        <ol>
+                            <li><strong>A small buffer.</strong> One month of costs in a separate account, so a broken washing machine doesn't end up on a credit card.</li>
+                            <li><strong>Get rid of expensive debt.</strong> Credit cards, overdrafts, consumer loans with a high RRSO. Paying off a loan that costs you 15% a year is like earning 15% a year with no risk. Nothing in investing reliably beats that.</li>
+                            <li><strong>Take the employer money.</strong> If your employer offers PPK or another plan where they add money on top of yours, stay in. Opting out means turning down part of your pay.</li>
+                            <li><strong>Build a full emergency fund.</strong> A common rule of thumb is 3-6 months of essential costs. Keep it boring and easy to reach: a savings account, a deposit, short treasury bonds.</li>
+                            <li><strong>Then invest for the long term.</strong> Only with money you won't need for at least five years or so.</li>
+                        </ol>
+                        <aside class="es-note">A mortgage is a different animal. Low rate, long term. Usually fine to keep paying it as normal.</aside>
+                    </div>
+                    <div class="es-row">
+                        <p>In real life the steps overlap. You can pay into PPK while you clear a card. The order is about where extra money goes first, not a strict checklist.</p>
+                    </div>
+
+                    <figure class="es-figure" aria-labelledby="es-fig-cap">
+                        <svg viewBox="0 0 640 240" role="img" aria-label="A stepped line rising through five steps: buffer, expensive debt, employer money, emergency fund, invest.">
+                            <g fill="none" stroke="currentColor" stroke-width="1">
+                                <line x1="20" y1="214" x2="620" y2="214" stroke-opacity="0.35"/>
+                                <polyline points="20,214 20,180 140,180 140,146 260,146 260,112 380,112 380,78" stroke-width="1.5"/>
+                                <polyline points="380,78 500,78 500,44" stroke-width="1.5"/>
+                                <line x1="20" y1="180" x2="20" y2="214" stroke-dasharray="2 4" stroke-opacity="0.5"/>
+                                <line x1="140" y1="146" x2="140" y2="214" stroke-dasharray="2 4" stroke-opacity="0.5"/>
+                                <line x1="260" y1="112" x2="260" y2="214" stroke-dasharray="2 4" stroke-opacity="0.5"/>
+                                <line x1="380" y1="78" x2="380" y2="214" stroke-dasharray="2 4" stroke-opacity="0.5"/>
+                                <line x1="500" y1="44" x2="500" y2="214" stroke-dasharray="2 4" stroke-opacity="0.5"/>
+                            </g>
+                            <polyline class="acc" points="500,44 620,44" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                            <text x="26" y="172">01 BUFFER</text>
+                            <text x="146" y="138">02 DEBT</text>
+                            <text x="266" y="104">03 EMPLOYER</text>
+                            <text x="386" y="70">04 EMERGENCY</text>
+                            <text x="506" y="36">05 INVEST</text>
+                            <text x="26" y="232">FIRST</text>
+                            <text x="584" y="232">LAST</text>
+                        </svg>
+                        <figcaption id="es-fig-cap">Fig. 1 &middot; The order of steps. Each one makes the next one safer.</figcaption>
+                    </figure>
+
+                    <h2>Automate the boring part</h2>
+                    <div class="es-row">
+                        <p>Willpower is a bad system. I wouldn't decide every month how much to save. A standing order does it the day after payday. Savings go first, and you spend what's left, not the other way round.</p>
+                        <aside class="es-note">Day after payday, not end of month. By the end of the month the money is gone.</aside>
+                    </div>
+                    <div class="es-row">
+                        <p>A simple setup is three accounts: one for bills, one for day-to-day spending, one for savings. Bills get a fixed amount. Savings get a fixed amount. The spending account gets the rest, and that's the only number you need to watch.</p>
+                    </div>
+                    <div class="es-row">
+                        <p>When you get a raise, raise the standing order first, before you get used to the new number. Half of every raise to savings is a decent default. You still feel richer, and your future self gets the other half.</p>
+                        <aside class="es-note">Lifestyle creep: spending that quietly grows to match income.</aside>
+                    </div>
+
+                    <h2>Investing is mostly patience</h2>
+                    <div class="es-row">
+                        <p>For long-term money, keep it simple: broad, low-cost index funds or ETFs that hold thousands of companies across many countries. I don't pick stocks. Most professional fund managers fail to beat their index over long periods once fees are counted, and I have no reason to think I'd do better.</p>
+                    </div>
+                    <div class="es-row">
+                        <p>Fees matter more than they look. A 2% yearly fee against 0.2% doesn't sound like much. On 100,000 zł it's 2,000 zł against 200 zł, every year, and the gap compounds.</p>
+                        <aside class="es-note">Look for TER on the fund's fact sheet. It's the yearly fee.</aside>
+                    </div>
+                    <div class="es-row">
+                        <p>In Poland, look at IKE and IKZE before a regular brokerage account. IKE lets you skip the 19% Belka tax if you keep the money until 60 (or 55 with pension rights) and meet the conditions. IKZE lowers your income tax now and taxes withdrawals after 65 at a flat 10%. Both have yearly limits, so check this year's numbers.</p>
+                        <aside class="es-note">Tax rules change. Check the current rules before you open anything.</aside>
+                    </div>
+                    <div class="es-row">
+                        <p>Then the hard part: leave it alone. Markets drop, sometimes by a third or more. If you check daily, you feel every move. A few times a year is plenty. The plan was made for the bad years too.</p>
+                        <aside class="es-note">Never invest money you'll need in the next few years.</aside>
+                    </div>
+
+                    <h2>Where AI helps and where it doesn't</h2>
+                    <div class="es-row">
+                        <p>This is my field, so I'll be specific. AI is good at the dull, slow parts. It's not good at knowing your life, and nobody is good at knowing the future.</p>
+                    </div>
+                    <div class="es-row">
+                        <p>Where it helps: sorting a bank export into categories so you finally see where the money goes. Explaining a loan agreement or a fund document in plain words. Comparing fees across a few products you've already shortlisted. Drafting a budget you then adjust.</p>
+                        <aside class="es-note">Strip names and account numbers before you paste a statement anywhere.</aside>
+                    </div>
+                    <div class="es-row">
+                        <p>A concrete example: export three months of transactions as a CSV, remove anything personal, and ask for a table of spending by category plus the ten biggest items. It takes minutes. By hand it takes an evening, which is why most people never do it.</p>
+                    </div>
+                    <div class="es-row">
+                        <p>Where it doesn't: it can be confidently wrong about tax rules and limits, especially recent changes. It doesn't know your risk tolerance, your job security or your plans. And it should never get your bank login, your PESEL or anything else that lets someone move your money.</p>
+                    </div>
+                    <div class="es-row">
+                        <p>My rule: let AI do the reading and the sorting. Make the decisions yourself, and check any number that matters against the original source.</p>
+                    </div>
+
+                    <h2>What I'd do this month</h2>
+                    <div class="es-row">
+                        <ol>
+                            <li><strong>Write down your fixed monthly costs.</strong> Rent, bills, transport, food. That's your essentials number.</li>
+                            <li><strong>Open a separate savings account</strong> and set a standing order for the day after payday. Any amount works. 5% of net pay is a fine start.</li>
+                            <li><strong>List your debts with their RRSO.</strong> Anything expensive goes to the top of the plan.</li>
+                            <li><strong>Check if you're in PPK</strong> or another employer plan. If you opted out, find out what you're giving up.</li>
+                            <li><strong>Put one evening in the calendar next month</strong> to look at it again. That's it.</li>
+                        </ol>
+                        <aside class="es-note">Start with step 1. Everything else depends on that number.</aside>
+                    </div>
+
+                    <p class="es-close">None of this is clever. That's the point. A simple plan you actually follow beats a perfect one you keep researching.</p>
+                </div>
+
+                <p class="m-disclaimer">Draft. General information to help you think, not personal financial advice. Rules and limits change, so check current figures before acting.</p>
+                <nav class="m-proto-nav"><a href="field-guide.html">&larr; Prev</a><a href="index.html">Next &rarr;</a></nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <script>
+    (function () {
+        var body = document.getElementById('es-body');
+        var words = body.innerText.trim().split(/\s+/).length;
+        var mins = Math.max(1, Math.round(words / 220));
+        document.getElementById('es-time').textContent = 'About ' + mins + ' min read · ' + words.toLocaleString('en-US') + ' words';
+        document.getElementById('es-print').addEventListener('click', function () { window.print(); });
+    })();
+    </script>
+</body>
+</html>

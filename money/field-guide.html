@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Money terms people nod along to, explained in plain words with real numbers">
+    <title>Money field guide - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .fg-search { margin-bottom: var(--space-md); }
+        .fg-meta { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-sm); margin-bottom: 0.6rem; }
+        .fg-list { list-style: none; border-top: 2px solid var(--line-strong); }
+        .fg-item { display: grid; grid-template-columns: 1fr; gap: 0.5rem; padding: var(--space-md) 0; border-bottom: 1px solid var(--line); }
+        .fg-term { font-family: var(--font-display); font-size: 1.3rem; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+        .fg-cat { display: block; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-top: 0.35rem; }
+        .fg-def { font-size: 1.02rem; line-height: 1.65; color: var(--ink); }
+        .fg-ex { font-size: 0.95rem; line-height: 1.6; color: var(--ink-soft); margin-top: 0.5rem; padding-left: 0.9rem; border-left: 1px solid var(--line); }
+        .fg-ex b { font-family: var(--font-mono); font-size: 0.66rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-right: 0.4rem; }
+        .fg-empty { padding: var(--space-lg) 0; color: var(--ink-muted); border-bottom: 1px solid var(--line); }
+        @media (min-width: 720px) {
+            .fg-item { grid-template-columns: 13rem 1fr; gap: var(--space-lg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content money wide">
+                <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                <p class="proto-tag">Prototype 07 &middot; Glossary</p>
+                <h1 class="page-title">Money field guide</h1>
+                <p class="page-lede">The words people nod along to in meetings with the bank. Each one in plain language, with an example that uses real numbers.</p>
+
+                <div class="fg-search m-field">
+                    <label class="m-label" for="fg-q">Search terms</label>
+                    <input class="m-input" id="fg-q" type="search" placeholder="Try &ldquo;tax&rdquo;, &ldquo;ETF&rdquo; or &ldquo;loan&rdquo;" autocomplete="off">
+                </div>
+
+                <div class="m-chips" id="fg-chips" role="group" aria-label="Filter by topic">
+                    <button class="m-chip active" type="button" data-cat="all" aria-pressed="true">All</button>
+                    <button class="m-chip" type="button" data-cat="basics" aria-pressed="false">Basics</button>
+                    <button class="m-chip" type="button" data-cat="saving" aria-pressed="false">Saving</button>
+                    <button class="m-chip" type="button" data-cat="investing" aria-pressed="false">Investing</button>
+                    <button class="m-chip" type="button" data-cat="tax" aria-pressed="false">Tax in Poland</button>
+                    <button class="m-chip" type="button" data-cat="debt" aria-pressed="false">Debt</button>
+                </div>
+
+                <div class="fg-meta">
+                    <span class="m-step-count" id="fg-count" aria-live="polite">21 of 21 terms</span>
+                </div>
+
+                <ul class="fg-list" id="fg-list"></ul>
+                <p class="fg-empty" id="fg-empty" hidden>No matches. Try a shorter word, or pick "All".</p>
+
+                <p class="m-disclaimer">Draft. General information to help you think, not personal financial advice. Rules and limits change, so check current figures before acting.</p>
+                <nav class="m-proto-nav"><a href="ai-toolkit.html">&larr; Prev</a><a href="essay.html">Next &rarr;</a></nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <script>
+    (function () {
+        var CATS = { basics: 'Basics', saving: 'Saving', investing: 'Investing', tax: 'Tax in Poland', debt: 'Debt' };
+
+        var TERMS = [
+            { t: 'Net vs gross pay', c: 'basics',
+              d: 'Gross is the number in your contract. Net is what lands in your account after social security, health insurance and income tax. Plan your life on net.',
+              e: 'On an employment contract, 10,000 zł gross usually lands as roughly 7,000 zł net. The exact figure depends on your tax situation and whether you pay into PPK.' },
+            { t: 'Inflation', c: 'basics',
+              d: 'Prices going up over time. Money sitting still buys a bit less every year.',
+              e: 'With 5% inflation, a basket that costs 100 zł today costs 105 zł next year. 1,000 zł kept in cash then buys what about 952 zł buys today.' },
+            { t: 'Compound interest', c: 'basics',
+              d: 'You earn returns on your returns, not only on what you put in. Small differences grow large over long periods.',
+              e: '10,000 zł growing 5% a year is 10,500 zł after one year, about 16,289 zł after 10 years and about 26,533 zł after 20. The 5% is only for illustration, not a promise.' },
+            { t: 'Lifestyle creep', c: 'basics',
+              d: 'Spending quietly rises to match every raise, so you earn more but never save more.',
+              e: 'You get a raise of 1,000 zł net a month. Send half to savings the day it starts and you save an extra 6,000 zł a year while still feeling the raise.' },
+            { t: 'Emergency fund', c: 'saving',
+              d: 'Money set aside for the things that go wrong: job loss, a car repair, a medical bill. A common rule of thumb is 3-6 months of essential costs, kept somewhere easy to reach.',
+              e: 'If rent, bills, food and transport come to 4,500 zł a month, the rule of thumb puts your fund between 13,500 zł and 27,000 zł.' },
+            { t: 'Bank deposit (lokata)', c: 'saving',
+              d: 'You lock money with a bank for a fixed time at a fixed rate. Deposits are covered by the Polish guarantee fund (BFG) up to the equivalent of 100,000 euro per person per bank. Breaking it early usually means losing the interest.',
+              e: '20,000 zł for 6 months at 5% a year earns 500 zł before tax. Belka tax takes 19% of that (95 zł), so you keep 405 zł.' },
+            { t: 'Retail treasury bonds', c: 'saving',
+              d: 'Bonds the State Treasury sells to individuals, usually for 100 zł each. Some pay a fixed rate. Others pay a set rate in the first year and then inflation plus a margin, so they track rising prices. Selling before the end usually costs a small fee.',
+              e: 'An inflation-linked bond with a made-up 1.5% margin pays about 5.5% for a year in which inflation was 4%.' },
+            { t: 'Index fund', c: 'investing',
+              d: 'A fund that copies a market index instead of paying someone to pick winners. Because nobody is picking, costs are usually low.',
+              e: 'An S&P 500 index fund holds the roughly 500 large US companies in that index, in the same proportions as the index.' },
+            { t: 'ETF', c: 'investing',
+              d: 'Exchange-traded fund. A fund you buy and sell on a stock exchange like a single share. Most popular ETFs are index funds.',
+              e: 'One unit of a global stock ETF gives you a small slice of thousands of companies across dozens of countries, in one purchase.' },
+            { t: 'TER (yearly fee)', c: 'investing',
+              d: 'Total expense ratio. The yearly cost of a fund as a percentage of what you hold. It comes out of the fund quietly, so you never see a bill.',
+              e: 'With 50,000 zł invested, a 0.2% TER costs about 100 zł a year. A 2% TER costs about 1,000 zł a year, and the gap grows as your money does.' },
+            { t: 'Diversification', c: 'investing',
+              d: 'Spreading money across many things so one failure can’t sink you.',
+              e: 'If one company in a 1,000-company fund goes bust and it was 0.1% of the fund, you lose 0.1%. If all your money was in that one company, you lose all of it.' },
+            { t: 'Risk tolerance', c: 'investing',
+              d: 'How big a drop you can sit through without selling in a panic. It depends on your nerves and on when you need the money.',
+              e: 'A 40,000 zł portfolio that falls 30% shows 28,000 zł. If seeing that would make you sell, you probably hold too much in shares.' },
+            { t: 'Regular investing', c: 'investing',
+              d: 'Investing the same amount every month no matter what the market does. You buy more units when prices are low and fewer when they are high, and you don’t have to guess timing.',
+              e: '500 zł buys 5 units at 100 zł, and the next month 10 units at 50 zł. You paid 1,000 zł for 15 units, about 66.67 zł each, below the average price of 75 zł.' },
+            { t: 'Rebalancing', c: 'investing',
+              d: 'Bringing your mix back to the target you chose, for example once a year. It stops one part from quietly taking over.',
+              e: 'Your target is 60% shares, 40% bonds. Shares grow to 70,000 zł, bonds stay at 40,000 zł. 60% of 110,000 zł is 66,000 zł, so you move 4,000 zł from shares to bonds.' },
+            { t: 'Belka tax', c: 'tax',
+              d: 'The 19% Polish tax on capital gains, interest and dividends. Your bank or broker often handles it, but not always.',
+              e: 'You buy ETF units for 10,000 zł and sell them for 12,000 zł. The gain is 2,000 zł, so the tax is 380 zł.' },
+            { t: 'IKE', c: 'tax',
+              d: 'Individual retirement account. You can pay in up to a yearly limit (check this year’s limit). If you meet the conditions and withdraw after 60, or after 55 with pension rights, you pay no Belka tax.',
+              e: '50,000 zł of contributions grows to 90,000 zł. Outside IKE, Belka would take 19% of the 40,000 zł gain, which is 7,600 zł. Inside IKE, kept to the end, that tax is zero.' },
+            { t: 'IKZE', c: 'tax',
+              d: 'Individual retirement security account. What you pay in is deducted from your taxable income now. Withdrawals after 65 are taxed at a flat 10%. There is a yearly limit, so check this year’s figure.',
+              e: 'Pay in 5,000 zł. In the 12% tax bracket your income tax drops by 600 zł. In the 32% bracket it drops by 1,600 zł.' },
+            { t: 'PPK', c: 'tax',
+              d: 'Employee capital plans. You pay in a share of your salary, your employer adds money on top, and the state adds top-ups. Opting out means giving up the employer and state money. Check the current rates.',
+              e: 'At the basic rates on 8,000 zł gross, you put in 160 zł a month (2%) and your employer adds 120 zł (1.5%). The employer part counts as taxable income for you.' },
+            { t: 'Nominal rate vs RRSO', c: 'debt',
+              d: 'The nominal rate is only the interest. RRSO (the Polish APR) adds fees, commissions and required insurance, so it shows the real yearly cost. Compare loans on RRSO.',
+              e: 'Borrow 10,000 zł for a year at 9% with a 1,000 zł fee, repaid in one go at the end. Interest is 900 zł plus the fee, so the loan costs 1,900 zł. That’s 19% of what you borrowed, not 9%.' },
+            { t: 'Minimum payment', c: 'debt',
+              d: 'The smallest amount a credit card lets you pay each month. Paying only that keeps you in debt for a long time, because most of it goes to interest.',
+              e: 'A 5,000 zł card balance at 20% a year costs about 83 zł a month in interest. Pay 100 zł a month and only about 17 zł goes to the debt itself.' },
+            { t: 'Debt avalanche', c: 'debt',
+              d: 'Pay the minimum on everything, then put every extra złoty on the debt with the highest rate. Once it’s gone, move to the next one.',
+              e: 'You owe 5,000 zł on a card at 20% and 20,000 zł on a car loan at 8%. An extra 500 zł a month goes to the card first, even though the car loan is bigger.' }
+        ];
+
+        var list = document.getElementById('fg-list');
+        var empty = document.getElementById('fg-empty');
+        var count = document.getElementById('fg-count');
+        var q = document.getElementById('fg-q');
+        var chips = document.querySelectorAll('#fg-chips .m-chip');
+        var cat = 'all';
+
+        function esc(s) {
+            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        list.innerHTML = TERMS.map(function (x, i) {
+            return '<li class="fg-item" data-i="' + i + '">' +
+                '<div><div class="fg-term">' + esc(x.t) + '</div><span class="fg-cat">' + CATS[x.c] + '</span></div>' +
+                '<div><p class="fg-def">' + esc(x.d) + '</p>' +
+                '<p class="fg-ex"><b>Example</b>' + esc(x.e) + '</p></div>' +
+                '</li>';
+        }).join('');
+
+        var items = list.querySelectorAll('.fg-item');
+
+        function render() {
+            var needle = q.value.trim().toLowerCase();
+            var shown = 0;
+            TERMS.forEach(function (x, i) {
+                var hay = (x.t + ' ' + x.d + ' ' + x.e + ' ' + CATS[x.c]).toLowerCase();
+                var ok = (cat === 'all' || x.c === cat) && (!needle || hay.indexOf(needle) !== -1);
+                items[i].hidden = !ok;
+                if (ok) shown++;
+            });
+            empty.hidden = shown !== 0;
+            count.textContent = shown + ' of ' + TERMS.length + ' terms';
+        }
+
+        chips.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                cat = btn.getAttribute('data-cat');
+                chips.forEach(function (b) {
+                    var on = b === btn;
+                    b.classList.toggle('active', on);
+                    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+                });
+                render();
+            });
+        });
+        q.addEventListener('input', render);
+        render();
+    })();
+    </script>
+</body>
+</html>
