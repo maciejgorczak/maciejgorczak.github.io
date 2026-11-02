@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="One 8,000 zł salary followed through twelve months, as a scroll story drawn in lines.">
+    <title>A year of one salary - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .page-content.ys { max-width: none; }
+
+        .ys-hero { max-width: 52rem; margin-bottom: var(--space-xl); }
+        .ys-hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.8rem, 8.5vw, 6.2rem);
+            font-weight: 500;
+            letter-spacing: -0.035em;
+            line-height: 0.95;
+            margin-bottom: var(--space-lg);
+            text-wrap: balance;
+        }
+        .ys-hero .page-lede { margin-bottom: var(--space-md); color: var(--ink-soft); max-width: 36rem; }
+        .ys-meta { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-muted); }
+
+        /* Story: sticky drawing + steps */
+        .ys-story { display: grid; grid-template-columns: minmax(0, 1fr); border-top: 2px solid var(--line-strong); }
+        .ys-graphic {
+            position: sticky;
+            top: 0;
+            height: 46vh;
+            height: 46svh;
+            min-height: 290px;
+            z-index: 2;
+            background: var(--bg);
+            border-bottom: 1px solid var(--line);
+        }
+        .ys-graphic canvas { display: block; width: 100%; height: 100%; }
+
+        .ys-steps { min-width: 0; }
+        .ys-step { min-height: 72vh; padding: var(--space-lg) 0; max-width: 32rem; }
+        .ys-step:last-child { min-height: 60vh; }
+        .ys-month { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.5rem; }
+        .ys-step h2 { font-family: var(--font-display); font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 500; letter-spacing: -0.02em; line-height: 1.12; margin-bottom: var(--space-sm); text-wrap: balance; }
+        .ys-step p { font-size: 1.04rem; line-height: 1.7; color: var(--ink); margin-bottom: var(--space-sm); }
+
+        .ys-ledger { display: grid; grid-template-columns: 1fr auto; border-top: 1px solid var(--line); margin-top: var(--space-md); font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.04em; font-variant-numeric: tabular-nums; }
+        .ys-ledger dt, .ys-ledger dd { padding: 0.38rem 0; border-bottom: 1px solid var(--line); }
+        .ys-ledger dt { color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.66rem; display: flex; align-items: center; }
+        .ys-ledger dd { text-align: right; color: var(--ink); }
+        .ys-ledger dd.total { font-weight: 500; }
+
+        .js .ys-step { opacity: 0.35; transition: opacity 0.4s ease; }
+        .js .ys-step.active { opacity: 1; }
+
+        .ys-close { max-width: 40rem; padding: var(--space-xl) 0 0; border-top: 2px solid var(--line-strong); }
+        .ys-pull { font-family: var(--font-display); font-size: clamp(1.8rem, 4.6vw, 3rem); font-weight: 500; letter-spacing: -0.025em; line-height: 1.08; margin-bottom: var(--space-lg); text-wrap: balance; }
+        .ys-close p { font-size: 1.06rem; line-height: 1.75; margin-bottom: var(--space-md); }
+        .ys-notes { list-style: none; border-top: 1px solid var(--line); margin-top: var(--space-lg); }
+        .ys-notes li { font-size: 0.88rem; line-height: 1.55; color: var(--ink-muted); padding: 0.45rem 0; border-bottom: 1px solid var(--line); }
+
+        @media (min-width: 900px) {
+            .ys-story { grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr); column-gap: var(--space-2xl); }
+            .ys-graphic { grid-column: 2; grid-row: 1; align-self: start; top: 5vh; height: 88vh; border: 1px solid var(--line); border-top: none; background: var(--bg-2); }
+            .ys-steps { grid-column: 1; grid-row: 1; }
+            .ys-step { min-height: 92vh; display: flex; flex-direction: column; justify-content: center; padding: var(--space-xl) 0; }
+            .ys-step:first-child { min-height: 70vh; justify-content: flex-start; padding-top: var(--space-xl); }
+        }
+
+        @media print {
+            .ys-graphic { position: static; height: 360px; }
+            .js .ys-step { opacity: 1; }
+            .ys-step { min-height: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content ys">
+                <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                <p class="proto-tag">Round 2 &middot; 01 &middot; Scroll story</p>
+
+                <header class="ys-hero">
+                    <h1>A year of one salary</h1>
+                    <p class="page-lede">One person. 8,000&nbsp;zł a month after tax. A regular job and no interest in finance. This is what twelve months look like when they change a few boring things, in the order I&rsquo;d change them.</p>
+                    <p class="ys-meta">Scroll &middot; 9 months &middot; each line is 200&nbsp;zł</p>
+                </header>
+
+                <section class="ys-story">
+                    <div class="ys-graphic">
+                        <canvas id="ys-canvas" role="img" aria-label="Line drawing of the salary splitting into fixed costs, day-to-day spending, leaks and savings, with containers for the buffer and PPK."></canvas>
+                    </div>
+
+                    <div class="ys-steps" id="ys-steps">
+                        <div class="ys-step" data-step="0">
+                            <p class="ys-month">January</p>
+                            <h2>Payday. Then nothing.</h2>
+                            <p>8,000&nbsp;zł lands on the 10th. Rent, bills and the car loan take 4,200. Day-to-day takes 3,000. The last 800 goes somewhere, and nobody could tell you where.</p>
+                            <p>By the 9th of next month the account is close to zero again. Nothing is wrong, exactly. Nothing is being kept either.</p>
+                        </div>
+                        <div class="ys-step" data-step="1">
+                            <p class="ys-month">February</p>
+                            <h2>Look before you change anything.</h2>
+                            <p>One evening, export three months of transactions as a CSV. Delete names and account numbers, then ask an AI to sort them into categories. Ten minutes. By hand, it&rsquo;s the evening you never find.</p>
+                            <p>The 800 turns out to be four things: subscriptions nobody uses (200), bank and card fees (100), small impulse orders (100) and food delivery on tired evenings (400).</p>
+                        </div>
+                        <div class="ys-step" data-step="2">
+                            <p class="ys-month">March</p>
+                            <h2>Cut the easy ones. Watch what happens.</h2>
+                            <p>Cancel the subscriptions. Move to an account without fees. Delete saved cards from the shops you buy from on autopilot. Leaks drop from 800 to 400.</p>
+                            <p>And the 400 you freed? Gone by the end of the month, spent on something else. Money that isn&rsquo;t moved on purpose gets spent. That&rsquo;s not a character flaw. It&rsquo;s how a current account works.</p>
+                        </div>
+                        <div class="ys-step" data-step="3">
+                            <p class="ys-month">April</p>
+                            <h2>Save first. Spend what&rsquo;s left.</h2>
+                            <p>A standing order: 1,000&nbsp;zł to a separate savings account, the day after payday. Day-to-day shrinks to 2,400. The first month feels a bit tight. By the second, nobody notices.</p>
+                            <p>This is the most useful thing in the whole year. It took five minutes in the banking app.</p>
+                        </div>
+                        <div class="ys-step" data-step="4">
+                            <p class="ys-month">May</p>
+                            <h2>The buffer starts to fill.</h2>
+                            <p>Two months in, there&rsquo;s 2,000&nbsp;zł in an account you don&rsquo;t look at. The usual rule of thumb is a buffer of three to six months of essential costs.</p>
+                            <p>Here, essentials are about 5,500&nbsp;zł a month. So the first mark on the container is one month, the top is three. It&rsquo;s slow. It&rsquo;s supposed to be.</p>
+                        </div>
+                        <div class="ys-step" data-step="5">
+                            <p class="ys-month">July</p>
+                            <h2>The car breaks. Nothing else does.</h2>
+                            <p>The buffer is at 3,000 by June, 4,000 after July&rsquo;s transfer. Then the clutch goes: 2,800&nbsp;zł.</p>
+                            <p>Last year that would have gone on a credit card and stayed there for months. This year it comes out of the buffer, which drops to 1,200 and starts filling again. That&rsquo;s the whole job of a buffer. It&rsquo;s not an investment. It&rsquo;s a shock absorber.</p>
+                        </div>
+                        <div class="ys-step" data-step="6">
+                            <p class="ys-month">September</p>
+                            <h2>The money you forgot about.</h2>
+                            <p>You finally open the PPK app. It&rsquo;s been running all year. On about 11,000&nbsp;zł gross, 2% of your pay (220&nbsp;zł) goes in before your net pay, and your employer adds 1.5% (165&nbsp;zł).</p>
+                            <p>That&rsquo;s 385&nbsp;zł a month, 3,465 so far, not counting returns or state top-ups. When you started the job you nearly opted out. That would have meant turning down the employer&rsquo;s part.</p>
+                        </div>
+                        <div class="ys-step" data-step="7">
+                            <p class="ys-month">November</p>
+                            <h2>A raise. Half of it goes away on purpose.</h2>
+                            <p>Net pay goes up by 400&nbsp;zł. Before you get used to it, half goes to the standing order, which rises to 1,200. The other half makes daily life a bit easier.</p>
+                            <p>You still feel the raise. You just don&rsquo;t let all of it turn into a nicer version of the same month. The buffer is now close to one month of essentials.</p>
+                        </div>
+                        <div class="ys-step" data-step="8">
+                            <p class="ys-month">December</p>
+                            <h2>The year, side by side.</h2>
+                            <p>Leaked: 5,600&nbsp;zł, most of it in the first two months. Kept in the buffer: 6,600&nbsp;zł, after paying for a clutch in cash. In PPK: 4,620&nbsp;zł, of which 1,980 came from the employer.</p>
+                            <p>If January had simply repeated twelve times, the leaks alone would have been 9,600&nbsp;zł, the buffer would be empty and the clutch would still be on a card.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="ys-close">
+                    <p class="ys-pull">The raise came in November. It was the smallest part of the year.</p>
+                    <p>Nothing here needed a higher salary, a finance hobby or a clever investment. What changed was the order: see where the money goes, stop the easy leaks, move money on payday, keep a buffer, take the employer money.</p>
+                    <p>Investing comes next year, once the buffer reaches three months. That&rsquo;s a different story.</p>
+                    <ul class="ys-notes">
+                        <li>An example person with rounded numbers. Each line in the drawing is 200&nbsp;zł.</li>
+                        <li>Essential costs are taken as 5,500&nbsp;zł a month: fixed costs plus groceries. The buffer container is drawn to three months, 16,500&nbsp;zł. All containers use the same scale.</li>
+                        <li>PPK uses the basic rates (2% you, 1.5% employer) on an assumed 11,000&nbsp;zł gross, kept flat after the raise. No interest, returns or state top-ups are counted.</li>
+                    </ul>
+                </section>
+
+                <p class="m-disclaimer">Draft. Placeholder content in my voice, to be replaced with my own notes. General information, not personal financial advice. Check current rules and figures before acting.</p>
+                <nav class="m-proto-nav">
+                    <a href="index.html">&larr; Prev</a>
+                    <a href="two-people.html">Next &rarr;</a>
+                </nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <script>
+    (function () {
+        document.documentElement.classList.add('js');
+
+        var UNIT = 200;
+        var ESSENTIALS = 5500;
+        var CAPACITY = ESSENTIALS * 3;
+
+        /* One source of truth for every number in the story. */
+        var STEPS = [
+            { m: 'January',   inc: 8000, fixed: 4200, spend: 3000, leak: 800, save: 0,    buffer: 0 },
+            { m: 'February',  inc: 8000, fixed: 4200, spend: 3000, leak: 800, save: 0,    buffer: 0, sorted: true },
+            { m: 'March',     inc: 8000, fixed: 4200, spend: 3400, leak: 400, save: 0,    buffer: 0, wasLeak: 800 },
+            { m: 'April',     inc: 8000, fixed: 4200, spend: 2400, leak: 400, save: 1000, buffer: 1000 },
+            { m: 'May',       inc: 8000, fixed: 4200, spend: 2400, leak: 400, save: 1000, buffer: 2000 },
+            { m: 'July',      inc: 8000, fixed: 4200, spend: 2400, leak: 400, save: 1000, buffer: 1200, ghost: 4000, repair: 2800 },
+            { m: 'September', inc: 8000, fixed: 4200, spend: 2400, leak: 400, save: 1000, buffer: 3200, ppk: 3465 },
+            { m: 'November',  inc: 8400, fixed: 4200, spend: 2600, leak: 400, save: 1200, buffer: 5400, ppk: 4235 },
+            { m: 'December',  inc: 8400, fixed: 4200, spend: 2600, leak: 400, save: 1200, buffer: 6600, ppk: 4620, leaked: 5600 }
+        ];
+
+        var fmt = function (n) { return Math.round(n).toLocaleString('en-US'); };
+
+        /* Ledger under each step, built from STEPS so text and drawing agree. */
+        document.querySelectorAll('.ys-step').forEach(function (el) {
+            var s = STEPS[+el.dataset.step];
+            var rows = [
+                ['In', fmt(s.inc)],
+                ['Fixed costs', fmt(s.fixed)],
+                ['Day-to-day', fmt(s.spend)],
+                ['Leaks', fmt(s.leak)],
+                ['Kept', fmt(s.save)],
+                ['Buffer so far', fmt(s.buffer), true]
+            ];
+            if (s.ppk) rows.push(['PPK so far', fmt(s.ppk), true]);
+            if (s.leaked) rows.push(['Leaked this year', fmt(s.leaked), true]);
+            var dl = document.createElement('dl');
+            dl.className = 'ys-ledger';
+            rows.forEach(function (r) {
+                var dt = document.createElement('dt'); dt.textContent = r[0];
+                var dd = document.createElement('dd'); dd.textContent = r[1] + ' zł';
+                if (r[2]) dd.className = 'total';
+                dl.appendChild(dt); dl.appendChild(dd);
+            });
+            el.appendChild(dl);
+        });
+
+        /* ---------- Drawing ---------- */
+        var cv = document.getElementById('ys-canvas');
+        var ctx = cv.getContext('2d');
+        var C = {};
+        function readColors() {
+            var cs = getComputedStyle(document.documentElement);
+            ['--ink', '--ink-soft', '--ink-muted', '--line', '--accent', '--bg', '--bg-2'].forEach(function (k) {
+                C[k.slice(2)] = cs.getPropertyValue(k).trim();
+            });
+        }
+        readColors();
+
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var current = 0;
+        var shown = { buffer: 0, ppk: 0, leaked: 0 };
+
+        function rand(i) {
+            var x = Math.sin(i * 12.9898 + 78.233) * 43758.5453;
+            return x - Math.floor(x);
+        }
+        function bez(p0, p1, p2, p3, t) {
+            var u = 1 - t;
+            return [
+                u*u*u*p0[0] + 3*u*u*t*p1[0] + 3*u*t*t*p2[0] + t*t*t*p3[0],
+                u*u*u*p0[1] + 3*u*u*t*p1[1] + 3*u*t*t*p2[1] + t*t*t*p3[1]
+            ];
+        }
+        function mono(size, weight) { return (weight || 400) + ' ' + size + 'px "IBM Plex Mono", ui-monospace, monospace'; }
+
+        function label(x, y, top, bottom, align, fs, topColor) {
+            ctx.textAlign = align || 'left';
+            ctx.textBaseline = 'alphabetic';
+            ctx.font = mono(fs - 1.5, 500);
+            ctx.fillStyle = topColor || C['ink-muted'];
+            ctx.fillText(top.toUpperCase(), x, y);
+            if (bottom) {
+                ctx.font = mono(fs + 0.5, 500);
+                ctx.fillStyle = C.ink;
+                ctx.fillText(bottom, x, y + fs + 4);
+            }
+        }
+
+        function vessel(cx, top, bottom, vw, level, style) {
+            var x = cx - vw / 2;
+            var h = bottom - top;
+            var lh = Math.max(0, Math.min(1, level / CAPACITY)) * h;
+            /* hatching */
+            if (lh > 0.5) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.rect(x + 1, bottom - lh, vw - 2, lh);
+                ctx.clip();
+                ctx.strokeStyle = style.color;
+                ctx.lineWidth = 1;
+                if (style.dash) ctx.setLineDash([3, 3]);
+                ctx.beginPath();
+                for (var k = -h; k < vw + h; k += 5) {
+                    ctx.moveTo(x + k, bottom);
+                    ctx.lineTo(x + k + lh + 10, bottom - lh - 10);
+                }
+                ctx.stroke();
+                ctx.restore();
+                /* surface */
+                ctx.strokeStyle = style.color;
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(x, bottom - lh); ctx.lineTo(x + vw, bottom - lh);
+                ctx.stroke();
+            }
+            /* the container: open at the top */
+            ctx.strokeStyle = C.ink;
+            ctx.lineWidth = 1.25;
+            ctx.beginPath();
+            ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.lineTo(x + vw, bottom); ctx.lineTo(x + vw, top);
+            ctx.stroke();
+            return bottom - lh;
+        }
+
+        function draw(s) {
+            var w = cv.clientWidth, h = cv.clientHeight;
+            if (!w || !h) return;
+            var dpr = window.devicePixelRatio || 1;
+            if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
+                cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+            }
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.clearRect(0, 0, w, h);
+
+            var narrow = w < 520;
+            var fs = narrow ? 10 : 11.5;
+            var pad = narrow ? 4 : 24;
+            var flowsTop = pad + (narrow ? 34 : 54);
+            var flowsBottom = h * (narrow ? 0.45 : 0.5);
+            var vesselTop = h * (narrow ? 0.6 : 0.6);
+            var vesselBottom = h - (narrow ? 34 : 50);
+
+            var nF = Math.round(s.fixed / UNIT), nS = Math.round(s.spend / UNIT),
+                nL = Math.round(s.leak / UNIT), nK = Math.round(s.save / UNIT);
+            var total = nF + nS + nL + nK;
+            var flowsH = flowsBottom - flowsTop;
+            var gap = Math.max(8, flowsH * 0.07);
+            var sp = Math.min(4, (flowsH - 2 * gap) / (nF + nS + nL));
+            var spIn = Math.min(3.2, flowsH * 0.62 / total);
+            var x0 = pad, x1 = w - (narrow ? 104 : 150);
+            var xm = x0 + (x1 - x0) * 0.5;
+
+            var inTop = flowsTop + (flowsH - total * spIn) / 2;
+            var outTotal = (nF + nS + nL) * sp + 2 * gap;
+            var outTop = flowsTop + (flowsH - outTotal) / 2;
+
+            /* header line */
+            label(x0, pad + 10, s.m + ' · in', fmt(s.inc) + ' zł', 'left', fs);
+            ctx.textAlign = 'right';
+            ctx.font = mono(fs - 1.5, 500);
+            ctx.fillStyle = C['ink-muted'];
+            ctx.fillText('1 LINE = 200 ZŁ', w - pad, pad + 10);
+
+            /* vessel slots */
+            var slotW = (w - 2 * pad) / 3;
+            var vw = Math.min(slotW * 0.56, 96);
+            var cxs = [pad + slotW * 0.5, pad + slotW * 1.5, pad + slotW * 2.5];
+
+            var bufSurface = vessel(cxs[1], vesselTop, vesselBottom, vw, shown.buffer, { color: C.accent });
+            /* buffer marks: 1 month, 3 months */
+            ctx.strokeStyle = C['ink-muted']; ctx.lineWidth = 1;
+            [[ESSENTIALS, '1 MO'], [CAPACITY, '3 MO']].forEach(function (mk) {
+                var y = vesselBottom - (mk[0] / CAPACITY) * (vesselBottom - vesselTop);
+                ctx.beginPath(); ctx.moveTo(cxs[1] - vw / 2 - 6, y); ctx.lineTo(cxs[1] - vw / 2, y); ctx.stroke();
+                ctx.textAlign = 'right'; ctx.font = mono(fs - 2.5, 500); ctx.fillStyle = C['ink-muted'];
+                ctx.fillText(mk[1], cxs[1] - vw / 2 - 9, y + 3);
+            });
+            label(cxs[1], vesselBottom + fs + 6, 'Buffer', fmt(shown.buffer) + ' zł', 'center', fs);
+
+            /* July: the repair, drawn as the missing part of the buffer */
+            if (s.ghost) {
+                var vh = vesselBottom - vesselTop;
+                var gy = vesselBottom - (s.ghost / CAPACITY) * vh;
+                ctx.save();
+                ctx.setLineDash([3, 3]);
+                ctx.strokeStyle = C.ink; ctx.lineWidth = 1;
+                ctx.strokeRect(cxs[1] - vw / 2 + 3, gy, vw - 6, bufSurface - gy);
+                ctx.restore();
+                /* note in the empty left slot */
+                ctx.save();
+                ctx.setLineDash([2, 3]);
+                ctx.strokeStyle = C['ink-muted'];
+                ctx.beginPath();
+                var ay = (gy + bufSurface) / 2;
+                ctx.moveTo(cxs[0] + vw * 0.2, ay); ctx.lineTo(cxs[1] - vw / 2 - 2, ay);
+                ctx.stroke();
+                ctx.restore();
+                label(cxs[0] - vw * 0.5, ay - 2 * fs - 4, 'Clutch', '-' + fmt(s.repair) + ' zł', 'left', fs);
+                ctx.font = mono(fs - 2.5, 400); ctx.fillStyle = C['ink-muted']; ctx.textAlign = 'left';
+                ctx.fillText('paid from buffer', cxs[0] - vw * 0.5, ay + fs + 6);
+            }
+
+            /* PPK: noticed in September, same scale */
+            if (s.ppk) {
+                var pSurface = vessel(cxs[2], vesselTop, vesselBottom, vw, shown.ppk, { color: C.ink });
+                ctx.strokeStyle = C.ink; ctx.lineWidth = 1;
+                var pTop = narrow ? vesselTop - 10 : vesselTop - h * 0.05;
+                ctx.beginPath();
+                [-3, 3].forEach(function (dx) {
+                    ctx.moveTo(cxs[2] + dx, pTop); ctx.lineTo(cxs[2] + dx, pSurface);
+                });
+                ctx.stroke();
+                if (!narrow) {
+                    ctx.textAlign = 'center'; ctx.font = mono(fs - 2.5, 500); ctx.fillStyle = C['ink-muted'];
+                    ctx.fillText('385 ZŁ / MO', cxs[2], pTop - 6);
+                }
+                label(cxs[2], vesselBottom + fs + 6, 'PPK', fmt(shown.ppk) + ' zł', 'center', fs);
+            }
+
+            /* December: what leaked, same scale */
+            if (s.leaked) {
+                vessel(cxs[0], vesselTop, vesselBottom, vw, shown.leaked, { color: C['ink-muted'], dash: true });
+                label(cxs[0], vesselBottom + fs + 6, 'Leaked', fmt(shown.leaked) + ' zł', 'center', fs);
+            }
+
+            /* flows */
+            ctx.lineWidth = 1;
+            var fStart = 0, sStart = nF * sp + gap, lStart = (nF + nS) * sp + 2 * gap;
+            var keptSp = nK ? Math.min(3.2, (vw - 12) / nK) : 0;
+
+            for (var i = 0; i < total; i++) {
+                var yIn = inTop + i * spIn + spIn / 2;
+                var p0 = [x0, yIn];
+                var yOut, p1, p2, p3;
+                if (i < nF + nS + nL) {
+                    if (i < nF) yOut = outTop + fStart + i * sp;
+                    else if (i < nF + nS) yOut = outTop + sStart + (i - nF) * sp;
+                    else yOut = outTop + lStart + (i - nF - nS) * sp;
+                    yOut += sp / 2;
+                    p1 = [xm, yIn]; p2 = [xm, yOut]; p3 = [x1, yOut];
+
+                    if (i >= nF + nS) {
+                        /* leaks: solid, then dashed, then gone before they arrive */
+                        var j = i - nF - nS;
+                        var tA = 0.42 + 0.12 * rand(j + 3);
+                        var tB = Math.min(0.97, tA + 0.18 + 0.25 * rand(j + 11));
+                        ctx.strokeStyle = C['ink-muted'];
+                        ctx.beginPath();
+                        ctx.moveTo(p0[0], p0[1]);
+                        for (var t = 0.02; t <= tA; t += 0.02) { var q = bez(p0, p1, p2, p3, t); ctx.lineTo(q[0], q[1]); }
+                        ctx.stroke();
+                        ctx.save(); ctx.setLineDash([3, 4 + 2 * rand(j)]);
+                        ctx.beginPath();
+                        var qa = bez(p0, p1, p2, p3, tA); ctx.moveTo(qa[0], qa[1]);
+                        for (t = tA; t <= tB; t += 0.01) { q = bez(p0, p1, p2, p3, t); ctx.lineTo(q[0], q[1]); }
+                        ctx.stroke(); ctx.restore();
+                    } else {
+                        ctx.strokeStyle = C.ink;
+                        ctx.beginPath(); ctx.moveTo(p0[0], p0[1]);
+                        ctx.bezierCurveTo(p1[0], p1[1], p2[0], p2[1], p3[0], p3[1]);
+                        ctx.stroke();
+                    }
+                } else {
+                    /* kept: down into the buffer */
+                    var k = i - nF - nS - nL;
+                    var tx = cxs[1] + (k - (nK - 1) / 2) * keptSp;
+                    ctx.strokeStyle = C.accent;
+                    ctx.beginPath(); ctx.moveTo(p0[0], p0[1]);
+                    ctx.bezierCurveTo(x0 + (tx - x0) * 0.55, yIn, tx, yIn + (vesselTop - yIn) * 0.35, tx, vesselTop);
+                    ctx.lineTo(tx, Math.max(vesselTop, bufSurface));
+                    ctx.stroke();
+                }
+            }
+
+            /* end ticks + labels on the right */
+            ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5;
+            function tick(start, n) {
+                ctx.beginPath();
+                ctx.moveTo(x1 + 0.5, outTop + start - 1); ctx.lineTo(x1 + 0.5, outTop + start + n * sp + 1);
+                ctx.stroke();
+            }
+            tick(fStart, nF); tick(sStart, nS);
+            var lx = x1 + (narrow ? 8 : 12);
+            label(lx, outTop + fStart + nF * sp / 2 - 2, 'Fixed costs', fmt(s.fixed) + ' zł', 'left', fs);
+            label(lx, outTop + sStart + nS * sp / 2 - 2, 'Day-to-day', fmt(s.spend) + ' zł', 'left', fs);
+            var leakText = fmt(s.leak) + ' zł' + (s.wasLeak ? '  (was ' + fmt(s.wasLeak) + ')' : '');
+            label(lx, outTop + lStart + nL * sp / 2 - 2, 'Leaks', narrow && s.wasLeak ? fmt(s.leak) + ' zł' : leakText, 'left', fs);
+            if (narrow && s.wasLeak) {
+                ctx.font = mono(fs - 2.5, 400); ctx.fillStyle = C['ink-muted']; ctx.textAlign = 'left';
+                ctx.fillText('was ' + fmt(s.wasLeak), lx, outTop + lStart + nL * sp / 2 + 2 * fs + 6);
+            }
+
+            /* February: bracket around the leaks, "sorted" */
+            if (s.sorted) {
+                var by0 = outTop + lStart - 6, by1 = outTop + lStart + nL * sp + 6;
+                var bx = x0 + (x1 - x0) * 0.62;
+                ctx.save(); ctx.setLineDash([2, 3]);
+                ctx.strokeStyle = C.ink; ctx.lineWidth = 1;
+                ctx.strokeRect(bx, by0, x1 - bx - 6, by1 - by0);
+                ctx.restore();
+                ctx.textAlign = 'left'; ctx.font = mono(fs - 2.5, 500); ctx.fillStyle = C['ink-muted'];
+                ctx.fillText('SORTED: 4 ITEMS', bx, by1 + fs + 2);
+            }
+            if (nK && !narrow) {
+                ctx.textAlign = 'left'; ctx.font = mono(fs - 2.5, 500); ctx.fillStyle = C['ink-muted'];
+                ctx.fillText('KEPT ' + fmt(s.save) + ' / MO', cxs[1] + vw / 2 + 8, vesselTop - h * 0.03);
+            }
+        }
+
+        /* ---------- Steps + tween ---------- */
+        var raf = null;
+        function go(idx) {
+            current = idx;
+            var s = STEPS[idx];
+            var target = { buffer: s.buffer, ppk: s.ppk || 0, leaked: s.leaked || 0 };
+            if (!s.ppk) shown.ppk = 0;
+            if (!s.leaked) shown.leaked = 0;
+            if (reduce) { shown = target; draw(s); return; }
+            var from = { buffer: shown.buffer, ppk: shown.ppk, leaked: shown.leaked };
+            var t0 = null, dur = 700;
+            cancelAnimationFrame(raf);
+            function frame(ts) {
+                if (t0 === null) t0 = ts;
+                var p = Math.min(1, (ts - t0) / dur);
+                var e = 1 - Math.pow(1 - p, 3);
+                shown = {
+                    buffer: from.buffer + (target.buffer - from.buffer) * e,
+                    ppk: from.ppk + (target.ppk - from.ppk) * e,
+                    leaked: from.leaked + (target.leaked - from.leaked) * e
+                };
+                if (p >= 1) shown = target;
+                draw(s);
+                if (p < 1) raf = requestAnimationFrame(frame);
+            }
+            raf = requestAnimationFrame(frame);
+        }
+
+        var stepEls = document.querySelectorAll('.ys-step');
+        function activate(idx) {
+            stepEls.forEach(function (el) { el.classList.toggle('active', +el.dataset.step === idx); });
+            if (idx !== current || !draw.done) { draw.done = true; go(idx); }
+        }
+
+        if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (en) {
+                    if (en.isIntersecting) activate(+en.target.dataset.step);
+                });
+            }, { rootMargin: '-58% 0px -38% 0px' });
+            stepEls.forEach(function (el) { io.observe(el); });
+        }
+
+        activate(0);
+        shown = { buffer: 0, ppk: 0, leaked: 0 };
+        draw(STEPS[0]);
+
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { draw(STEPS[current]); });
+        if ('ResizeObserver' in window) new ResizeObserver(function () { draw(STEPS[current]); }).observe(cv);
+        else window.addEventListener('resize', function () { draw(STEPS[current]); });
+        var mq = window.matchMedia('(prefers-color-scheme: dark)');
+        var onScheme = function () { readColors(); draw(STEPS[current]); };
+        if (mq.addEventListener) mq.addEventListener('change', onScheme); else if (mq.addListener) mq.addListener(onScheme);
+        window.addEventListener('beforeprint', function () { shown = { buffer: STEPS[8].buffer, ppk: STEPS[8].ppk, leaked: STEPS[8].leaked }; current = 8; draw(STEPS[8]); });
+    })();
+    </script>
+</body>
+</html>

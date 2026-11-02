@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Twelve rules about money for people with a 9-5, one per screen. Save any of them as a phone wallpaper.">
+    <title>Rules - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-snap-type: y proximity; }
+        .page-content.rl { max-width: none; }
+
+        .rl-intro { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; padding-bottom: var(--space-xl); }
+        .rl-intro h1 {
+            font-family: var(--font-display);
+            font-size: clamp(4.5rem, 20vw, 15rem);
+            font-weight: 500;
+            letter-spacing: -0.055em;
+            line-height: 0.82;
+            margin: var(--space-md) 0 var(--space-lg) -0.04em;
+        }
+        .rl-intro p { font-size: clamp(1.1rem, 2.4vw, 1.35rem); line-height: 1.5; color: var(--ink-soft); max-width: 30rem; }
+        .rl-intro .rl-hint { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-muted); margin-top: var(--space-lg); }
+
+        /* One rule per screen */
+        .rl-rule {
+            position: relative;
+            min-height: 100vh;
+            min-height: 100svh;
+            scroll-snap-align: start;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            padding: var(--space-lg) 0;
+            border-top: 2px solid var(--line-strong);
+            overflow: hidden;
+        }
+        .rl-num { font-family: var(--font-mono); font-size: 0.74rem; font-weight: 500; letter-spacing: 0.2em; color: var(--ink-muted); position: relative; z-index: 1; }
+        .rl-big {
+            position: absolute;
+            right: -0.06em;
+            bottom: -0.2em;
+            font-family: var(--font-display);
+            font-weight: 500;
+            font-size: clamp(16rem, 52vw, 40rem);
+            line-height: 1;
+            letter-spacing: -0.06em;
+            color: transparent;
+            -webkit-text-stroke: 1px var(--line);
+            pointer-events: none;
+            user-select: none;
+        }
+        .rl-text { align-self: center; position: relative; z-index: 1; padding-right: 1.5rem; }
+        .rl-text h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2.6rem, 8.6vw, 7.4rem);
+            font-weight: 500;
+            letter-spacing: -0.04em;
+            line-height: 0.96;
+            max-width: 13ch;
+            text-wrap: balance;
+        }
+        .rl-gloss { position: relative; z-index: 1; max-width: 30rem; padding-top: var(--space-sm); }
+        .rl-gloss::before { content: ""; display: block; width: 3rem; border-top: 1px solid var(--ink); margin-bottom: var(--space-sm); transform-origin: left; }
+        .rl-gloss p { font-size: 1.05rem; line-height: 1.6; color: var(--ink-soft); }
+        .anim .rl-gloss::before { transform: scaleX(0); transition: transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s; }
+        .anim .rl-rule.seen .rl-gloss::before { transform: scaleX(1); }
+
+        /* Progress ticks */
+        .rl-ticks {
+            position: fixed;
+            right: max(10px, env(safe-area-inset-right, 0px));
+            top: 50%;
+            transform: translateY(-50%);
+            display: grid;
+            gap: 7px;
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .rl-ticks.on { opacity: 1; pointer-events: auto; }
+        .rl-ticks a { display: block; width: 18px; height: 9px; position: relative; }
+        .rl-ticks a::after { content: ""; position: absolute; right: 0; top: 4px; width: 10px; border-top: 1px solid var(--ink-muted); transition: width 0.2s ease, border-color 0.2s ease; }
+        .rl-ticks a.active::after { width: 18px; border-top: 2px solid var(--accent); top: 3px; }
+
+        /* Wallpaper */
+        .rl-wall { border-top: 2px solid var(--line-strong); padding-top: var(--space-xl); display: grid; gap: var(--space-xl); }
+        .rl-wall h2 { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 500; letter-spacing: -0.025em; line-height: 1.05; margin-bottom: var(--space-sm); }
+        .rl-wall-copy p { color: var(--ink-soft); line-height: 1.65; margin-bottom: var(--space-sm); max-width: 30rem; }
+        .rl-pick { display: grid; border-top: 1px solid var(--line); margin: var(--space-md) 0; }
+        .rl-pick button {
+            display: grid; grid-template-columns: 2.4rem 1fr; align-items: baseline;
+            text-align: left; background: transparent; border: none; border-bottom: 1px solid var(--line); border-radius: 0;
+            padding: 0.55rem 0; cursor: pointer; color: var(--ink-soft); font-family: var(--font-body); font-size: 0.98rem; line-height: 1.35;
+        }
+        .rl-pick button span { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; color: var(--ink-muted); }
+        .rl-pick button:hover { color: var(--ink); }
+        .rl-pick button[aria-pressed="true"] { color: var(--ink); font-weight: 500; }
+        .rl-pick button[aria-pressed="true"] span { color: var(--ink); }
+        .rl-pick button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .rl-tone { display: flex; gap: 0.4rem; margin-bottom: var(--space-md); }
+        .rl-preview { justify-self: center; width: min(100%, 300px); }
+        .rl-preview img { display: block; width: 100%; aspect-ratio: 1170 / 2532; border: 1px solid var(--line); background: var(--bg-2); }
+        .rl-preview .m-hint { text-align: center; }
+        @media (min-width: 860px) {
+            .rl-wall { grid-template-columns: minmax(0, 1fr) 320px; align-items: start; }
+            .rl-preview { position: sticky; top: var(--space-lg); }
+        }
+
+        @media (max-width: 640px) {
+            .rl-big { top: 1.2rem; bottom: auto; font-size: 10rem; }
+            .rl-ticks { gap: 5px; }
+            .rl-ticks a { width: 12px; }
+            .rl-ticks a::after { width: 6px; }
+            .rl-ticks a.active::after { width: 12px; }
+        }
+        @media print {
+            html { scroll-snap-type: none; }
+            .rl-rule { min-height: 0; page-break-after: always; border-top: 2px solid #000; }
+            .rl-ticks, .rl-wall { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content rl">
+                <section class="rl-intro">
+                    <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                    <p class="proto-tag">Round 2 &middot; 08 &middot; Poster</p>
+                    <h1>Rules</h1>
+                    <p>Everything I think about money for people with a 9-5, cut down to twelve lines. No tools, no forms. Read slowly.</p>
+                    <p class="rl-hint">Scroll &darr; &middot; 12 rules &middot; save any one as a wallpaper at the end</p>
+                </section>
+
+                <div id="rules"></div>
+
+                <section class="rl-wall" id="wallpaper">
+                    <div class="rl-wall-copy">
+                        <p class="m-label">Phone wallpaper</p>
+                        <h2>Keep one where you&rsquo;ll see it.</h2>
+                        <p>Pick a rule. It&rsquo;s set at 1170 &times; 2532, the size of a recent iPhone screen, with the text low enough to clear the lock-screen clock.</p>
+                        <div class="rl-tone" role="group" aria-label="Wallpaper tone">
+                            <button class="m-chip active" type="button" data-tone="light" id="tone-light">Sand</button>
+                            <button class="m-chip" type="button" data-tone="dark" id="tone-dark">Dark</button>
+                        </div>
+                        <div class="rl-pick" id="pick" role="group" aria-label="Choose a rule"></div>
+                        <div class="m-actions">
+                            <a class="m-btn" id="download" href="#" download="rule-01.png">Download PNG</a>
+                        </div>
+                    </div>
+                    <div class="rl-preview">
+                        <img id="preview" alt="Wallpaper preview of the selected rule">
+                        <p class="m-hint">On a phone you can also long-press the preview to save it.</p>
+                    </div>
+                </section>
+
+                <p class="m-disclaimer">Draft. Placeholder content in my voice, to be replaced with my own notes. General information, not personal financial advice. Check current rules and figures before acting.</p>
+                <nav class="m-proto-nav">
+                    <a href="money-year.html">&larr; Prev</a>
+                    <a href="working-hours.html">Next &rarr;</a>
+                </nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <nav class="rl-ticks" id="ticks" aria-label="Rules"></nav>
+
+    <script>
+    (function () {
+        var RULES = [
+            ['Save first. Spend what’s left.', 'A standing order the day after payday. Not whatever survives to the end of the month.'],
+            ['Know one number.', 'What a normal month costs you. Everything else is built on it.'],
+            ['Your buffer is not an investment.', 'It’s there to be boring and easy to reach. Three to six months of essential costs is the usual rule of thumb.'],
+            ['Kill expensive debt before you invest.', 'No fund reliably pays you more than a credit card charges you.'],
+            ['Take the employer money.', 'Opting out of PPK means turning down the part your employer and the state add on top.'],
+            ['Raise the transfer before the lifestyle.', 'When you get a raise, send half of it to savings before you get used to it.'],
+            ['Money you need soon stays out of stocks.', 'Anything for the next three years goes into deposits or bonds. Markets can fall by a third and take years to come back.'],
+            ['Fees compound too.', 'At 5% a year, a 1% yearly fee takes about a quarter of what a lump sum would be worth after 30 years.'],
+            ['Check once a month, not once a day.', 'The plan was made for the bad years too. Watching it daily only makes you want to touch it.'],
+            ['AI reads. You decide.', 'Let it sort your statements and explain the contract. Check every number it gives you.'],
+            ['No app gets your login.', 'No assistant, agent or “helper” needs your bank password or your PESEL.'],
+            ['Boring is the plan.', 'If a money decision feels exciting, it’s probably expensive.']
+        ];
+        var pad2 = function (n) { return (n < 10 ? '0' : '') + n; };
+
+        var root = document.getElementById('rules');
+        var ticks = document.getElementById('ticks');
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!reduce && 'IntersectionObserver' in window) document.documentElement.classList.add('anim');
+
+        RULES.forEach(function (r, i) {
+            var n = pad2(i + 1);
+            var sec = document.createElement('section');
+            sec.className = 'rl-rule';
+            sec.id = 'rule-' + n;
+            sec.innerHTML = '<p class="rl-num"></p><div class="rl-text"><h2></h2></div><div class="rl-gloss"><p></p></div><span class="rl-big" aria-hidden="true"></span>';
+            sec.querySelector('.rl-num').textContent = n + ' / ' + RULES.length;
+            sec.querySelector('h2').textContent = r[0];
+            sec.querySelector('.rl-gloss p').textContent = r[1];
+            sec.querySelector('.rl-big').textContent = n;
+            root.appendChild(sec);
+
+            var a = document.createElement('a');
+            a.href = '#rule-' + n;
+            a.setAttribute('aria-label', 'Rule ' + (i + 1) + ': ' + r[0]);
+            ticks.appendChild(a);
+        });
+
+        var secs = root.querySelectorAll('.rl-rule');
+        var tickLinks = ticks.querySelectorAll('a');
+        if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (en) {
+                    if (!en.isIntersecting) return;
+                    var idx = Array.prototype.indexOf.call(secs, en.target);
+                    en.target.classList.add('seen');
+                    tickLinks.forEach(function (t, j) { t.classList.toggle('active', j === idx); });
+                });
+            }, { rootMargin: '-45% 0px -45% 0px' });
+            secs.forEach(function (s) { io.observe(s); });
+
+            /* ticks only while the rules are on screen */
+            var band = new IntersectionObserver(function (entries) {
+                entries.forEach(function (en) { ticks.classList.toggle('on', en.isIntersecting); });
+            }, { rootMargin: '-50% 0px -50% 0px' });
+            band.observe(root);
+        } else {
+            secs.forEach(function (s) { s.classList.add('seen'); });
+        }
+
+        /* ---------- Wallpaper ---------- */
+        var W = 1170, H = 2532;
+        var TONES = {
+            light: { bg: '#e8e2d1', ink: '#2b2a1e', soft: '#4a4736', muted: '#605c48', line: '#c9bfa4', accent: '#5b6a26' },
+            dark:  { bg: '#20201a', ink: '#e8e2d1', soft: '#c4bfa8', muted: '#928d75', line: '#3c3b30', accent: '#a3b458' }
+        };
+        var tone = 'light';
+        var chosen = 0;
+        var canvas = document.createElement('canvas');
+        canvas.width = W; canvas.height = H;
+        var ctx = canvas.getContext('2d');
+        var preview = document.getElementById('preview');
+        var dl = document.getElementById('download');
+        var lastUrl = null;
+        var renderId = 0;
+
+        function wrap(text, maxW) {
+            var words = text.split(' '), lines = [], line = '';
+            words.forEach(function (w) {
+                var test = line ? line + ' ' + w : w;
+                if (ctx.measureText(test).width > maxW && line) { lines.push(line); line = w; }
+                else line = test;
+            });
+            if (line) lines.push(line);
+            return lines;
+        }
+
+        function render() {
+            var t = TONES[tone];
+            var r = RULES[chosen];
+            var m = 110;
+            ctx.fillStyle = t.bg;
+            ctx.fillRect(0, 0, W, H);
+
+            /* outline numeral, bottom right */
+            ctx.save();
+            ctx.font = '500 760px "Space Grotesk", sans-serif';
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'alphabetic';
+            ctx.strokeStyle = t.line;
+            ctx.lineWidth = 3;
+            ctx.strokeText(pad2(chosen + 1), W + 30, H + 150);
+            ctx.restore();
+
+            /* heavy rule + number, below the clock area */
+            var top = 1080;
+            ctx.fillStyle = t.ink;
+            ctx.fillRect(m, top, W - 2 * m, 6);
+            ctx.font = '500 38px "IBM Plex Mono", monospace';
+            ctx.fillStyle = t.accent;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.fillText('RULE ' + pad2(chosen + 1) + ' / ' + RULES.length, m, top + 40);
+
+            /* the rule */
+            var size = 150;
+            ctx.font = '500 ' + size + 'px "Space Grotesk", sans-serif';
+            var lines = wrap(r[0], W - 2 * m);
+            while (lines.length > 4 && size > 96) {
+                size -= 8;
+                ctx.font = '500 ' + size + 'px "Space Grotesk", sans-serif';
+                lines = wrap(r[0], W - 2 * m);
+            }
+            ctx.fillStyle = t.ink;
+            var y = top + 130;
+            lines.forEach(function (ln) { ctx.fillText(ln, m - 6, y); y += size * 0.98; });
+
+            /* gloss */
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            y += 50;
+            ctx.fillStyle = t.ink;
+            ctx.fillRect(m, y, 90, 3);
+            y += 40;
+            ctx.font = '400 44px "Space Grotesk", sans-serif';
+            ctx.fillStyle = t.soft;
+            wrap(r[1], W - 2 * m - 60).forEach(function (ln) { ctx.fillText(ln, m, y); y += 64; });
+
+            /* mark, right of the rule number */
+            ctx.font = '500 30px "IBM Plex Mono", monospace';
+            ctx.fillStyle = t.muted;
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'top';
+            ctx.fillText('RULES FOR A 9-5', W - m, top + 44);
+            ctx.textAlign = 'left';
+
+            var id = ++renderId;
+            dl.setAttribute('download', 'rule-' + pad2(chosen + 1) + '.png');
+            canvas.toBlob(function (blob) {
+                if (!blob || id !== renderId) return;
+                if (lastUrl) URL.revokeObjectURL(lastUrl);
+                lastUrl = URL.createObjectURL(blob);
+                preview.src = lastUrl;
+                dl.href = lastUrl;
+                dl.setAttribute('download', 'rule-' + pad2(chosen + 1) + '.png');
+            }, 'image/png');
+        }
+
+        var pick = document.getElementById('pick');
+        RULES.forEach(function (r, i) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.innerHTML = '<span></span>';
+            b.querySelector('span').textContent = pad2(i + 1);
+            b.appendChild(document.createTextNode(r[0]));
+            b.setAttribute('aria-pressed', i === chosen ? 'true' : 'false');
+            b.addEventListener('click', function () {
+                chosen = i;
+                pick.querySelectorAll('button').forEach(function (x, j) { x.setAttribute('aria-pressed', j === i ? 'true' : 'false'); });
+                render();
+            });
+            pick.appendChild(b);
+        });
+        document.querySelectorAll('[data-tone]').forEach(function (b) {
+            b.addEventListener('click', function () {
+                tone = b.dataset.tone;
+                document.querySelectorAll('[data-tone]').forEach(function (x) { x.classList.toggle('active', x === b); });
+                render();
+            });
+        });
+
+        var fontsReady = (document.fonts && document.fonts.load)
+            ? Promise.all([
+                document.fonts.load('500 150px "Space Grotesk"'),
+                document.fonts.load('400 44px "Space Grotesk"'),
+                document.fonts.load('500 38px "IBM Plex Mono"')
+              ]).catch(function () {})
+            : Promise.resolve();
+        fontsReady.then(render);
+    })();
+    </script>
+</body>
+</html>
