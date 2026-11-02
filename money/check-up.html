@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ten questions about your money. You get a short written plan with your next three moves.">
+    <title>Money check-up - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .cu-question {
+            font-family: var(--font-display);
+            font-size: clamp(1.4rem, 3.6vw, 1.9rem);
+            font-weight: 500;
+            letter-spacing: -0.015em;
+            line-height: 1.2;
+            margin: 0.4rem 0 var(--space-sm);
+        }
+        .cu-help { color: var(--ink-soft); margin-bottom: var(--space-md); font-size: 0.98rem; }
+        .cu-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.6rem; }
+
+        /* Stage line: three stations on a hairline, current one marked */
+        .cu-stages { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 2px solid var(--line-strong); margin-bottom: var(--space-lg); }
+        .cu-stage { padding: 0.8rem 0.6rem 0.8rem 0; border-bottom: 1px solid var(--line); color: var(--ink-muted); }
+        .cu-stage .m-label { margin-bottom: 0.2rem; }
+        .cu-stage-name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 500; line-height: 1.2; }
+        .cu-stage.current { color: var(--ink); box-shadow: inset 0 3px 0 var(--accent); }
+        .cu-stage.current .m-label { color: var(--ink); }
+
+        .cu-moves { list-style: none; counter-reset: move; border-top: 2px solid var(--line-strong); }
+        .cu-move { counter-increment: move; display: grid; grid-template-columns: 3rem 1fr; gap: 0.2rem 0.6rem; padding: var(--space-md) 0; border-bottom: 1px solid var(--line); }
+        .cu-move::before { content: "0" counter(move); font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.1em; color: var(--ink-muted); padding-top: 0.3rem; grid-row: span 3; }
+        .cu-move h3 { font-family: var(--font-display); font-size: 1.3rem; font-weight: 500; line-height: 1.2; }
+        .cu-move p { color: var(--ink-soft); line-height: 1.6; }
+        .cu-move .cu-do { color: var(--ink); }
+        .cu-move .cu-do strong { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500; margin-right: 0.4rem; }
+
+        .cu-good { list-style: none; }
+        .cu-good li { padding: 0.5rem 0; border-bottom: 1px solid var(--line); }
+        .cu-good li::before { content: "+"; font-family: var(--font-mono); color: var(--ink-muted); margin-right: 0.7rem; }
+
+        @media (max-width: 520px) {
+            .cu-stages { grid-template-columns: 1fr; }
+            .cu-move { grid-template-columns: 2.2rem 1fr; }
+        }
+        @media print {
+            .cu-stage.current { box-shadow: none; text-decoration: underline; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content money">
+                <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                <p class="proto-tag">Prototype 02 &middot; Survey to plan</p>
+
+                <!-- Intro -->
+                <section id="intro">
+                    <h1 class="page-title">Money check-up</h1>
+                    <p class="page-lede">Ten quick questions about where you are. At the end you get a short written plan: where you stand and your next three moves. Takes about two minutes.</p>
+                    <div class="m-text m-soft">
+                        <p>Pick the answer that's closest. There are no wrong answers and no score. Nothing you click leaves your browser.</p>
+                    </div>
+                    <div class="m-actions">
+                        <button class="m-btn m-btn-primary" id="start" type="button">Start the check-up</button>
+                    </div>
+                </section>
+
+                <!-- Questions -->
+                <section id="quiz" hidden>
+                    <div class="cu-top">
+                        <span class="m-step-count" id="step-count">Question 1 of 10</span>
+                        <button class="m-btn m-btn-quiet" id="back" type="button">&larr; Back</button>
+                    </div>
+                    <div class="m-progress" aria-hidden="true"><span id="progress" style="width:0%"></span></div>
+                    <div id="q-body" class="m-fade" aria-live="polite"></div>
+                </section>
+
+                <!-- Result -->
+                <section id="result" hidden>
+                    <h1 class="page-title">Your plan</h1>
+                    <p class="page-lede" id="stage-lede"></p>
+
+                    <div class="cu-stages" id="stages"></div>
+
+                    <div class="m-section">
+                        <h2>Your next three moves</h2>
+                        <p class="m-soft" style="margin-bottom: var(--space-md)">In this order. Don't start the second before the first is moving.</p>
+                        <ol class="cu-moves" id="moves"></ol>
+                    </div>
+
+                    <div class="m-section" id="good-wrap">
+                        <h2>Already working for you</h2>
+                        <ul class="cu-good" id="good"></ul>
+                    </div>
+
+                    <div class="m-actions">
+                        <button class="m-btn" id="copy" type="button">Copy plan as text</button>
+                        <button class="m-btn" id="print" type="button">Print / save as PDF</button>
+                        <a class="m-btn" href="first-30-days.html">Turn it into a 30-day checklist</a>
+                        <button class="m-btn m-btn-quiet" id="restart" type="button">Start over</button>
+                    </div>
+                </section>
+
+                <p class="m-disclaimer">Draft. General information to help you think, not personal financial advice. Rules and limits change, so check current figures before acting.</p>
+                <nav class="m-proto-nav">
+                    <a href="decision-tree.html">&larr; Prev</a>
+                    <a href="payday-flow.html">Next &rarr;</a>
+                </nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <script>
+    (function () {
+        var QUESTIONS = [
+            { id: 'buffer', q: 'If your salary stopped tomorrow, how long could you cover your essential costs?',
+              help: 'Essential means rent, bills, food, transport, loan payments. Count only money you can reach within a few days.',
+              a: ['Less than a month', '1 to 3 months', '3 to 6 months', 'More than 6 months'] },
+            { id: 'tracking', q: 'Do you know roughly what you spend in a month?',
+              a: ['No idea', 'A rough guess', 'Within a few hundred zł', 'Yes, I track it'] },
+            { id: 'bills', q: 'Are any bills or loan payments overdue right now?',
+              a: ['Yes', 'No'] },
+            { id: 'debt', q: 'Do you have expensive debt?',
+              help: 'A credit card you don\'t pay off in full each month, an overdraft you live in, a payday loan or a consumer loan.',
+              a: ['Yes, and it\'s growing', 'Yes, but it\'s going down', 'No'] },
+            { id: 'auto', q: 'How does your saving happen?',
+              a: ['It doesn\'t really', 'Whatever is left at the end of the month', 'I move money by hand on payday', 'An automatic transfer on payday'] },
+            { id: 'ppk', q: 'What about PPK, the workplace pension plan?',
+              help: 'If you\'re on an employment contract, your employer most likely offers it.',
+              a: ['I\'m in', 'I opted out', 'Not sure', 'Not offered to me (B2B, self-employed)'] },
+            { id: 'investing', q: 'Are you investing for the long term, 10 years or more?',
+              a: ['No', 'Thinking about it', 'Yes, now and then', 'Yes, every month'] },
+            { id: 'wrapper', q: 'Do you use an IKE or IKZE account?',
+              a: ['Yes', 'No', 'What are those?'] },
+            { id: 'goal', q: 'Is there a big expense coming in the next 3 years?',
+              help: 'A flat deposit, a car, a wedding, a course, a long break.',
+              a: ['Yes', 'No', 'Not sure yet'] },
+            { id: 'ai', q: 'How do you use AI with your money today?',
+              a: ['Not at all', 'I ask it general questions', 'I use it on my own numbers', 'I let apps or agents act on my accounts'] }
+        ];
+
+        var answers = {};
+        var step = 0;
+
+        var $ = function (id) { return document.getElementById(id); };
+        var intro = $('intro'), quiz = $('quiz'), result = $('result');
+
+        function show(section) {
+            [intro, quiz, result].forEach(function (s) { s.hidden = s !== section; });
+            window.scrollTo({ top: 0 });
+        }
+
+        function renderQuestion() {
+            var item = QUESTIONS[step];
+            $('step-count').textContent = 'Question ' + (step + 1) + ' of ' + QUESTIONS.length;
+            $('progress').style.width = (step / QUESTIONS.length * 100) + '%';
+            $('back').disabled = step === 0;
+
+            var body = $('q-body');
+            body.classList.remove('m-fade'); void body.offsetWidth; body.classList.add('m-fade');
+            body.innerHTML = '';
+
+            var h = document.createElement('h2');
+            h.className = 'cu-question';
+            h.textContent = item.q;
+            body.appendChild(h);
+
+            if (item.help) {
+                var p = document.createElement('p');
+                p.className = 'cu-help';
+                p.textContent = item.help;
+                body.appendChild(p);
+            }
+
+            var list = document.createElement('div');
+            list.className = 'm-choices';
+            item.a.forEach(function (label, i) {
+                var b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'm-choice' + (answers[item.id] === i ? ' selected' : '');
+                b.textContent = label;
+                b.addEventListener('click', function () { choose(i, b); });
+                list.appendChild(b);
+            });
+            body.appendChild(list);
+            var first = list.querySelector('.selected') || list.firstChild;
+            if (first) first.focus({ preventScroll: true });
+        }
+
+        var advancing = false;
+        function choose(i, btn) {
+            if (advancing) return;
+            advancing = true;
+            answers[QUESTIONS[step].id] = i;
+            Array.prototype.forEach.call(btn.parentNode.children, function (c) { c.classList.remove('selected'); });
+            btn.classList.add('selected');
+            setTimeout(function () {
+                advancing = false;
+                if (step < QUESTIONS.length - 1) { step++; renderQuestion(); }
+                else { renderResult(); }
+            }, 220);
+        }
+
+        /* ---------- Plan logic ---------- */
+
+        function buildPlan(a) {
+            var moves = [];
+            var add = function (p, title, why, todo) { moves.push({ p: p, title: title, why: why, todo: todo }); };
+
+            var overdue = a.bills === 0;
+            var debtGrowing = a.debt === 0;
+            var debtShrinking = a.debt === 1;
+
+            if (overdue) add(100, 'Deal with the overdue payments first',
+                'Late payments get more expensive every month and can land in your credit history (BIK), which makes any future loan or mortgage harder.',
+                'Call the lender or provider this week and ask for a payment plan. They usually prefer a plan to chasing you.');
+
+            if (debtGrowing) add(95, 'Stop the expensive debt from growing',
+                'Card and payday loan rates are often far higher than anything savings or investments will earn you. Paying them down is a guaranteed return.',
+                'List every debt with its rate (check RRSO). Pay the minimum on all, put every extra złoty on the highest rate. Stop new spending on the card.');
+            else if (debtShrinking) add(80, 'Finish off the expensive debt',
+                'You\'re already moving the right way. Each debt you close frees up its monthly payment for the next step.',
+                'Keep paying the highest-rate debt first. When one is gone, roll its payment onto the next.');
+
+            if (a.buffer === 0) add(90, 'Build a starter buffer: one month of essential costs',
+                'Without a buffer, the first surprise (a dentist, a broken laptop) goes on a card or a loan and you start over.',
+                'Open a separate savings account and set up a small automatic transfer for the day after payday.');
+            else if (a.buffer === 1) add(60, 'Grow your buffer to 3 to 6 months of essential costs',
+                'That\'s the common rule of thumb. It covers a job change or a few months of bad luck without touching investments.',
+                'Keep it in a separate account you don\'t see every day. Raise the automatic transfer a little.');
+
+            if (a.tracking <= 1) add(70, 'Find out what one month really costs',
+                'Every other step depends on this number. Most people guess low.',
+                'Export the last three months from your bank and sort it into 6-8 categories. AI can do the sorting if you delete names and account numbers first.');
+
+            if (a.auto <= 1) add(75, 'Make saving automatic',
+                '“Whatever is left” is usually nothing. Saving first and spending the rest works better than willpower.',
+                'Set a standing order for the day after payday. Start with an amount you won\'t notice, even 200 zł.');
+            else if (a.auto === 2) add(35, 'Let the bank do what you already do by hand',
+                'You\'ve got the habit. Automating it means a busy month doesn\'t break it.',
+                'Turn your payday transfer into a standing order.');
+
+            if (a.ppk === 1) add(65, 'Take another look at PPK',
+                'When you opt out, you also give up the money your employer and the state would add on top of yours.',
+                'Read your employer\'s PPK terms and decide again with the numbers in front of you. You can re-join.');
+            else if (a.ppk === 2) add(55, 'Check if you\'re in PPK',
+                'It\'s free money on top of your salary if you\'re in. Worth five minutes to find out.',
+                'Look for a PPK line on your payslip or ask HR.');
+
+            var stable = !overdue && !debtGrowing && a.buffer >= 1;
+
+            if (a.goal === 0 && stable) add(50, 'Keep money for the next 3 years out of stocks',
+                'Stock markets can drop 30% or more in a bad year. Money you need soon shouldn\'t have to wait for a recovery.',
+                'Give the goal its own account. Deposits or retail treasury bonds fit short horizons better than stocks.');
+
+            if (stable && a.buffer >= 2 && a.investing <= 1) add(58, 'Start investing a fixed amount every month',
+                'Time in the market does most of the work. Starting small now beats starting big in five years.',
+                'Pick one broad, low-cost index fund or ETF. Set a monthly amount and leave it alone.');
+            else if (stable && a.investing === 2) add(45, 'Turn occasional investing into a monthly habit',
+                'Investing a fixed amount every month means you don\'t have to guess good moments.',
+                'Pick a day after payday and automate it.');
+
+            if (stable && a.investing >= 1 && a.wrapper >= 1) add(48, 'Use IKE or IKZE before a regular account',
+                'IKE held until 60 means no 19% Belka tax on gains. IKZE contributions lower your income tax now.',
+                'Open one at a broker you\'d use anyway. Check this year\'s contribution limit.');
+
+            if (a.ai === 3) add(62, 'Don\'t let AI tools move your money',
+                'Analysis is fine. Handing over logins or permission to act on your accounts is a different level of risk.',
+                'Revoke access you\'re not sure about. Use AI to think, then do the clicking yourself.');
+            else if (a.ai <= 1) add(20, 'Try AI on your own numbers',
+                'It\'s good at sorting a bank export or explaining a contract in plain words.',
+                'Paste an anonymised export and ask it to group your spending. Check the totals yourself.');
+
+            moves.sort(function (x, y) { return y.p - x.p; });
+
+            var good = [];
+            if (a.buffer >= 2) good.push('You have a real safety buffer. Most people don\'t.');
+            if (a.debt === 2 && !overdue) good.push('No expensive debt. That\'s the biggest drag gone.');
+            if (a.auto === 3) good.push('Your saving runs on autopilot.');
+            if (a.tracking === 3) good.push('You know where your money goes.');
+            if (a.ppk === 0) good.push('You\'re collecting your employer\'s PPK contributions.');
+            if (a.investing === 3) good.push('You invest every month. Time is on your side.');
+            if (a.wrapper === 0) good.push('You use IKE or IKZE for the tax benefit.');
+            if (a.ai === 2) good.push('You use AI on your own numbers, which is where it helps most.');
+
+            var stage;
+            if (overdue || debtGrowing || a.buffer === 0) stage = 0;
+            else if (a.buffer === 1 || debtShrinking || a.investing <= 1) stage = 1;
+            else stage = 2;
+
+            return { moves: moves.slice(0, 3), good: good, stage: stage };
+        }
+
+        var STAGES = [
+            { name: 'Stabilise', lede: 'You\'re in the stabilise stage. The goal right now is to stop money leaking out and get a little breathing room. Investing can wait a few months.' },
+            { name: 'Build the base', lede: 'You\'re building the base. The basics are mostly there. Now it\'s about a proper buffer and making the good habits automatic.' },
+            { name: 'Grow', lede: 'You\'re in the grow stage. The foundation is solid, so the work now is mostly patience: invest regularly, keep fees low, don\'t tinker.' }
+        ];
+
+        var lastPlan = null;
+
+        function renderResult() {
+            var plan = buildPlan(answers);
+            lastPlan = plan;
+
+            $('stage-lede').textContent = STAGES[plan.stage].lede;
+
+            var st = $('stages');
+            st.innerHTML = '';
+            STAGES.forEach(function (s, i) {
+                var d = document.createElement('div');
+                d.className = 'cu-stage' + (i === plan.stage ? ' current' : '');
+                d.innerHTML = '<span class="m-label">Stage ' + (i + 1) + (i === plan.stage ? ' &middot; you' : '') + '</span>' +
+                              '<span class="cu-stage-name"></span>';
+                d.querySelector('.cu-stage-name').textContent = s.name;
+                st.appendChild(d);
+            });
+
+            var mv = $('moves');
+            mv.innerHTML = '';
+            plan.moves.forEach(function (m) {
+                var li = document.createElement('li');
+                li.className = 'cu-move';
+                var h = document.createElement('h3'); h.textContent = m.title;
+                var why = document.createElement('p'); why.textContent = m.why;
+                var todo = document.createElement('p'); todo.className = 'cu-do';
+                todo.innerHTML = '<strong>Do</strong>';
+                todo.appendChild(document.createTextNode(m.todo));
+                li.appendChild(h); li.appendChild(why); li.appendChild(todo);
+                mv.appendChild(li);
+            });
+
+            var gd = $('good');
+            gd.innerHTML = '';
+            plan.good.forEach(function (g) {
+                var li = document.createElement('li'); li.textContent = g; gd.appendChild(li);
+            });
+            $('good-wrap').hidden = plan.good.length === 0;
+
+            $('progress').style.width = '100%';
+            show(result);
+        }
+
+        function planAsText(plan) {
+            var lines = ['MY MONEY PLAN', '', 'Stage: ' + STAGES[plan.stage].name, ''];
+            plan.moves.forEach(function (m, i) {
+                lines.push((i + 1) + '. ' + m.title);
+                lines.push('   Why: ' + m.why);
+                lines.push('   Do: ' + m.todo);
+                lines.push('');
+            });
+            if (plan.good.length) {
+                lines.push('Already working:');
+                plan.good.forEach(function (g) { lines.push('+ ' + g); });
+            }
+            return lines.join('\n');
+        }
+
+        function copyText(text, btn) {
+            var done = function () {
+                var old = btn.textContent;
+                btn.textContent = 'Copied';
+                setTimeout(function () { btn.textContent = old; }, 1400);
+            };
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(done, function () { fallback(text); done(); });
+            } else { fallback(text); done(); }
+        }
+        function fallback(text) {
+            var ta = document.createElement('textarea');
+            ta.value = text; ta.setAttribute('readonly', '');
+            ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); } catch (e) {}
+            document.body.removeChild(ta);
+        }
+
+        $('start').addEventListener('click', function () { step = 0; show(quiz); renderQuestion(); });
+        $('back').addEventListener('click', function () { if (step > 0) { step--; renderQuestion(); } });
+        $('restart').addEventListener('click', function () { answers = {}; step = 0; show(intro); });
+        $('print').addEventListener('click', function () { window.print(); });
+        $('copy').addEventListener('click', function (e) { if (lastPlan) copyText(planAsText(lastPlan), e.currentTarget); });
+    })();
+    </script>
+</body>
+</html>

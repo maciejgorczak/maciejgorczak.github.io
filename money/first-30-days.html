@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A four-week setup to get your money in order from zero. Progress is saved in your browser.">
+    <title>First 30 days - Maciej Górczak</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="money.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .fd-layout { display: grid; gap: var(--space-xl); }
+        .fd-side { align-self: start; }
+        .fd-week { margin-bottom: var(--space-xl); }
+        .fd-week-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-sm); border-bottom: 2px solid var(--line-strong); padding-bottom: 0.5rem; }
+        .fd-week-head h2 { font-family: var(--font-display); font-size: 1.45rem; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+        .fd-week-head .m-label { margin: 0; white-space: nowrap; }
+        .fd-week-goal { color: var(--ink-soft); font-size: 0.96rem; padding: 0.6rem 0 0.2rem; }
+
+        /* Week ticks: four columns of hairline cells, one per task */
+        .fd-ticks { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; margin: var(--space-sm) 0 var(--space-md); }
+        .fd-tick-col .m-label { margin-bottom: 0.35rem; }
+        .fd-cells { display: flex; gap: 3px; }
+        .fd-cell { flex: 1; height: 14px; border: 1px solid var(--line); }
+        .fd-cell.on { background: var(--ink); border-color: var(--ink); }
+
+        @media (min-width: 900px) {
+            .fd-layout { grid-template-columns: 15rem 1fr; }
+            .fd-side { position: sticky; top: var(--space-lg); }
+            .fd-ticks { grid-template-columns: 1fr; gap: 0.8rem; }
+        }
+        @media print {
+            .fd-side { position: static; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container page-container">
+        <header class="page-header">
+            <nav class="page-nav">
+                <a href="../index.html" class="page-nav-link">Home</a>
+                <a href="../about.html" class="page-nav-link">About</a>
+                <a href="../misc.html" class="page-nav-link active">Misc</a>
+            </nav>
+        </header>
+
+        <main class="page-main">
+            <article class="page-content money wide">
+                <a class="note-back" href="index.html">&larr; All money prototypes</a>
+                <p class="proto-tag">Prototype 04 &middot; Checklist</p>
+                <h1 class="page-title">First 30 days</h1>
+                <p class="page-lede">Four weeks, five small tasks a week. Most take 15 to 30 minutes, so they fit around a full-time job. Tick them off as you go. Progress stays in this browser.</p>
+
+                <div class="fd-layout">
+                    <aside class="fd-side">
+                        <div class="m-stats">
+                            <div class="m-stat">
+                                <span class="m-label">Done</span>
+                                <span class="m-stat-value" id="done-count">0 / 20</span>
+                            </div>
+                            <div class="m-stat">
+                                <span class="m-label">Up next</span>
+                                <span class="m-stat-value" id="next-week" style="font-size:1.3rem">Week 1</span>
+                            </div>
+                        </div>
+                        <div class="fd-ticks" id="ticks" aria-hidden="true"></div>
+                        <div class="m-actions" style="margin-top:0">
+                            <button class="m-btn" id="print" type="button">Print</button>
+                            <button class="m-btn m-btn-quiet" id="reset" type="button">Reset</button>
+                        </div>
+                    </aside>
+
+                    <div id="weeks"></div>
+                </div>
+
+                <p class="m-disclaimer">Draft. General information to help you think, not personal financial advice. Rules and limits change, so check current figures before acting.</p>
+                <nav class="m-proto-nav">
+                    <a href="payday-flow.html">&larr; Prev</a>
+                    <a href="time-vs-money.html">Next &rarr;</a>
+                </nav>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>Temet nosce, 2026</p>
+        </footer>
+    </div>
+
+    <script>
+    (function () {
+        var WEEKS = [
+            { title: 'See where you stand', goal: 'No changes yet. Just get the real numbers in one place.', tasks: [
+                ['List every account in one note', 'Bank, savings, cards, loans, PPK, IKE, that old broker app. You can\'t plan what you can\'t see.'],
+                ['Export three months of transactions', 'From your banking app, as CSV. Sort it into 6-8 categories. AI can help if you delete names and account numbers first.'],
+                ['Write down one number: essential costs per month', 'Rent, bills, food, transport, loan payments. This is the base for your buffer.'],
+                ['List your debts with rate and payment', 'For each: balance, RRSO (total yearly cost), monthly payment. Sort by rate.'],
+                ['Read your payslip line by line', 'Check net pay, tax, and whether there\'s a PPK line.']
+            ]},
+            { title: 'Stop the leaks', goal: 'Small cuts that don\'t hurt. The aim is a bit of room, not a strict budget.', tasks: [
+                ['Cancel subscriptions you didn\'t use last month', 'Go through the export from week 1. Most people find two or three.'],
+                ['Call about anything overdue', 'Ask the lender or provider for a payment plan. Skip this if nothing is overdue.'],
+                ['Check what your bank charges you', 'Account fees, card fees, transfer fees. If another bank offers the same for free, consider switching.'],
+                ['Pick your target debt', 'The one with the highest rate. Extra money goes there first, minimums on the rest.'],
+                ['Remove saved cards from shops you impulse-buy in', 'A few extra seconds at checkout is enough to skip half the purchases you\'d regret.']
+            ]},
+            { title: 'Automate', goal: 'Set it once so good habits don\'t depend on a good month.', tasks: [
+                ['Open a separate savings account for your buffer', 'Separate from your daily account, so you don\'t see it every time you pay for something.'],
+                ['Set a standing order for the day after payday', 'Start with an amount you won\'t miss. You can raise it later. First goal: one month of essential costs.'],
+                ['Set up a second pot if you have a goal within 3 years', 'Flat deposit, car, wedding. Deposits or retail treasury bonds, not stocks.'],
+                ['Check PPK and decide on purpose', 'If you opted out, look again at what your employer and the state would add. Decide with the numbers in front of you.'],
+                ['Move bill dates close to payday where you can', 'Fewer surprises at the end of the month.']
+            ]},
+            { title: 'Start the long game', goal: 'Only once the buffer is growing and no expensive debt is getting bigger.', tasks: [
+                ['Read up on IKE and IKZE and pick one', 'IKE held until 60: no 19% Belka tax on gains. IKZE: lowers your income tax now, gives more back in the higher tax bracket. Check this year\'s limits.'],
+                ['Choose one broad, low-cost index fund or ETF', 'Compare the yearly fee (TER). Global and boring is fine. You don\'t need five.'],
+                ['Set a monthly investing amount', 'Automate it like your savings. Even 200 zł a month builds the habit.'],
+                ['Put a 30-minute money check in your calendar, monthly', 'Look at the numbers, adjust one thing, close the app.'],
+                ['Write down three rules for yourself', 'For example: I don\'t check investments more than once a month. I don\'t buy things I saw an ad for today. I don\'t let any app move my money for me.']
+            ]}
+        ];
+
+        var KEY = 'money-30-days-v1';
+        var TOTAL = WEEKS.reduce(function (n, w) { return n + w.tasks.length; }, 0);
+        var state = {};
+        try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { state = {}; }
+
+        function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+        var weeksEl = document.getElementById('weeks');
+
+        WEEKS.forEach(function (w, wi) {
+            var sec = document.createElement('section');
+            sec.className = 'fd-week';
+            sec.innerHTML = '<div class="fd-week-head"><h2></h2><span class="m-label" data-count></span></div><p class="fd-week-goal"></p><div data-list></div>';
+            sec.querySelector('h2').textContent = 'Week ' + (wi + 1) + ': ' + w.title;
+            sec.querySelector('.fd-week-goal').textContent = w.goal;
+            var list = sec.querySelector('[data-list]');
+
+            w.tasks.forEach(function (t, ti) {
+                var id = 'w' + wi + 't' + ti;
+                var label = document.createElement('label');
+                label.className = 'm-check';
+                label.innerHTML = '<input type="checkbox"><span class="m-check-body"><span class="m-check-title" style="display:block"></span><span class="m-check-why" style="display:block"></span></span>';
+                var box = label.querySelector('input');
+                box.checked = !!state[id];
+                box.dataset.id = id;
+                label.querySelector('.m-check-title').textContent = t[0];
+                label.querySelector('.m-check-why').textContent = t[1];
+                box.addEventListener('change', function () {
+                    if (box.checked) state[id] = 1; else delete state[id];
+                    save(); update();
+                });
+                list.appendChild(label);
+            });
+            weeksEl.appendChild(sec);
+        });
+
+        function update() {
+            var done = 0, next = null;
+            var ticks = document.getElementById('ticks');
+            ticks.innerHTML = '';
+            var heads = weeksEl.querySelectorAll('[data-count]');
+
+            WEEKS.forEach(function (w, wi) {
+                var col = document.createElement('div');
+                col.className = 'fd-tick-col';
+                col.innerHTML = '<span class="m-label">Week ' + (wi + 1) + '</span><div class="fd-cells"></div>';
+                var cells = col.querySelector('.fd-cells');
+                var wd = 0;
+                w.tasks.forEach(function (t, ti) {
+                    var on = !!state['w' + wi + 't' + ti];
+                    if (on) wd++;
+                    var c = document.createElement('span');
+                    c.className = 'fd-cell' + (on ? ' on' : '');
+                    cells.appendChild(c);
+                });
+                done += wd;
+                if (next === null && wd < w.tasks.length) next = wi;
+                heads[wi].textContent = wd + ' / ' + w.tasks.length;
+                ticks.appendChild(col);
+            });
+
+            document.getElementById('done-count').textContent = done + ' / ' + TOTAL;
+            document.getElementById('next-week').textContent = next === null ? 'All done' : 'Week ' + (next + 1);
+        }
+
+        var resetBtn = document.getElementById('reset');
+        var armed = null;
+        resetBtn.addEventListener('click', function () {
+            if (!armed) {
+                resetBtn.textContent = 'Click again to clear';
+                armed = setTimeout(function () { armed = null; resetBtn.textContent = 'Reset'; }, 3000);
+                return;
+            }
+            clearTimeout(armed); armed = null; resetBtn.textContent = 'Reset';
+            state = {}; save();
+            weeksEl.querySelectorAll('input[type=checkbox]').forEach(function (b) { b.checked = false; });
+            update();
+        });
+        document.getElementById('print').addEventListener('click', function () { window.print(); });
+
+        update();
+    })();
+    </script>
+</body>
+</html>
