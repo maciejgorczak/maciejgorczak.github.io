@@ -266,6 +266,7 @@ a { color: inherit; }
    ENTRY LISTS  (Notes index, Misc hub)
    =================================== */
 .entry-list { list-style: none; border-top: 2px solid var(--line-strong); }
+.entry-list.no-rule { border-top: 0; }
 .entry-item { border-bottom: 1px solid var(--line); }
 .entry-loading {
     list-style: none;
