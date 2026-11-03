@@ -375,7 +375,7 @@ a { color: inherit; }
 /* ===================================
    SUN TRACKER
    =================================== */
-.sun-tracker { max-width: 40rem; }
+.sun-tracker { max-width: 52rem; }
 .sun-title {
     font-family: var(--font-display);
     font-size: clamp(1.8rem, 4.5vw, 2.6rem);
@@ -394,12 +394,7 @@ a { color: inherit; }
     margin-bottom: var(--space-lg);
 }
 .sun-canvas { display: block; width: 100%; height: auto; max-width: 440px; }
-.sun-time-display {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-}
+.sun-canvas[hidden] { display: none; }
 .sun-time-display .time-value {
     font-family: var(--font-display);
     font-size: clamp(1.5rem, 4vw, 2.4rem);
@@ -418,6 +413,60 @@ a { color: inherit; }
     display: block;
 }
 .sun-stat.error .stat-value { color: var(--accent); }
+
+/* 3D Sun plate (sun3d.js) */
+.sun-figure { margin: 0 0 var(--space-lg); }
+.sun-plate { position: relative; width: 100%; aspect-ratio: 16 / 11; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); overflow: hidden; }
+.sun-plate.narrow { aspect-ratio: 1 / 1.3; }
+.sun-plate canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: pan-y; }
+.sun-plate canvas:active { cursor: grabbing; }
+/* Whole: the answer sits on the disc. Cut open: it steps aside for the parts. */
+.sun-plate .sun-time-display {
+    position: absolute; top: var(--sun-cy, 50%); left: 50%; transform: translate(-50%, -50%);
+    text-align: center; background: var(--bg); border: 1px solid var(--line);
+    padding: 0.7rem 1.2rem 0.6rem; pointer-events: none; transition: opacity .4s;
+}
+.sun-plate .sun-time-display .time-value { margin-bottom: 0; white-space: nowrap; }
+.sun-plate.is-open .sun-time-display { opacity: 0; }
+.sun-leaders { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.sun-leaders polyline { fill: none; stroke: var(--ink); stroke-width: 1; }
+.sun-leaders circle { fill: var(--bg); stroke: var(--ink); stroke-width: 1.25; }
+.sun-leaders .accent { stroke: var(--accent); }
+.sun-leaders circle.earth { fill: var(--ink); stroke: none; }
+.sun-leaders .earth-t { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; fill: var(--ink-muted); }
+.sun-labels { position: absolute; inset: 0; pointer-events: none; }
+.sun-label { position: absolute; left: 0; top: 0; background: var(--bg); padding: 2px 0; opacity: 0; transition: opacity .35s; pointer-events: none; }
+.sun-label.left { text-align: right; }
+.sun-label .n { display: none; }
+.sun-label b { display: block; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); }
+.sun-label.accent b { color: var(--accent); }
+.sun-label .b { display: block; font-size: 0.78rem; line-height: 1.35; color: var(--ink-soft); margin-top: 2px; }
+/* Phones: numbered markers on the drawing, one note at a time inside the plate. */
+.sun-plate.narrow .sun-label { width: 22px !important; height: 22px; padding: 0; border: 1px solid var(--ink); border-radius: 50%; place-items: center; cursor: pointer; pointer-events: auto; }
+.sun-plate.narrow .sun-label b, .sun-plate.narrow .sun-label .b { display: none; }
+.sun-plate.narrow .sun-label .n { display: block; font-family: var(--font-mono); font-size: 0.65rem; line-height: 1; color: var(--ink); }
+.sun-plate.narrow .sun-label.accent { border-color: var(--accent); }
+.sun-plate.narrow .sun-label.accent .n { color: var(--accent); }
+.sun-plate.narrow .sun-label.sel { background: var(--ink); }
+.sun-plate.narrow .sun-label.sel .n { color: var(--bg); }
+.sun-plate.narrow .sun-label.accent.sel { background: var(--accent); }
+.sun-note { display: none; }
+.sun-plate.narrow.is-open .sun-note {
+    display: block; position: absolute; left: 0; right: 0; bottom: 0; background: var(--bg);
+    border-top: 1px solid var(--line); padding: 0.55rem 0 0.6rem; height: 96px; overflow: hidden; pointer-events: none;
+}
+.sun-note b { display: block; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); }
+.sun-note b.accent { color: var(--accent); }
+.sun-note span { display: block; font-size: 0.85rem; line-height: 1.4; color: var(--ink-soft); margin-top: 2px; }
+.sun-controls { display: flex; align-items: center; margin-top: var(--space-sm); }
+.sun-tabs { display: inline-flex; border: 1px solid var(--ink); }
+.sun-tabs button { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; background: transparent; color: var(--ink); border: 0; border-right: 1px solid var(--ink); padding: 0.45rem 0.8rem; cursor: pointer; border-radius: 0; }
+.sun-tabs button:last-child { border-right: 0; }
+.sun-tabs button.on { background: var(--ink); color: var(--bg); }
+/* No WebGL: the old line drawing, with the answer on it as before. */
+.sun-figure.fallback .sun-plate { aspect-ratio: auto; display: flex; justify-content: center; border: 0; }
+.sun-figure.fallback #sun-3d, .sun-figure.fallback .sun-controls, .sun-figure.fallback .sun-labels, .sun-figure.fallback .sun-leaders { display: none; }
+.sun-figure.fallback .sun-canvas { position: static; }
 .sun-description { border-top: 1px solid var(--line); padding-top: var(--space-md); }
 .sun-description p { font-size: 1rem; line-height: 1.7; margin-bottom: var(--space-sm); color: var(--ink-soft); }
 .sun-description p:last-child { margin-bottom: 0; }

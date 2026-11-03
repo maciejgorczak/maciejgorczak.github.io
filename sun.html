@@ -25,12 +25,23 @@
                 <div class="sun-info">
                     <h1 class="sun-title">When the sun last shone in Warsaw</h1>
 
-                    <div class="sun-visual-container">
-                        <canvas id="sun-canvas" class="sun-canvas"></canvas>
-                        <div class="sun-time-display" id="sun-time-display">
-                            Loading...
+                    <figure class="sun-figure">
+                        <div class="sun-plate" id="sun-plate">
+                            <canvas id="sun-3d" aria-label="The Sun. Cut it open to see its layers."></canvas>
+                            <canvas id="sun-canvas" class="sun-canvas" hidden></canvas>
+                            <svg class="sun-leaders" aria-hidden="true"></svg>
+                            <div class="sun-labels"></div>
+                            <div class="sun-note" aria-live="polite"></div>
+                            <div class="sun-time-display" id="sun-time-display">
+                                Loading...
+                            </div>
                         </div>
-                    </div>
+                        <figcaption class="sun-controls">
+                            <span class="sun-tabs" role="group" aria-label="View">
+                                <button type="button" data-sun="whole">Whole</button><button type="button" data-sun="open">Cut open</button>
+                            </span>
+                        </figcaption>
+                    </figure>
 
                     <div class="sun-description">
                         <p>This page tracks when the sun was last visible in Warsaw for more than one hour. A sunny hour is defined as having cloud cover below 25% for at least two consecutive hours.</p>
@@ -45,6 +56,21 @@
         </footer>
     </div>
 
+    <script type="importmap">
+    {"imports": {"three": "/vendor/three/three.module.min.js"}}
+    </script>
     <script src="sun-tracker.js"></script>
+    <script type="module">
+        // The 3D Sun; if WebGL or modules fail, the old line drawing comes back.
+        try {
+            const {mountSun} = await import('./sun3d.js');
+            mountSun(document.getElementById('sun-plate'));
+        } catch (e) {
+            console.warn('3D Sun unavailable, using the line drawing', e);
+            document.querySelector('.sun-figure').classList.add('fallback');
+            document.getElementById('sun-canvas').hidden = false;
+            window.initSunCanvas && window.initSunCanvas();
+        }
+    </script>
 </body>
 </html>
