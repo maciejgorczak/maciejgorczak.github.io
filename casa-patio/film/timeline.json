@@ -1,0 +1,77 @@
+{
+ "duration": 53.5,
+ "beats": [
+  {
+   "t": 0,
+   "press": null,
+   "end": false,
+   "caption": true
+  },
+  {
+   "t": 5,
+   "press": "view:garden",
+   "end": false,
+   "caption": true
+  },
+  {
+   "t": 9.5,
+   "press": null,
+   "end": false,
+   "caption": true
+  },
+  {
+   "t": 14,
+   "press": "date:jun",
+   "end": false,
+   "caption": true
+  },
+  {
+   "t": 20,
+   "press": "date:dec",
+   "end": false,
+   "caption": true
+  },
+  {
+   "t": 27,
+   "press": "mode:section",
+   "end": false,
+   "caption": true
+  },
+  {
+   "t": 33.5,
+   "press": "mode:solid",
+   "end": false,
+   "caption": false
+  },
+  {
+   "t": 34.5,
+   "press": "view:patio",
+   "end": false,
+   "caption": false
+  },
+  {
+   "t": 35.5,
+   "press": "date:mar",
+   "end": false,
+   "caption": true
+  },
+  {
+   "t": 41.5,
+   "press": "view:roof",
+   "end": false,
+   "caption": true
+  },
+  {
+   "t": 47.5,
+   "press": "view:aerial",
+   "end": false,
+   "caption": true
+  },
+  {
+   "t": 53.5,
+   "press": null,
+   "end": true,
+   "caption": false
+  }
+ ]
+}
