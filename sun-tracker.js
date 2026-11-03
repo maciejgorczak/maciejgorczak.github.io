@@ -139,10 +139,12 @@ async function updateDisplay() {
 }
 
 // Initialize on page load
+// The 3D plate (sun3d.js) replaces the line drawing; initSunCanvas stays as
+// the fallback when WebGL isn't available.
 document.addEventListener('DOMContentLoaded', () => {
     updateDisplay();
-    initSunCanvas();
 });
+window.initSunCanvas = () => initSunCanvas();
 
 
 // ===================================

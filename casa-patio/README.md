@@ -41,4 +41,4 @@ python3 casa-patio/tools/score.py teardown-out/score.wav
 ffmpeg -y -i teardown-out/silent.mp4 -i teardown-out/score.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 256k -shortest -movflags +faststart teardown-out/casa-patio.mp4
 ```
 
-three.js r170 is vendored in `vendor/three` (MIT, see its LICENSE).
+three.js r170 is vendored in `/vendor/three`, shared with the Sun page (MIT, see its LICENSE).
