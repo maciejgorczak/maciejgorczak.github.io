@@ -2,7 +2,7 @@
 // colour, one accent for the core where the work happens.
 // Numbers and labels come from sun-model.js.
 import * as THREE from 'three';
-import {LAYERS, FACTS, SPOTS, omegaDegPerDay, periodDays, lightTime, EARTH_SCALE} from './sun-model.js';
+import {LAYERS, FACTS, SPOTS, omegaDegPerDay, EARTH_SCALE} from './sun-model.js';
 
 const GLSL_COMMON = /* glsl */`
   uniform vec3 uPaper, uInk, uAccent;
@@ -290,7 +290,7 @@ export function mountSun(plate) {
   // ---------- Labels and leaders ----------
   const overlay = plate.querySelector('.sun-labels');
   const svg = plate.querySelector('.sun-leaders');
-  const legend = plate.parentElement.querySelector('.sun-legend');
+  const note = plate.querySelector('.sun-note');
   const ORDER_L = ['corona', 'chromosphere', 'photosphere', 'granules'];
   const ORDER_R = ['core', 'radiative', 'convective', 'sunspot', 'loops'];
   const labels = {};
@@ -300,13 +300,16 @@ export function mountSun(plate) {
     el.innerHTML = `<span class="n">${i + 1}</span><b>${FACTS[id].title}</b><span class="b">${FACTS[id].body}</span>`;
     overlay.appendChild(el);
     labels[id] = {el, n: i + 1};
-    if (legend) {
-      const li = document.createElement('li');
-      li.innerHTML = `<b>${FACTS[id].title}</b> ${FACTS[id].body}`;
-      if (id === 'core') li.className = 'accent';
-      legend.appendChild(li);
-    }
+    // On phones the labels are numbered markers; tapping one shows its note.
+    el.addEventListener('click', () => { if (narrow) { pick(id); pinnedUntil = performance.now() + 15000; } });
   });
+  const IDS = [...ORDER_L, ...ORDER_R];
+  let picked = null, pickedAt = 0, pinnedUntil = 0;
+  function pick(id) {
+    picked = id; pickedAt = performance.now();
+    note.innerHTML = `<b class="${id === 'core' ? 'accent' : ''}">${labels[id].n}. ${FACTS[id].title}</b><span>${FACTS[id].body}</span>`;
+    for (const k in labels) labels[k].el.classList.toggle('sel', k === id);
+  }
 
   const tmp = new THREE.Vector3(), right = new THREE.Vector3(), up = new THREE.Vector3();
   function anchors(cut, days) {
@@ -324,7 +327,7 @@ export function mountSun(plate) {
       sunspot: sA,
       loops: sA.clone().add(sB).normalize().multiplyScalar(1.17),
       chromosphere: limb(200, 1.04),
-      corona: limb(162, 1.75),
+      corona: limb(162, narrow ? 1.3 : 1.75),
     };
   }
   const visible = (id, p, cut) => {
@@ -339,6 +342,7 @@ export function mountSun(plate) {
 
   // ---------- Layout, input, loop ----------
   let W = 1, H = 1, narrow = false;
+  const NOTE_H = 96;
   function resize() {
     const r = plate.getBoundingClientRect();
     W = Math.max(1, r.width); H = Math.max(1, r.height);
@@ -348,9 +352,13 @@ export function mountSun(plate) {
     renderer.setSize(W, H, false);
     camera.aspect = W / H;
     // Keep the disc at ~26% of the width on wide plates, larger on phones.
-    const frac = narrow ? 0.34 : 0.235;
+    const frac = narrow ? 0.33 : 0.235;
     const halfW = 1 / frac / 2;
     camera.fov = 2 * Math.atan(halfW / camera.aspect / DIST) * 180 / Math.PI;
+    // Phones: the note strip takes the bottom of the plate, so centre the Sun above it.
+    const strip = narrow ? NOTE_H : 0;
+    if (strip) camera.setViewOffset(W, H, 0, strip / 2, W, H); else camera.clearViewOffset();
+    plate.style.setProperty('--sun-cy', `${(H - strip) / 2}px`);
     camera.updateProjectionMatrix();
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
     for (const id in labels) labels[id].h = 0;
@@ -372,23 +380,20 @@ export function mountSun(plate) {
   const params = new URLSearchParams(location.search);
   const fixedT = params.has('sunT') ? Number(params.get('sunT')) : null;
   const DAYS_PER_SEC = 0.35;
-  let open = true, cutFrom = 1, cutTo = 0, cutT0 = performance.now() + 500;
+  // Starts whole: the page's answer sits on the disc. Cut open shows the parts.
+  let open = params.has('open'), cutFrom = open ? 0 : 1, cutTo = cutFrom, cutT0 = 0;
+  plate.classList.toggle('is-open', open);
   const btns = plate.parentElement.querySelectorAll('[data-sun]');
   btns.forEach(b => b.addEventListener('click', () => {
     const want = b.dataset.sun === 'open';
     if (want === open) return;
     open = want; cutFrom = common.uCut.value; cutTo = open ? 0 : 1; cutT0 = performance.now();
+    plate.classList.toggle('is-open', open);
+    if (open && narrow) pick('core');
     btns.forEach(x => x.classList.toggle('on', (x.dataset.sun === 'open') === open));
     kick();
   }));
   btns.forEach(x => x.classList.toggle('on', (x.dataset.sun === 'open') === open));
-
-  // Readouts under the plate, from the model.
-  const lt = lightTime(new Date());
-  const lightEl = plate.parentElement.querySelector('[data-sun-light]');
-  if (lightEl) lightEl.textContent = `Light leaving the Sun now reaches Warsaw in ${lt.min} min ${String(lt.sec).padStart(2, '0')} s. Earth is ${lt.au.toFixed(4)} AU away today.`;
-  const rotEl = plate.parentElement.querySelector('[data-sun-rot]');
-  if (rotEl) rotEl.textContent = `The surface turns at its real rates, sped up: once in ${periodDays(0).toFixed(1)} days at the equator, ${periodDays(75 * deg).toFixed(0)} days near the poles.`;
 
   let start = performance.now(), running = true, raf = 0;
   function frame(now) {
@@ -397,7 +402,7 @@ export function mountSun(plate) {
     const days = sec * DAYS_PER_SEC;
     // Cut animation
     let cut;
-    if (fixedT != null) cut = params.get('closed') != null ? 1 : 0;
+    if (fixedT != null) cut = open ? 0 : 1;
     else if (reduced) cut = cutTo;
     else { const k = Math.min(1, Math.max(0, (now - cutT0) / 1600)); cut = cutFrom + (cutTo - cutFrom) * ease(k); }
     // Ease the view back to rest after 8 s without input.
@@ -432,12 +437,12 @@ export function mountSun(plate) {
         const on = visible(id, p, cut) && (id !== 'loops' || loops.visible);
         tmp.copy(p).project(camera);
         const ax = (tmp.x * 0.5 + 0.5) * W, ay = (-tmp.y * 0.5 + 0.5) * H;
-        const inner = ['core', 'radiative', 'convective'].includes(id);
-        L.el.style.opacity = on ? 1 : inner ? 0 : 0.28;
+        const shown = cut < 0.12;                  // labels only once the Sun is open
+        L.el.style.opacity = !shown ? 0 : on ? 1 : 0.28;
+        L.el.style.pointerEvents = shown && on ? '' : 'none';
         if (narrow) {
-          // Numbered marker at the anchor; full text sits in the legend below.
-          L.el.style.transform = `translate(${ax - 9}px, ${ay - 9}px)`;
-          L.el.style.display = on ? 'block' : 'none';
+          L.el.style.transform = `translate(${ax - 11}px, ${ay - 11}px)`;
+          L.el.style.display = shown && on ? 'grid' : 'none';
           return;
         }
         L.el.style.display = 'block';
@@ -446,18 +451,26 @@ export function mountSun(plate) {
         const ly = Math.min(H - L.h - 8, 16 + slot * i + (slot - L.h) / 2);
         const lx = side === 'L' ? 0 : W - colW;
         L.el.style.transform = `translate(${lx}px, ${ly}px)`;
-        if (on) {
+        if (on && shown) {
           const ex = side === 'L' ? lx + colW + gap : lx - gap, ey = ly + 9;
           s += `<polyline points="${ex},${ey} ${ex + (side === 'L' ? 14 : -14)},${ey} ${ax},${ay}" class="${id === 'core' ? 'accent' : ''}"/><circle cx="${ax}" cy="${ay}" r="3" class="${id === 'core' ? 'accent' : ''}"/>`;
         }
       });
     };
     place(ORDER_L, 'L'); place(ORDER_R, 'R');
+    if (cut >= 0.12) { svg.innerHTML = ''; return; }
+    // Phones: cycle the note through the parts until someone taps a marker.
+    if (narrow) {
+      const now = performance.now();
+      const vis = IDS.filter(id => labels[id].el.style.display !== 'none');
+      if (!picked || (now > pinnedUntil && now - pickedAt > 4500) || !vis.includes(picked))
+        if (vis.length) pick(vis[(vis.indexOf(picked) + 1) % vis.length]);
+    }
     // Earth to scale, next to the disc's own measured radius.
     const rp = tmp.copy(right).multiplyScalar(1).project(camera);
     const rPx = Math.abs(rp.x) * 0.5 * W;
     const er = Math.max(0.6, rPx * EARTH_SCALE);
-    const ex = W / 2 + rPx * (narrow ? 0.0 : 0.0), ey = H - 22;
+    const ex = W / 2, ey = narrow ? 18 : H - 22;
     s += `<circle cx="${ex - 66}" cy="${ey}" r="${er}" class="earth"/><text x="${ex - 56}" y="${ey + 4}" class="earth-t">Earth, to scale</text>`;
     svg.innerHTML = s;
   }

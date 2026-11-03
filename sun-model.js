@@ -45,17 +45,5 @@ export const SPOTS = [
   {lat: -24, lon: 200, r: 0.04},
 ];
 
-// Earth-Sun distance (AU) for a date, from the mean anomaly (USNO approximation).
-export function sunDistanceAU(date = new Date()) {
-  const jd = date.getTime() / 86400000 + 2440587.5;
-  const g = (357.529 + 0.98560028 * (jd - 2451545.0)) * Math.PI / 180;
-  return 1.00014 - 0.01671 * Math.cos(g) - 0.00014 * Math.cos(2 * g);
-}
-export const LIGHT_SECONDS_PER_AU = 499.004784;
-export function lightTime(date = new Date()) {
-  const s = sunDistanceAU(date) * LIGHT_SECONDS_PER_AU;
-  return {seconds: s, min: Math.floor(s / 60), sec: Math.round(s % 60), au: sunDistanceAU(date)};
-}
-
 // Sun diameter over Earth diameter: 1,392,700 km / 12,742 km.
 export const EARTH_SCALE = 12742 / 1392700;
