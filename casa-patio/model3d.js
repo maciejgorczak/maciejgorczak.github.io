@@ -207,7 +207,7 @@ export function buildModel(tokens) {
   const lawnMat = new THREE.MeshStandardMaterial({color: 0x8a8a5c, roughness: 1, clippingPlanes: planes, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1});
   const lawn = new THREE.Mesh(new THREE.PlaneGeometry(13.5, 10.55), lawnMat);
   lawn.rotation.x = -Math.PI / 2; lawn.position.set(0, 0.01, 3.2 + 10.55 / 2); lawn.receiveShadow = true; root.add(lawn);
-  const sidewalk = new THREE.Mesh(new THREE.PlaneGeometry(40, 3.2), new THREE.MeshStandardMaterial({color: 0xbab29c, roughness: 1, clippingPlanes: planes, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1}));
+  const sidewalk = new THREE.Mesh(new THREE.PlaneGeometry(40, 3.2), new THREE.MeshStandardMaterial({color: new THREE.Color(tokens.ground).offsetHSL(0, -0.05, 0.05), roughness: 1, clippingPlanes: planes, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1}));
   sidewalk.rotation.x = -Math.PI / 2; sidewalk.position.set(0, 0.01, -13.2); sidewalk.receiveShadow = true; root.add(sidewalk);
 
   // Pond water and the cistern's water.
